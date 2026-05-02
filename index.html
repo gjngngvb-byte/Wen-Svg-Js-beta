@@ -1,0 +1,1767 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Auto.js Vector Studio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Bibliotecas Externas (Exportação GIF, Fontes & Fusão Vetorial) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/opentype.js/1.3.4/opentype.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.12.17/paper-core.min.js"></script>
+
+    <style>
+        body { background-color: #0f172a; color: #f8fafc; }
+        .panel { background-color: #1e293b; border-color: #334155; }
+        canvas { background-color: transparent; }
+        #svgHiddenContainer { position: fixed; top: 0; left: 0; opacity: 0.001; z-index: -9999; pointer-events: none; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #1e293b; border-radius: 4px;}
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #64748b; }
+        .range-sm { height: 4px; accent-color: #6366f1; }
+        
+        /* Sistema de Tooltips (Lupas) */
+        .tooltip {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            margin-left: 6px;
+            cursor: help;
+        }
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 220px;
+            background-color: #0f172a;
+            color: #e2e8f0;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1000;
+            bottom: 150%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            border: 1px solid #334155;
+            font-size: 11px;
+            font-weight: normal;
+            line-height: 1.4;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            pointer-events: none;
+            white-space: normal;
+        }
+        .tooltip .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #334155 transparent transparent transparent;
+        }
+        .tooltip:hover .tooltip-text, .tooltip:active .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="min-h-screen font-sans p-2 md:p-4 overflow-x-hidden relative">
+
+    <!-- OVERLAY DE CARREGAMENTO -->
+    <div id="progressOverlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center hidden transition-opacity duration-300">
+        <div class="bg-slate-800 p-6 rounded-xl shadow-2xl border border-slate-600 w-80 max-w-[90%] transform scale-100">
+            <div class="flex justify-between items-center mb-3">
+                <h3 class="text-white font-bold text-sm" id="progressTitle">Importando...</h3>
+                <span class="text-indigo-400 font-bold text-xs" id="progressText">0%</span>
+            </div>
+            <div class="w-full bg-slate-900 rounded-full h-3 border border-slate-700 overflow-hidden relative">
+                <div id="progressBar" class="bg-gradient-to-r from-indigo-500 to-emerald-400 h-full transition-all duration-150" style="width: 0%"></div>
+            </div>
+            <p class="text-slate-400 text-[10px] mt-3 text-center animate-pulse" id="statusMsg">A extrair malha vetorial...</p>
+        </div>
+    </div>
+
+    <div class="max-w-[1400px] mx-auto space-y-4">
+        <!-- HEADER -->
+        <header class="flex flex-col md:flex-row items-center justify-between panel p-4 rounded-xl shadow-lg border">
+            <div class="flex items-center gap-4">
+                <div class="p-2 bg-indigo-500/20 rounded-lg border border-indigo-500/30">
+                    <i data-lucide="compass" class="w-6 h-6 text-indigo-400"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-white leading-tight flex items-center flex-wrap gap-2">
+                        Auto.js Vector Studio
+                        <span id="welcomeMessageDisplay" class="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 shadow-sm" data-custom-message="">Bem Vindo Jociel</span>
+                    </h1>
+                    <p class="text-[10px] text-gray-400 font-medium">Composição de Múltiplos SVGs • Texto Vetorial • Exportação GIF</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3 mt-3 md:mt-0 flex-wrap justify-end">
+                <label class="flex items-center justify-between cursor-pointer p-1.5 px-3 bg-blue-500/10 rounded-lg border border-blue-500/20" title="Impede a tela de apagar durante cálculos pesados">
+                    <i data-lucide="sun" class="w-3.5 h-3.5 text-blue-400 mr-2"></i>
+                    <span class="text-xs font-medium text-blue-300 mr-2 flex items-center">
+                        Tela Acesa
+                        <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-blue-400"></i><span class="tooltip-text">Impede a tela de apagar enquanto processa arquivos SVGs muito grandes e pesados.</span></span>
+                    </span>
+                    <input type="checkbox" id="wakeLockMode" checked class="w-3.5 h-3.5 accent-blue-500 rounded cursor-pointer">
+                </label>
+                <label class="flex items-center justify-between cursor-pointer p-1.5 px-3 bg-amber-500/10 rounded-lg border border-amber-500/20">
+                    <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400 mr-2"></i>
+                    <span class="text-xs font-medium text-amber-300 mr-2 flex items-center">
+                        Turbo
+                        <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-amber-400"></i><span class="tooltip-text">Gera o código usando uma lógica otimizada para o Auto.js desenhar em altíssima velocidade.</span></span>
+                    </span>
+                    <input type="checkbox" id="turboMode" class="w-3.5 h-3.5 accent-amber-500 rounded cursor-pointer">
+                </label>
+                <label class="flex items-center justify-between cursor-pointer p-1.5 px-3 bg-emerald-500/10 rounded-lg border border-emerald-500/20" title="Une linhas muito próximas num único traço">
+                    <i data-lucide="git-merge" class="w-3.5 h-3.5 text-emerald-400 mr-2"></i>
+                    <span class="text-xs font-medium text-emerald-300 mr-2 flex items-center">
+                        Traço Contínuo
+                        <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-emerald-400"></i><span class="tooltip-text">Une linhas muito próximas num único traço para o robô não precisar levantar tanto a caneta.</span></span>
+                    </span>
+                    <input type="checkbox" id="continuousLine" class="w-3.5 h-3.5 accent-emerald-500 rounded cursor-pointer">
+                </label>
+                <label class="flex items-center justify-between cursor-pointer p-1.5 px-3 bg-slate-700/50 rounded-lg border border-slate-600">
+                    <i data-lucide="play-circle" class="w-3.5 h-3.5 text-slate-300 mr-2"></i>
+                    <span class="text-xs font-medium text-slate-300 mr-2 flex items-center">
+                        Warmup Inicial
+                        <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-slate-300"></i><span class="tooltip-text">Faz um pequeno traço falso (invisível ou muito rápido) no começo do desenho para preparar e evitar falhas no primeiro toque do robô.</span></span>
+                    </span>
+                    <input type="checkbox" id="warmupMode" checked class="w-3.5 h-3.5 accent-slate-400 rounded cursor-pointer">
+                </label>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+            
+            <!-- COLUNA 1: PROJETO E GEOMETRIA -->
+            <div class="lg:col-span-3 space-y-4 flex flex-col">
+                
+                <!-- Gestor de Ficheiros & Texto -->
+                <div class="panel p-4 rounded-xl shadow-lg border flex flex-col gap-3">
+                    <h2 class="text-sm font-bold text-gray-200 flex items-center gap-2">
+                        <i data-lucide="folder-open" class="w-4 h-4 text-indigo-400"></i> Arquivos do Projeto
+                    </h2>
+                    
+                    <div id="projectItemsList" class="flex flex-col gap-1.5 max-h-32 overflow-y-auto custom-scrollbar">
+                        <div id="emptyProjectMsg" class="text-[10px] text-gray-500 text-center py-2 border border-dashed border-gray-600 rounded">Nenhum elemento no projeto.</div>
+                    </div>
+
+                    <!-- Módulo de Preenchimento -->
+                    <div class="pt-2 border-t border-slate-700 space-y-2">
+                        <h3 class="text-xs font-bold text-pink-400 flex items-center gap-1">
+                            <i data-lucide="paint-bucket" class="w-3.5 h-3.5"></i> Hachura / Preenchimento
+                            <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-pink-400"></i><span class="tooltip-text">Quando ativado, preenche áreas sólidas com linhas geradas aleatoriamente no momento da importação. Não afeta traços ocos! Formas brancas agora são devidamente mapeadas.</span></span>
+                        </h3>
+                        <label class="flex items-center justify-between cursor-pointer p-1.5 px-3 bg-pink-500/10 rounded-lg border border-pink-500/20">
+                            <span class="text-[11px] font-medium text-pink-300">Modo Preenchimento</span>
+                            <input type="checkbox" id="fillMode" checked class="w-3.5 h-3.5 accent-pink-500 rounded cursor-pointer">
+                        </label>
+                        <div class="grid grid-cols-2 gap-2 text-[10px] text-gray-400">
+                            <div>
+                                <label class="block mb-1 flex items-center justify-between">
+                                    Espessura
+                                    <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-pink-400"></i><span class="tooltip-text">Distância entre as linhas geradas (2 a 20). Menor = mais juntas, o que exige mais tempo de desenho.</span></span>
+                                </label>
+                                <input type="number" id="fillDensity" value="5" min="2" max="20" class="w-full bg-slate-800 border border-slate-600 rounded p-1 outline-none text-white text-center">
+                            </div>
+                            <div>
+                                <label class="block mb-1 flex items-center justify-between">
+                                    Sombrear
+                                    <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-pink-400"></i><span class="tooltip-text">Níveis de cruzamento de linhas. Nível 1: traço diagonal. Nível 2: X cruzado. Nível 3: texturas intensas.</span></span>
+                                </label>
+                                <select id="fillShading" class="w-full bg-slate-800 border border-slate-600 rounded p-1 outline-none text-white">
+                                    <option value="1">Nível 1 (Simples)</option>
+                                    <option value="2">Nível 2 (Cruzado)</option>
+                                    <option value="3">Nível 3 (Denso)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="addSvgBtn" class="w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded flex items-center justify-center gap-2 transition-colors shadow">
+                        <i data-lucide="upload-cloud" class="w-4 h-4"></i> Importar SVG
+                    </button>
+                    <input type="file" id="fileInput" multiple accept=".svg" class="hidden">
+
+                    <!-- Perfil .uny -->
+                    <div class="flex gap-2">
+                        <button id="importUnyBtn" class="flex-1 py-1.5 bg-slate-700 hover:bg-slate-600 text-white text-[10px] font-bold rounded flex items-center justify-center gap-1 transition-colors">
+                            <i data-lucide="download" class="w-3 h-3"></i> Importar (.uny)
+                        </button>
+                        <button id="exportUnyBtn" class="flex-1 py-1.5 bg-slate-700 hover:bg-slate-600 text-white text-[10px] font-bold rounded flex items-center justify-center gap-1 transition-colors">
+                            <i data-lucide="upload" class="w-3 h-3"></i> Exportar (.uny)
+                        </button>
+                    </div>
+                    <input type="file" id="unyFileInput" accept=".uny" class="hidden">
+                    
+                    <!-- Novo Módulo de Texto -->
+                    <div class="pt-3 border-t border-slate-700 space-y-2">
+                        <h3 class="text-xs font-bold text-gray-300 flex items-center gap-1">
+                            <i data-lucide="type" class="w-3.5 h-3.5 text-emerald-400"></i> Adicionar Texto Vetorial
+                        </h3>
+                        <input type="text" id="newTextInput" placeholder="Digite seu texto..." class="w-full bg-slate-800 border border-slate-600 rounded p-1.5 outline-none text-white text-xs">
+                        <div class="flex gap-2">
+                            <select id="newTextFont" class="flex-1 bg-slate-800 border border-slate-600 rounded p-1.5 outline-none text-white text-[10px]">
+                                <option value="https://raw.githubusercontent.com/google/fonts/main/ofl/pacifico/Pacifico-Regular.ttf">Pacifico (Manuscrita)</option>
+                                <option value="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/fonts/Roboto/Roboto-Regular.ttf">Roboto (Moderna)</option>
+                                <option value="https://raw.githubusercontent.com/google/fonts/main/ofl/lobster/Lobster-Regular.ttf">Lobster (Elegante)</option>
+                                <option value="https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Ubuntu/ubuntu-regular-webfont.ttf">Ubuntu (Clássica)</option>
+                            </select>
+                            <button id="addTextBtn" class="px-3 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded transition-colors shadow">
+                                Add
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Visualizador Original (Referência) -->
+                    <div class="pt-3 border-t border-slate-700 space-y-2">
+                        <h3 class="text-xs font-bold text-gray-300 flex items-center gap-1">
+                            <i data-lucide="image" class="w-3.5 h-3.5 text-indigo-400"></i> Visualizador Original
+                        </h3>
+                        <div class="bg-slate-900 border border-slate-700 rounded-lg p-2 h-32 flex items-center justify-center relative overflow-hidden transition-colors" id="originalSvgBg">
+                            <div id="originalSvgViewer" class="w-full h-full flex items-center justify-center [&>svg]:max-w-full [&>svg]:max-h-full">
+                                <span class="text-[10px] text-gray-600">Nenhum SVG selecionado</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transformação Individual (LOCAL) -->
+                <div id="itemTransformPanel" class="panel p-4 rounded-xl shadow-lg border space-y-4 opacity-50 pointer-events-none transition-opacity">
+                    <h2 class="text-sm font-bold text-gray-200 border-b border-slate-600 pb-2 flex justify-between items-center">
+                        <span class="flex items-center gap-2">
+                            Transformação Local
+                            <button id="resetGeoBtn" class="text-indigo-400 hover:text-indigo-300" title="Resetar Transformações"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i></button>
+                        </span>
+                        <span id="activeItemName" class="text-[9px] font-mono text-indigo-300 truncate max-w-[100px]">Nenhum</span>
+                    </h2>
+                    
+                    <div id="textEditGroup" class="hidden space-y-2 pb-3 mb-3 border-b border-slate-700">
+                        <label class="block text-emerald-400 font-bold text-xs">Editar Conteúdo do Texto</label>
+                        <input type="text" id="editTextInput" class="w-full bg-slate-800 border border-slate-600 rounded p-1.5 outline-none text-white text-xs">
+                        <select id="editTextFont" class="w-full bg-slate-800 border border-slate-600 rounded p-1.5 outline-none text-white text-[10px]">
+                            <option value="https://raw.githubusercontent.com/google/fonts/main/ofl/pacifico/Pacifico-Regular.ttf">Pacifico (Manuscrita)</option>
+                            <option value="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/fonts/Roboto/Roboto-Regular.ttf">Roboto (Moderna)</option>
+                            <option value="https://raw.githubusercontent.com/google/fonts/main/ofl/lobster/Lobster-Regular.ttf">Lobster (Elegante)</option>
+                            <option value="https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Ubuntu/ubuntu-regular-webfont.ttf">Ubuntu (Clássica)</option>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 text-xs text-gray-400">
+                        <div>
+                            <label class="flex justify-between mb-1">
+                                <span class="flex items-center gap-1">Pos X <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-indigo-400"></i><span class="tooltip-text">Move apenas o elemento selecionado horizontalmente no seu próprio eixo.</span></span></span>
+                                <span id="itemXVal" class="text-indigo-300">0</span>
+                            </label>
+                            <input type="range" id="itemX" min="-2000" max="2000" value="0" class="w-full range-sm">
+                        </div>
+                        <div>
+                            <label class="flex justify-between mb-1">
+                                <span class="flex items-center gap-1">Pos Y <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-indigo-400"></i><span class="tooltip-text">Move apenas o elemento selecionado verticalmente no seu próprio eixo.</span></span></span>
+                                <span id="itemYVal" class="text-indigo-300">0</span>
+                            </label>
+                            <input type="range" id="itemY" min="-2000" max="2000" value="0" class="w-full range-sm">
+                        </div>
+                        <div class="col-span-2">
+                            <label class="flex justify-between mb-1">
+                                <span class="font-bold text-indigo-400 flex items-center gap-1">Escala Geral <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-indigo-400"></i><span class="tooltip-text">Aumenta ou diminui o tamanho do elemento mantendo as proporções originais equilibradas.</span></span></span>
+                                <span id="itemScaleVal" class="text-indigo-400 font-bold">1.0x</span>
+                            </label>
+                            <input type="range" id="itemScale" min="0.1" max="5" step="0.1" value="1" class="w-full range-sm accent-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block mb-1 flex items-center gap-1">Escala X <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-indigo-400"></i><span class="tooltip-text">Aumenta ou diminui o tamanho do elemento exclusivamente na horizontal.</span></span></label>
+                            <input type="range" id="itemScaleX" min="0.1" max="5" step="0.1" value="1" class="w-full range-sm">
+                        </div>
+                        <div>
+                            <label class="block mb-1 flex items-center gap-1">Escala Y <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-indigo-400"></i><span class="tooltip-text">Aumenta ou diminui o tamanho do elemento exclusivamente na vertical.</span></span></label>
+                            <input type="range" id="itemScaleY" min="0.1" max="5" step="0.1" value="1" class="w-full range-sm">
+                        </div>
+                        <div class="col-span-2">
+                            <label class="flex justify-between mb-1">
+                                <span class="flex items-center gap-1">Rotação <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-indigo-400"></i><span class="tooltip-text">Gira o elemento ativo em torno de seu próprio centro geométrico (de 0º até 360º).</span></span></span>
+                                <span id="itemRotVal">0°</span>
+                            </label>
+                            <input type="range" id="itemRot" min="0" max="360" value="0" class="w-full range-sm">
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-2">
+                        <button id="itemFlipX" class="flex-1 py-1.5 bg-slate-700 hover:bg-slate-600 rounded text-xs text-gray-300 flex justify-center gap-1"><i data-lucide="flip-horizontal" class="w-3.5 h-3.5"></i> Espelhar X</button>
+                        <button id="itemFlipY" class="flex-1 py-1.5 bg-slate-700 hover:bg-slate-600 rounded text-xs text-gray-300 flex justify-center gap-1"><i data-lucide="flip-vertical" class="w-3.5 h-3.5"></i> Espelhar Y</button>
+                    </div>
+                </div>
+
+                <!-- Configurações Globais (NOVO PAINEL COMPLETO) -->
+                <div class="panel p-4 rounded-xl shadow-lg border space-y-3 text-xs text-gray-400">
+                    <h2 class="text-sm font-bold text-gray-200 border-b border-slate-600 pb-2 flex justify-between items-center">
+                        <span class="flex items-center gap-2">Ambiente & Robô (Global)</span>
+                        <button id="resetGlobalGeoBtn" class="text-emerald-400 hover:text-emerald-300" title="Resetar Transformações Globais"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i></button>
+                    </h2>
+                    
+                    <div class="grid grid-cols-2 gap-3 pb-3 border-b border-slate-700">
+                        <div>
+                            <label class="flex justify-between mb-1">
+                                <span class="flex items-center gap-1">Pos X (GL) <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-emerald-400"></i><span class="tooltip-text">Move todo o projeto como um conjunto único horizontalmente na tela.</span></span></span>
+                                <span id="globalXVal" class="text-emerald-300">0</span>
+                            </label>
+                            <input type="range" id="globalX" min="-2000" max="2000" value="0" class="w-full range-sm accent-emerald-500">
+                        </div>
+                        <div>
+                            <label class="flex justify-between mb-1">
+                                <span class="flex items-center gap-1">Pos Y (GL) <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-emerald-400"></i><span class="tooltip-text">Move todo o projeto como um conjunto único verticalmente na tela.</span></span></span>
+                                <span id="globalYVal" class="text-emerald-300">0</span>
+                            </label>
+                            <input type="range" id="globalY" min="-2000" max="2000" value="0" class="w-full range-sm accent-emerald-500">
+                        </div>
+                        
+                        <div class="col-span-2">
+                            <label class="flex justify-between mb-1">
+                                <span class="font-bold text-emerald-400 flex items-center gap-1">Escala Global <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-emerald-400"></i><span class="tooltip-text">Altera o tamanho do conjunto inteiro sem deformar as proporções ou as posições relativas dos arquivos misturados.</span></span></span>
+                                <span id="globalScaleVal" class="text-emerald-400 font-bold">1.0x</span>
+                            </label>
+                            <input type="range" id="globalScale" min="0.1" max="5" step="0.1" value="1" class="w-full range-sm accent-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block mb-1 flex items-center gap-1">Escala X GL <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-emerald-400"></i><span class="tooltip-text">Estica ou encolhe todos os elementos de uma vez, apenas na direção X.</span></span></label>
+                            <input type="range" id="globalScaleX" min="0.1" max="5" step="0.1" value="1" class="w-full range-sm accent-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block mb-1 flex items-center gap-1">Escala Y GL <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-emerald-400"></i><span class="tooltip-text">Estica ou encolhe todos os elementos de uma vez, apenas na direção Y.</span></span></label>
+                            <input type="range" id="globalScaleY" min="0.1" max="5" step="0.1" value="1" class="w-full range-sm accent-emerald-500">
+                        </div>
+                        
+                        <div class="col-span-2">
+                            <label class="flex justify-between mb-1">
+                                <span class="flex items-center gap-1">Rotação Global <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-emerald-400"></i><span class="tooltip-text">Gira todo o mosaico do projeto na tela a partir do eixo central.</span></span></span>
+                                <span id="globalRotVal">0°</span>
+                            </label>
+                            <input type="range" id="globalRot" min="0" max="360" value="0" class="w-full range-sm accent-emerald-500">
+                        </div>
+
+                        <div class="col-span-2 flex gap-2">
+                            <button id="globalFlipXBtn" class="flex-1 py-1.5 bg-slate-700 hover:bg-slate-600 rounded text-xs text-gray-300 flex justify-center gap-1"><i data-lucide="flip-horizontal" class="w-3.5 h-3.5"></i> Espelhar X</button>
+                            <button id="globalFlipYBtn" class="flex-1 py-1.5 bg-slate-700 hover:bg-slate-600 rounded text-xs text-gray-300 flex justify-center gap-1"><i data-lucide="flip-vertical" class="w-3.5 h-3.5"></i> Espelhar Y</button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 pt-1">
+                        <div><label class="block mb-1 flex items-center gap-1">Ecrã X <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-gray-400"></i><span class="tooltip-text">A largura real em pixels da tela do dispositivo onde o auto.js vai reproduzir (ex: 1080).</span></span></label><input type="number" id="screenW" value="1100" class="w-full bg-slate-800 border border-slate-600 rounded p-1.5 outline-none text-white"></div>
+                        <div><label class="block mb-1 flex items-center gap-1">Ecrã Y <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-gray-400"></i><span class="tooltip-text">A altura real em pixels da tela do dispositivo alvo (ex: 2400).</span></span></label><input type="number" id="screenH" value="2442" class="w-full bg-slate-800 border border-slate-600 rounded p-1.5 outline-none text-white"></div>
+                    </div>
+
+                    <div>
+                        <label class="flex justify-between mb-1">
+                            <span class="flex items-center gap-1">Ocupação Total <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-gray-400"></i><span class="tooltip-text">Em quantos porcentos (de 10 a 100) da tela inteira o projeto deve ser espalhado ou contido.</span></span></span>
+                            <span id="percentValue">70%</span>
+                        </label>
+                        <input type="range" id="drawPercent" min="10" max="100" value="70" class="w-full range-sm">
+                    </div>
+                    <div>
+                        <label class="flex justify-between mb-1">
+                            <span class="flex items-center gap-1">Margem Ecrã <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-gray-400"></i><span class="tooltip-text">Margem de recuo (em pixels) nas bordas da tela para impedir que o desenho seja feito até ao limite e cause erros de clique.</span></span></span>
+                            <span id="marginValue">20px</span>
+                        </label>
+                        <input type="range" id="drawMargin" min="0" max="200" value="20" class="w-full range-sm">
+                    </div>
+                    <div>
+                        <label class="flex justify-between mb-1 text-purple-400 font-bold">
+                            <span class="flex items-center gap-1">Velocidade <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-purple-400"></i><span class="tooltip-text">Multiplicador da agilidade do robô no Auto.js, controlando o quão rápido o dedo artificial desliza para realizar o traço.</span></span></span>
+                            <span id="speedValue">2.0x</span>
+                        </label>
+                        <input type="range" id="drawSpeed" min="0.1" max="5.0" step="0.1" value="2.0" class="w-full range-sm accent-purple-500">
+                    </div>
+                    <div>
+                        <label class="flex justify-between mb-1 text-pink-400">
+                            <span class="flex items-center gap-1">Pausa Levantar <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-pink-400"></i><span class="tooltip-text">Em milissegundos, dita o tempo que o Auto.js espera cada vez que acaba um traço (levanta o dedo) antes de começar a baixar para o próximo.</span></span></span>
+                            <span id="pauseValue">35ms</span>
+                        </label>
+                        <input type="range" id="drawPause" min="10" max="500" step="5" value="35" class="w-full range-sm accent-pink-500">
+                    </div>
+                    <div>
+                        <label class="flex justify-between mb-1 text-sky-400">
+                            <span class="flex items-center gap-1">Qualidade Leitura <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-sky-400"></i><span class="tooltip-text">Nível de detalhes das curvas (em pixels entre pontos). Valores menores (ex: 1 ou 2) deixam curvas precisas, mas scripts pesados; valores maiores sacrificam exatidão para ganho de fluidez.</span></span></span>
+                            <span id="precisionValue">3px</span>
+                        </label>
+                        <input type="range" id="stepPrecision" min="1" max="20" value="3" class="w-full range-sm accent-sky-500">
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLUNA 2: PREVIEW ANIMADO -->
+            <div class="lg:col-span-5 flex flex-col gap-4">
+                
+                <div class="panel p-4 rounded-xl shadow-lg border flex-1 flex flex-col relative min-h-[500px]">
+                    <div class="flex justify-between items-center mb-2 z-10">
+                        <h2 class="text-sm font-bold text-gray-200 flex items-center gap-2">
+                            <i data-lucide="eye" class="w-4 h-4 text-indigo-400"></i> Viewport
+                        </h2>
+                        <div class="flex gap-2">
+                            <button id="playBtn" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded shadow flex items-center gap-1 text-xs font-bold transition"><i data-lucide="play" class="w-3.5 h-3.5"></i> Simular</button>
+                            <button id="stopBtn" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-500 text-white rounded shadow flex items-center gap-1 text-xs font-bold transition hidden"><i data-lucide="square" class="w-3.5 h-3.5"></i> Parar</button>
+                            <button id="exportGifBtn" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded shadow flex items-center gap-1 text-xs font-bold transition"><i data-lucide="video" class="w-3.5 h-3.5"></i> Exportar</button>
+                        </div>
+                    </div>
+                    
+                    <div class="absolute top-16 right-6 z-10 flex gap-1 flex-col">
+                        <button id="zoomInBtn" class="bg-slate-800 p-1.5 rounded border border-slate-600 text-gray-300 hover:text-white"><i data-lucide="zoom-in" class="w-4 h-4"></i></button>
+                        <button id="zoomResetBtn" class="bg-slate-800 p-1.5 rounded border border-slate-600 text-gray-300 hover:text-white"><i data-lucide="maximize" class="w-4 h-4"></i></button>
+                        <button id="zoomOutBtn" class="bg-slate-800 p-1.5 rounded border border-slate-600 text-gray-300 hover:text-white"><i data-lucide="zoom-out" class="w-4 h-4"></i></button>
+                    </div>
+                    
+                    <div id="canvasWrapper" class="flex-1 rounded-xl overflow-hidden relative border border-slate-700 bg-slate-900 shadow-inner">
+                        <canvas id="previewCanvas" class="w-full h-full cursor-grab active:cursor-grabbing absolute inset-0 touch-none"></canvas>
+                        <div id="noPreviewMsg" class="absolute inset-0 flex items-center justify-center text-gray-400 text-sm pointer-events-none">
+                            Área de Desenho Livre
+                        </div>
+                    </div>
+
+                    <div class="mt-3 flex items-center justify-between text-[10px] font-medium text-gray-500">
+                        <span>Fundo (Claro)</span>
+                        <div class="flex-1 mx-2 h-1.5 rounded-full" style="background: linear-gradient(to right, hsl(280, 80%, 80%), hsl(280, 80%, 30%))"></div>
+                        <span>Topo (Escuro)</span>
+                    </div>
+                    
+                    <div id="statsDisplay" class="mt-3 p-2 bg-slate-800/50 rounded-lg border border-slate-700 text-center text-[10px] text-gray-400 font-mono tracking-wide leading-relaxed">
+                        Aguardando composição...
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- COLUNA 3: CAMADAS E CÓDIGO FINAL -->
+            <div class="lg:col-span-4 flex flex-col gap-4">
+                
+                <div class="panel p-3 rounded-xl shadow-lg border flex flex-col h-[250px]">
+                    <div class="flex flex-col gap-2 mb-2 border-b border-slate-700 pb-2">
+                        <div class="flex justify-between items-center">
+                            <h2 class="text-sm font-bold text-gray-200 flex items-center gap-2">
+                                <i data-lucide="list-tree" class="w-4 h-4 text-indigo-400"></i> Camadas
+                            </h2>
+                            <button id="mergeBtn" class="text-[10px] px-2 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-500 transition flex items-center gap-1 disabled:opacity-30 disabled:bg-slate-700 disabled:text-gray-400">
+                                <i data-lucide="combine" class="w-3 h-3"></i> Mesclar
+                            </button>
+                        </div>
+                        <div class="flex gap-1 items-center justify-between">
+                            <div class="flex gap-1">
+                                <button id="selectAllBtn" class="p-1 bg-slate-700 text-gray-300 rounded hover:bg-slate-600 transition" title="Selecionar Tudo"><i data-lucide="check-square" class="w-3.5 h-3.5"></i></button>
+                                <button id="deselectAllBtn" class="p-1 bg-slate-700 text-gray-300 rounded hover:bg-slate-600 transition" title="Desmarcar Tudo"><i data-lucide="square" class="w-3.5 h-3.5"></i></button>
+                                <button id="showAllBtn" class="p-1 bg-slate-700 text-gray-300 rounded hover:bg-slate-600 transition" title="Mostrar Tudo"><i data-lucide="eye" class="w-3.5 h-3.5"></i></button>
+                                <button id="hideAllBtn" class="p-1 bg-slate-700 text-gray-300 rounded hover:bg-slate-600 transition" title="Ocultar Tudo"><i data-lucide="eye-off" class="w-3.5 h-3.5"></i></button>
+                            </div>
+                            <div class="flex gap-1">
+                                <button id="reverseOrderBtn" class="p-1 bg-slate-700 text-gray-300 rounded hover:bg-slate-600 transition" title="Inverter Ordem Global"><i data-lucide="arrow-up-down" class="w-3.5 h-3.5"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-12 gap-1 px-1 pb-1 text-[9px] font-bold text-gray-500 uppercase tracking-wider border-b border-slate-700">
+                        <div class="col-span-1 text-center">Sel</div>
+                        <div class="col-span-1 text-center">Vis</div>
+                        <div class="col-span-5">Nome</div>
+                        <div class="col-span-3 text-center">Delay(s)</div>
+                        <div class="col-span-2 text-center">Ord</div>
+                    </div>
+
+                    <div id="layersList" class="flex-1 overflow-y-auto custom-scrollbar pt-1 space-y-1">
+                        <div class="text-center text-xs text-gray-600 mt-8">Sem dados geográficos.</div>
+                    </div>
+                </div>
+
+                <div class="panel p-4 rounded-xl shadow-lg border flex flex-col flex-1 h-[300px] lg:h-auto">
+                    <div class="flex justify-between items-center mb-3">
+                        <h2 class="text-sm font-bold flex items-center gap-2 text-emerald-400 whitespace-nowrap">
+                            <i data-lucide="file-json" class="w-4 h-4"></i> Script Output
+                        </h2>
+                        <div class="flex gap-2">
+                            <button id="saveBtn" class="px-2 py-1 bg-slate-700 hover:bg-slate-600 text-gray-200 rounded flex items-center gap-1 text-[10px] transition"><i data-lucide="download" class="w-3 h-3"></i> Salvar</button>
+                            <button id="copyBtn" class="px-2 py-1 bg-slate-700 hover:bg-slate-600 text-gray-200 rounded flex items-center gap-1 text-[10px] transition"><i data-lucide="copy" class="w-3 h-3"></i> Copiar</button>
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <input type="text" id="jsFileName" value="composicao_vetorial" class="w-full text-[10px] font-mono bg-slate-800 border border-slate-700 rounded p-1 outline-none text-emerald-400">
+                    </div>
+                    <textarea id="outputCode" readonly placeholder="// Código gerado dinamicamente..." class="flex-1 w-full bg-[#0d1117] text-[#56d364] font-mono text-[9px] p-3 rounded-lg border border-slate-800 outline-none resize-none whitespace-pre overflow-x-auto custom-scrollbar"></textarea>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div id="svgHiddenContainer"></div>
+
+    <script>
+        lucide.createIcons();
+
+        // ----------------------------------------------------
+        // HELPER: Sanitização Inteligente de Nomes
+        // ----------------------------------------------------
+        function getBaseName(filename) {
+            return filename.replace(/\.[^/.]+$/, ""); // Remove extensão
+        }
+        function sanitizeFileName(name) {
+            return getBaseName(name).replace(/[^a-z0-9]/gi, '_').toLowerCase();
+        }
+
+        // ----------------------------------------------------
+        // PROTEÇÃO DE ESCALA NO PAPER.JS
+        // ----------------------------------------------------
+        const dummyCanvas = document.createElement('canvas');
+        dummyCanvas.width = 2000;
+        dummyCanvas.height = 2000;
+        paper.setup(dummyCanvas);
+
+        // ==========================================
+        // ESTADO GLOBAL E ARQUITETURA
+        // ==========================================
+        let projectItems = [];
+        let activeItemId = null;
+        let rawLayers = []; 
+        let scaledLayers = []; 
+        let globalScaledTraces = []; 
+        
+        let viewScale = 1.0, viewOffsetX = 0, viewOffsetY = 0;
+        let isDraggingCanvas = false, dragStartX = 0, dragStartY = 0;
+        let animReqId = null, isAnimating = false;
+
+        let isProcessing = false;
+        let wakeLock = null; 
+
+        let isRecordingGif = false;
+        let gifEncoder = null;
+        let lastGifFrameTime = 0;
+
+        let globalFlipX = false;
+        let globalFlipY = false;
+
+        // Configurações avançadas ocultas do .uny
+        let advancedSettings = {
+            experimental: {},
+            hiddenFlags: {}
+        };
+
+        const els = {
+            addSvgBtn: document.getElementById('addSvgBtn'), fileInput: document.getElementById('fileInput'),
+            projectItemsList: document.getElementById('projectItemsList'), emptyProjectMsg: document.getElementById('emptyProjectMsg'),
+            
+            newTextInput: document.getElementById('newTextInput'), newTextFont: document.getElementById('newTextFont'), addTextBtn: document.getElementById('addTextBtn'),
+            textEditGroup: document.getElementById('textEditGroup'), editTextInput: document.getElementById('editTextInput'), editTextFont: document.getElementById('editTextFont'),
+
+            originalSvgViewer: document.getElementById('originalSvgViewer'), originalSvgBg: document.getElementById('originalSvgBg'),
+
+            itemTransformPanel: document.getElementById('itemTransformPanel'), activeItemName: document.getElementById('activeItemName'),
+            itemX: document.getElementById('itemX'), itemY: document.getElementById('itemY'),
+            itemXVal: document.getElementById('itemXVal'), itemYVal: document.getElementById('itemYVal'),
+            itemScale: document.getElementById('itemScale'), itemScaleVal: document.getElementById('itemScaleVal'),
+            itemScaleX: document.getElementById('itemScaleX'), itemScaleY: document.getElementById('itemScaleY'),
+            itemRot: document.getElementById('itemRot'), itemRotVal: document.getElementById('itemRotVal'),
+            itemFlipX: document.getElementById('itemFlipX'), itemFlipY: document.getElementById('itemFlipY'),
+            
+            screenW: document.getElementById('screenW'), screenH: document.getElementById('screenH'),
+            drawPercent: document.getElementById('drawPercent'), percentValue: document.getElementById('percentValue'),
+            drawMargin: document.getElementById('drawMargin'), marginValue: document.getElementById('marginValue'),
+            drawSpeed: document.getElementById('drawSpeed'), speedValue: document.getElementById('speedValue'),
+            drawPause: document.getElementById('drawPause'), pauseValue: document.getElementById('pauseValue'),
+            stepPrecision: document.getElementById('stepPrecision'), precisionValue: document.getElementById('precisionValue'),
+            turboMode: document.getElementById('turboMode'), continuousLine: document.getElementById('continuousLine'), warmupMode: document.getElementById('warmupMode'),
+            wakeLockMode: document.getElementById('wakeLockMode'), 
+            
+            fillMode: document.getElementById('fillMode'),
+            fillDensity: document.getElementById('fillDensity'),
+            fillShading: document.getElementById('fillShading'),
+
+            globalX: document.getElementById('globalX'), globalY: document.getElementById('globalY'),
+            globalXVal: document.getElementById('globalXVal'), globalYVal: document.getElementById('globalYVal'),
+            globalScale: document.getElementById('globalScale'), globalScaleVal: document.getElementById('globalScaleVal'),
+            globalScaleX: document.getElementById('globalScaleX'), globalScaleY: document.getElementById('globalScaleY'),
+            globalRot: document.getElementById('globalRot'), globalRotVal: document.getElementById('globalRotVal'),
+            globalFlipXBtn: document.getElementById('globalFlipXBtn'), globalFlipYBtn: document.getElementById('globalFlipYBtn'),
+            resetGlobalGeoBtn: document.getElementById('resetGlobalGeoBtn'),
+            
+            selectAllBtn: document.getElementById('selectAllBtn'), deselectAllBtn: document.getElementById('deselectAllBtn'),
+            showAllBtn: document.getElementById('showAllBtn'), hideAllBtn: document.getElementById('hideAllBtn'),
+            reverseOrderBtn: document.getElementById('reverseOrderBtn'),
+            
+            layersList: document.getElementById('layersList'), mergeBtn: document.getElementById('mergeBtn'),
+            canvasWrapper: document.getElementById('canvasWrapper'), canvas: document.getElementById('previewCanvas'),
+            playBtn: document.getElementById('playBtn'), stopBtn: document.getElementById('stopBtn'), exportGifBtn: document.getElementById('exportGifBtn'),
+            outputCode: document.getElementById('outputCode'), statsDisplay: document.getElementById('statsDisplay'),
+            
+            progressOverlay: document.getElementById('progressOverlay'),
+            progressTitle: document.getElementById('progressTitle'),
+            progressBar: document.getElementById('progressBar'), 
+            progText: document.getElementById('progressText'),
+            statusMsg: document.getElementById('statusMsg'), 
+            
+            jsFileName: document.getElementById('jsFileName'),
+            resetGeoBtn: document.getElementById('resetGeoBtn'),
+            
+            importUnyBtn: document.getElementById('importUnyBtn'),
+            exportUnyBtn: document.getElementById('exportUnyBtn'),
+            unyFileInput: document.getElementById('unyFileInput'),
+            welcomeMessageDisplay: document.getElementById('welcomeMessageDisplay')
+        };
+        const ctx = els.canvas.getContext('2d');
+
+        async function requestWakeLock() {
+            if (!('wakeLock' in navigator) || !els.wakeLockMode.checked) return;
+            try { if (wakeLock === null) wakeLock = await navigator.wakeLock.request('screen'); } catch (err) { els.wakeLockMode.checked = false; }
+        }
+        function releaseWakeLock() { if (wakeLock !== null) { wakeLock.release().then(() => { wakeLock = null; }).catch(() => {}); } }
+        document.addEventListener('visibilitychange', async () => { if (wakeLock !== null && document.visibilityState === 'visible' && isProcessing && els.wakeLockMode.checked) await requestWakeLock(); });
+        els.wakeLockMode.addEventListener('change', async () => { if (els.wakeLockMode.checked && isProcessing) await requestWakeLock(); else if (!els.wakeLockMode.checked) releaseWakeLock(); });
+
+        function drawBackgroundAndGrid(context, w, h, vScale, vOffsetX, vOffsetY, sw, sh, bScale) {
+            context.fillStyle = "#0f172a"; 
+            context.fillRect(0, 0, w, h);
+            context.save();
+            context.translate(vOffsetX, vOffsetY);
+            context.translate(w/2, h/2);
+            context.scale(vScale, vScale);
+            context.translate(-w/2, -h/2);
+
+            const cx = (w - sw * bScale) / 2;
+            const cy = (h - sh * bScale) / 2;
+            const rectW = sw * bScale;
+            const rectH = sh * bScale;
+
+            context.fillStyle = "#020617";
+            context.fillRect(cx, cy, rectW, rectH);
+            context.save();
+            context.beginPath();
+            context.rect(cx, cy, rectW, rectH);
+            context.clip();
+
+            context.strokeStyle = "rgba(255,255,255,0.04)";
+            context.lineWidth = 1;
+            context.beginPath();
+            for (let x = 0; x <= rectW; x += 20) { context.moveTo(cx + x, cy); context.lineTo(cx + x, cy + rectH); }
+            for (let y = 0; y <= rectH; y += 20) { context.moveTo(cx, cy + y); context.lineTo(cx + rectW, cy + y); }
+            context.stroke();
+            context.restore();
+
+            context.strokeStyle = "rgba(255,255,255,0.15)";
+            context.lineWidth = 1;
+            context.strokeRect(cx, cy, rectW, rectH);
+            context.restore();
+        }
+
+        els.addSvgBtn.onclick = () => els.fileInput.click();
+        els.fileInput.onchange = async (e) => {
+            if(!e.target.files.length) return;
+            isProcessing = true;
+            await requestWakeLock();
+            els.progressOverlay.classList.remove('hidden');
+
+            for(let file of e.target.files) {
+                if(!file.name.toLowerCase().endsWith('.svg')) continue;
+                
+                const isFirst = projectItems.length === 0;
+                if (isFirst) els.jsFileName.value = sanitizeFileName(file.name) + '_script';
+
+                const text = await file.text();
+                const id = 'item_' + Date.now() + Math.floor(Math.random()*1000);
+                
+                projectItems.push({
+                    id, name: file.name, content: text,
+                    x: 0, y: 0, scaleX: 1, scaleY: 1, rot: 0, flipX: false, flipY: false,
+                    basePaths: [], cx: 0, cy: 0, isText: false, normScale: 1
+                });
+                activeItemId = id;
+                await extractBasePaths(id);
+            }
+            e.target.value = ''; 
+            
+            isProcessing = false;
+            releaseWakeLock();
+            els.progressOverlay.classList.add('hidden');
+            renderProjectItems(); renderLayersUI(); updateGeometryAndMap();
+        };
+
+        function textToSvgString(text, fontUrl) {
+            return new Promise((resolve, reject) => {
+                if(!text.trim()) return reject("Texto vazio.");
+                
+                const makeSvg = (font) => {
+                    const glyphPaths = font.getPaths(text, 0, 0, 100);
+                    let finalPaperItem = null;
+                    
+                    glyphPaths.forEach(gp => {
+                        const d = gp.toPathData(2);
+                        if (!d || d === "") return;
+                        try {
+                            const pPath = new paper.CompoundPath(d);
+                            if (!finalPaperItem) { finalPaperItem = pPath; } else {
+                                const united = finalPaperItem.unite(pPath);
+                                finalPaperItem.remove(); pPath.remove();
+                                finalPaperItem = united;
+                            }
+                        } catch(e) {}
+                    });
+
+                    if (!finalPaperItem) return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"></svg>`;
+
+                    const bounds = finalPaperItem.bounds;
+                    const padding = 10;
+                    const vx = bounds.x - padding; const vy = bounds.y - padding;
+                    const vw = bounds.width + padding * 2; const vh = bounds.height + padding * 2;
+                    
+                    const svgInner = finalPaperItem.exportSVG({ asString: true });
+                    finalPaperItem.remove(); paper.project.clear();
+
+                    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vx} ${vy} ${vw} ${vh}">${svgInner}</svg>`;
+                };
+
+                opentype.load(fontUrl, function(err, font) {
+                    if (err) {
+                        opentype.load('https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/fonts/Roboto/Roboto-Regular.ttf', function(err2, fallbackFont) {
+                            if (err2) return reject(err2); resolve(makeSvg(fallbackFont));
+                        });
+                    } else { resolve(makeSvg(font)); }
+                });
+            });
+        }
+
+        els.addTextBtn.onclick = async () => {
+            const text = els.newTextInput.value.trim();
+            const font = els.newTextFont.value;
+            if(!text) return;
+
+            isProcessing = true; await requestWakeLock();
+            els.progressOverlay.classList.remove('hidden');
+            els.progressTitle.textContent = "Desenhando texto...";
+            els.statusMsg.textContent = "A fundir letras..."; els.progressBar.style.width = "20%";
+
+            try {
+                const isFirst = projectItems.length === 0;
+                if (isFirst) els.jsFileName.value = sanitizeFileName(text) + '_script';
+
+                const svgString = await textToSvgString(text, font);
+                const id = 'item_' + Date.now() + Math.floor(Math.random()*1000);
+                
+                projectItems.push({
+                    id, name: `Texto: ${text.substring(0,8)}`, content: svgString,
+                    x: 0, y: 0, scaleX: 1, scaleY: 1, rot: 0, flipX: false, flipY: false,
+                    basePaths: [], cx: 0, cy: 0, isText: true, textContent: text, fontUrl: font, normScale: 1
+                });
+                activeItemId = id; els.newTextInput.value = ''; 
+                await extractBasePaths(id);
+            } catch(e) {
+                els.statusMsg.textContent = "Erro na Fonte!"; await new Promise(r => setTimeout(r, 2000));
+            } finally {
+                isProcessing = false; releaseWakeLock(); els.progressOverlay.classList.add('hidden');
+                renderProjectItems(); renderLayersUI(); updateGeometryAndMap();
+            }
+        };
+
+        const handleTextEdit = async () => {
+            const inst = projectItems.find(i => i.id === activeItemId);
+            if(!inst || !inst.isText) return;
+            const newText = els.editTextInput.value.trim(); const newFont = els.editTextFont.value;
+            if(!newText || (newText === inst.textContent && newFont === inst.fontUrl)) return;
+
+            isProcessing = true; await requestWakeLock();
+            els.progressOverlay.classList.remove('hidden'); els.progressTitle.textContent = "A atualizar texto...";
+            els.statusMsg.textContent = "A re-fundir curvas..."; els.progressBar.style.width = "40%";
+
+            try {
+                inst.textContent = newText; inst.fontUrl = newFont; inst.name = `Texto: ${newText.substring(0,8)}`;
+                inst.content = await textToSvgString(newText, newFont);
+                rawLayers = rawLayers.filter(l => l.itemId !== inst.id);
+                await extractBasePaths(inst.id);
+            } catch(e) {
+                els.statusMsg.textContent = "Erro ao atualizar texto!"; await new Promise(r => setTimeout(r, 2000));
+            } finally {
+                isProcessing = false; releaseWakeLock(); els.progressOverlay.classList.add('hidden');
+                renderProjectItems(); renderLayersUI(); updateGeometryAndMap();
+            }
+        };
+        els.editTextInput.addEventListener('change', handleTextEdit);
+        els.editTextFont.addEventListener('change', handleTextEdit);
+
+        function renderProjectItems() {
+            els.projectItemsList.innerHTML = '';
+            els.emptyProjectMsg.style.display = projectItems.length ? 'none' : 'block';
+            
+            projectItems.forEach(item => {
+                const div = document.createElement('div');
+                const isActive = activeItemId === item.id;
+                div.className = `p-2 rounded text-xs cursor-pointer flex justify-between items-center transition ${isActive ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-gray-300 hover:bg-slate-700'}`;
+                
+                const nameSpan = document.createElement('span'); 
+                nameSpan.innerHTML = item.isText ? `<i data-lucide="type" class="w-3 h-3 inline mr-1"></i>${item.name}` : `<i data-lucide="image" class="w-3 h-3 inline mr-1"></i>${item.name}`;
+                nameSpan.className = 'truncate max-w-[150px] flex items-center';
+                
+                const delBtn = document.createElement('button'); delBtn.innerHTML = '<i data-lucide="trash-2" class="w-3 h-3"></i>';
+                delBtn.className = `p-1 rounded ${isActive ? 'hover:bg-indigo-500' : 'hover:bg-rose-500 hover:text-white'}`;
+                delBtn.onclick = (e) => { e.stopPropagation(); deleteItem(item.id); };
+
+                div.onclick = () => { activeItemId = item.id; renderProjectItems(); };
+                div.appendChild(nameSpan); div.appendChild(delBtn);
+                els.projectItemsList.appendChild(div);
+            });
+            lucide.createIcons(); loadItemTransforms();
+        }
+
+        function deleteItem(id) {
+            projectItems = projectItems.filter(i => i.id !== id);
+            rawLayers = rawLayers.filter(l => l.itemId !== id);
+            if(activeItemId === id) activeItemId = projectItems.length ? projectItems[0].id : null;
+            renderProjectItems(); renderLayersUI(); updateGeometryAndMap();
+        }
+
+        els.exportUnyBtn.onclick = () => {
+            let prjName = projectItems.length > 0 ? getBaseName(projectItems[0].name) : "Auto.js Vector Studio";
+            let safeName = sanitizeFileName(prjName) || 'projeto';
+
+            const profile = {
+                projectName: prjName,
+                elements: { projectItems, rawLayers },
+                settings: {
+                    globalX: parseFloat(els.globalX.value), globalY: parseFloat(els.globalY.value),
+                    globalScale: parseFloat(els.globalScale.value), globalScaleX: parseFloat(els.globalScaleX.value),
+                    globalScaleY: parseFloat(els.globalScaleY.value), globalRot: parseFloat(els.globalRot.value),
+                    globalFlipX: globalFlipX, globalFlipY: globalFlipY,
+                    screenW: parseInt(els.screenW.value), screenH: parseInt(els.screenH.value),
+                    drawPercent: parseInt(els.drawPercent.value), drawMargin: parseInt(els.drawMargin.value),
+                    drawSpeed: parseFloat(els.drawSpeed.value), drawPause: parseInt(els.drawPause.value),
+                    stepPrecision: parseInt(els.stepPrecision.value), wakeLockMode: els.wakeLockMode.checked,
+                    turboMode: els.turboMode.checked, continuousLine: els.continuousLine.checked,
+                    warmupMode: els.warmupMode.checked, fillMode: els.fillMode.checked,
+                    fillDensity: parseInt(els.fillDensity.value), fillShading: parseInt(els.fillShading.value)
+                },
+                advanced: advancedSettings, welcomeMessage: els.welcomeMessageDisplay.dataset.customMessage || ""
+            };
+            
+            const blob = new Blob([JSON.stringify(profile, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob); const a = document.createElement('a');
+            a.href = url; a.download = `${safeName}_perfil.uny`; a.click(); URL.revokeObjectURL(url);
+        };
+
+        els.importUnyBtn.onclick = () => els.unyFileInput.click();
+        els.unyFileInput.onchange = async (e) => {
+            if(!e.target.files.length) return;
+            const file = e.target.files[0];
+            try {
+                const text = await file.text(); const data = JSON.parse(text);
+                if(!data.elements || !data.settings) throw new Error("Arquivo .uny inválido ou corrompido.");
+                
+                projectItems = data.elements.projectItems || [];
+                rawLayers = data.elements.rawLayers || [];
+                activeItemId = projectItems.length > 0 ? projectItems[0].id : null;
+                
+                // Nome inteligente baseado no projeto salvo
+                els.jsFileName.value = data.projectName ? sanitizeFileName(data.projectName) + "_script" : "composicao_vetorial";
+
+                const s = data.settings;
+                els.globalX.value = s.globalX || 0; els.globalY.value = s.globalY || 0;
+                els.globalScale.value = s.globalScale || 1; els.globalScaleX.value = s.globalScaleX || 1;
+                els.globalScaleY.value = s.globalScaleY || 1; els.globalRot.value = s.globalRot || 0;
+                globalFlipX = !!s.globalFlipX; globalFlipY = !!s.globalFlipY;
+                
+                els.screenW.value = s.screenW || 1100; els.screenH.value = s.screenH || 2442;
+                els.drawPercent.value = s.drawPercent || 70; els.drawMargin.value = s.drawMargin || 20;
+                els.drawSpeed.value = s.drawSpeed || 2.0; els.drawPause.value = s.drawPause || 35;
+                els.stepPrecision.value = s.stepPrecision || 3;
+                
+                els.wakeLockMode.checked = !!s.wakeLockMode; els.turboMode.checked = !!s.turboMode;
+                els.continuousLine.checked = !!s.continuousLine; els.warmupMode.checked = s.warmupMode !== undefined ? s.warmupMode : true;
+                els.fillMode.checked = !!s.fillMode; els.fillDensity.value = s.fillDensity || 5; els.fillShading.value = s.fillShading || 1;
+
+                els.globalXVal.textContent = els.globalX.value + 'px'; els.globalYVal.textContent = els.globalY.value + 'px';
+                els.globalScaleVal.textContent = parseFloat(els.globalScale.value).toFixed(1) + 'x'; els.globalRotVal.textContent = els.globalRot.value + '°';
+                els.percentValue.textContent = els.drawPercent.value + '%'; els.marginValue.textContent = els.drawMargin.value + 'px';
+                els.speedValue.textContent = parseFloat(els.drawSpeed.value).toFixed(1) + 'x'; els.pauseValue.textContent = els.drawPause.value + 'ms';
+                els.precisionValue.textContent = els.stepPrecision.value + 'px';
+                
+                els.globalFlipXBtn.className = `flex-1 py-1.5 rounded text-xs flex justify-center gap-1 transition-colors ${globalFlipX ? 'bg-emerald-600 text-white' : 'bg-slate-700 hover:bg-slate-600 text-gray-300'}`;
+                els.globalFlipYBtn.className = `flex-1 py-1.5 rounded text-xs flex justify-center gap-1 transition-colors ${globalFlipY ? 'bg-emerald-600 text-white' : 'bg-slate-700 hover:bg-slate-600 text-gray-300'}`;
+
+                advancedSettings = data.advanced || { experimental: {}, hiddenFlags: {} };
+                const msg = (data.welcomeMessage && typeof data.welcomeMessage === 'string' && data.welcomeMessage.trim() !== "") ? data.welcomeMessage : "Bem Vindo Jociel";
+                els.welcomeMessageDisplay.textContent = msg; els.welcomeMessageDisplay.dataset.customMessage = msg !== "Bem Vindo Jociel" ? msg : "";
+
+                renderProjectItems(); renderLayersUI(); updateGeometryAndMap();
+            } catch(err) {
+                console.error(err); alert("Falha ao importar o arquivo .uny");
+            } finally { e.target.value = ''; }
+        };
+
+        async function reprocessFills() {
+            if (projectItems.length === 0) return;
+            isProcessing = true; await requestWakeLock();
+            els.progressOverlay.classList.remove('hidden'); els.progressTitle.textContent = "Recalculando Preenchimentos...";
+            els.progressBar.style.width = "0%"; els.statusMsg.textContent = "A refazer cálculos matemáticos...";
+            
+            rawLayers = [];
+            for (let i = 0; i < projectItems.length; i++) { projectItems[i].basePaths = []; await extractBasePaths(projectItems[i].id); }
+            
+            isProcessing = false; releaseWakeLock(); els.progressOverlay.classList.add('hidden');
+            renderLayersUI(); updateGeometryAndMap();
+        }
+        els.fillMode.addEventListener('change', reprocessFills);
+        els.fillDensity.addEventListener('change', reprocessFills);
+        els.fillShading.addEventListener('change', reprocessFills);
+
+        // Eventos dos Controles de Camada Globais
+        els.selectAllBtn.onclick = () => { rawLayers.forEach(l => l.selected = true); renderLayersUI(); drawStaticPreview(); };
+        els.deselectAllBtn.onclick = () => { rawLayers.forEach(l => l.selected = false); renderLayersUI(); drawStaticPreview(); };
+        els.showAllBtn.onclick = () => { rawLayers.forEach(l => l.visible = true); renderLayersUI(); triggerUpdate(); };
+        els.hideAllBtn.onclick = () => { rawLayers.forEach(l => l.visible = false); renderLayersUI(); triggerUpdate(); };
+        els.reverseOrderBtn.onclick = () => { rawLayers.reverse(); renderLayersUI(); triggerUpdate(); };
+
+        // ==========================================
+        // EXTRACÇÃO UNIFICADA (PaperJS) -> Raycasting à prova de balas
+        // ==========================================
+        async function extractBasePaths(itemId) {
+            const item = projectItems.find(i => i.id === itemId);
+            if(!item) return;
+            
+            if (!els.progressOverlay.classList.contains('hidden')) {
+                els.progressTitle.textContent = item.isText ? "Processando..." : `A ler ${item.name}...`;
+                els.statusMsg.textContent = "A extrair dados matemáticos do vector...";
+                els.progressBar.style.width = "10%"; els.progText.textContent = "10%";
+            }
+            await new Promise(r => setTimeout(r, 50));
+
+            try {
+                paper.project.clear();
+                
+                // PREPARA O SVG (garantindo que o PaperJS o interpreta exatamente no mesmo formato do Ecrã)
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(item.content, "image/svg+xml");
+                const svgEl = doc.querySelector('svg');
+                
+                if (!svgEl.hasAttribute("viewBox")) {
+                    let w = parseFloat(svgEl.getAttribute("width")) || 1000;
+                    let h = parseFloat(svgEl.getAttribute("height")) || 1000;
+                    svgEl.setAttribute("viewBox", `0 0 ${w} ${h}`);
+                }
+                
+                let imported = paper.project.importSVG(svgEl.outerHTML, { expandShapes: true, insert: true });
+                if (!imported) throw new Error("Falha ao ler o ficheiro SVG.");
+
+                let baseStep = 2; 
+                let basePaths = [];
+                let localMinX = Infinity, localMinY = Infinity, localMaxX = -Infinity, localMaxY = -Infinity;
+                
+                let bounds = paper.project.activeLayer.bounds;
+                if (bounds.width === 0 || bounds.height === 0) throw new Error("SVG Vazio");
+
+                // Contadores hierárquicos e nome curto do ficheiro
+                let cCount = 1;
+                let pCount = 1;
+                let shortName = getBaseName(item.name).substring(0, 10);
+
+                // MÓDULO 1: PREENCHIMENTOS (RAYCASTING SEGURO - Aceita Branco e Lida Com Buracos Perfeitamente)
+                if (els.fillMode.checked) {
+                    if (!els.progressOverlay.classList.contains('hidden')) { els.statusMsg.textContent = "A calcular preenchimentos..."; }
+                    await new Promise(r => setTimeout(r, 20));
+
+                    let filledItems = paper.project.getItems({
+                        class: paper.PathItem,
+                        match: function(i) {
+                            try {
+                                if (i.clipMask) return false;
+                                if (!i.fillColor) return false;
+                                if (i.fillColor.alpha === 0) return false;
+                                if (i.bounds.width === 0 || i.bounds.height === 0) return false;
+                                return true; // Chapéu Branco é aceite aqui!
+                            } catch(e) { return false; }
+                        }
+                    });
+
+                    let angles = [45];
+                    let shading = parseInt(els.fillShading.value) || 1;
+                    let density = parseInt(els.fillDensity.value) || 5;
+
+                    if (shading >= 2) angles.push(-45);
+                    if (shading >= 3) angles.push(0);
+                    
+                    let wAmp = Math.max(bounds.width, bounds.height) * 0.001;
+                    let wobble = () => (Math.random() - 0.5) * wAmp;
+
+                    filledItems.forEach(pItem => {
+                        let iBounds = pItem.bounds;
+                        
+                        angles.forEach(angle => {
+                            let diag = Math.sqrt(iBounds.width*iBounds.width + iBounds.height*iBounds.height);
+                            let center = iBounds.center;
+                            let dir = new paper.Point({ length: 1, angle: angle });
+                            let norm = new paper.Point({ length: 1, angle: angle + 90 });
+
+                            let startT = -diag / 2; let endT = diag / 2;
+                            let t = startT;
+                            let hatchPathsForThisShape = [];
+                            
+                            while(t <= endT) {
+                                let rayCenter = center.add(norm.multiply(t));
+                                let p1 = rayCenter.subtract(dir.multiply(diag));
+                                let p2 = rayCenter.add(dir.multiply(diag));
+                                
+                                let line = new paper.Path.Line(p1, p2);
+                                let inters = pItem.getIntersections(line);
+                                
+                                if (inters.length > 0) {
+                                    inters.sort((a, b) => a.point.getDistance(p1) - b.point.getDistance(p1));
+                                    
+                                    let unique = [inters[0]];
+                                    for(let i=1; i<inters.length; i++) {
+                                        if (inters[i].point.getDistance(unique[unique.length-1].point) > 0.1) {
+                                            unique.push(inters[i]);
+                                        }
+                                    }
+                                    
+                                    for (let i=0; i<unique.length-1; i++) {
+                                        let mid = unique[i].point.add(unique[i+1].point).divide(2);
+                                        if (pItem.contains(mid)) {
+                                            let sx1 = unique[i].point.x + wobble();
+                                            let sy1 = unique[i].point.y + wobble();
+                                            let sx2 = unique[i+1].point.x + wobble();
+                                            let sy2 = unique[i+1].point.y + wobble();
+                                            
+                                            hatchPathsForThisShape.push([{x: sx1, y: sy1}, {x: sx2, y: sy2}]);
+                                            
+                                            if(sx1 < localMinX) localMinX = sx1; if(sx1 > localMaxX) localMaxX = sx1;
+                                            if(sy1 < localMinY) localMinY = sy1; if(sy1 > localMaxY) localMaxY = sy1;
+                                            if(sx2 < localMinX) localMinX = sx2; if(sx2 > localMaxX) localMaxX = sx2;
+                                            if(sy2 < localMinY) localMinY = sy2; if(sy2 > localMaxY) localMaxY = sy2;
+                                        }
+                                    }
+                                }
+                                line.remove(); // Evita memory leaks no PaperJS
+                                t += density + (Math.random() - 0.5) * (density * 0.3);
+                            }
+                            
+                            if (hatchPathsForThisShape.length > 0) {
+                                let pathIndices = [];
+                                hatchPathsForThisShape.forEach(line => {
+                                    pathIndices.push(basePaths.length); basePaths.push(line);
+                                });
+                                rawLayers.push({
+                                    id: Date.now() + Math.random(), itemId: item.id, pathIndices: pathIndices,
+                                    nome: `[${shortName}] P-${pCount++} (${angle}°)`,
+                                    delay: 0, selected: false, visible: true
+                                });
+                            }
+                        });
+                    });
+                }
+
+                // MÓDULO 2: EXTRAÇÃO DE CONTORNOS E PERÍMETROS (Extração 100% via PaperJS)
+                if (!els.progressOverlay.classList.contains('hidden')) { els.statusMsg.textContent = "A extrair os contornos e formas..."; }
+                await new Promise(r => setTimeout(r, 20));
+
+                let allPaths = paper.project.getItems({ 
+                    class: paper.Path,
+                    match: function(i) {
+                        if (i.clipMask) return false;
+                        if (i.length === 0) return false;
+                        return true;
+                    }
+                });
+                
+                let totalLength = 0;
+                allPaths.forEach(p => { totalLength += p.length; });
+                
+                if (totalLength === 0 && basePaths.length === 0) throw new Error("Sem contornos visíveis e sem preenchimentos gerados.");
+
+                let currentLengthProcessed = 0; let pointCounter = 0;
+                let lastYield = performance.now();
+                
+                if (totalLength > 0) {
+                    for (let i = 0; i < allPaths.length; i++) {
+                        let path = allPaths[i];
+                        let length = path.length;
+                        
+                        let currentLine = [];
+                        let lastPt = null;
+
+                        const processPt = (l) => {
+                            let pt = path.getPointAt(l);
+                            if (!pt) return;
+                            
+                            if (lastPt) {
+                                let dx = pt.x - lastPt.x; let dy = pt.y - lastPt.y;
+                                if ((dx*dx + dy*dy) > 150) { 
+                                    if (currentLine.length > 1) {
+                                        const pathIdx = basePaths.length; basePaths.push(currentLine);
+                                        rawLayers.push({
+                                            id: Date.now() + Math.random(), itemId: item.id, pathIndices: [pathIdx],
+                                            nome: `[${shortName}] C-${cCount++}`,
+                                            delay: 0, selected: false, visible: true
+                                        });
+                                    }
+                                    currentLine = [];
+                                }
+                            }
+
+                            currentLine.push({x: pt.x, y: pt.y});
+                            if(pt.x < localMinX) localMinX = pt.x; if(pt.x > localMaxX) localMaxX = pt.x;
+                            if(pt.y < localMinY) localMinY = pt.y; if(pt.y > localMaxY) localMaxY = pt.y;
+                            lastPt = pt;
+                        };
+
+                        for (let l = 0; l <= length; l += baseStep) {
+                            processPt(l);
+                            currentLengthProcessed += baseStep; pointCounter++;
+                            if (pointCounter % 150 === 0 && performance.now() - lastYield > 15) {
+                                let pct = Math.min(95, Math.floor((currentLengthProcessed / totalLength) * 100));
+                                if (!els.progressOverlay.classList.contains('hidden')) {
+                                    els.progressBar.style.width = `${pct}%`; els.progText.textContent = `${pct}%`;
+                                }
+                                await new Promise(r => setTimeout(r, 0)); lastYield = performance.now();
+                            }
+                        }
+                        if (length % baseStep !== 0) processPt(length);
+
+                        if (currentLine.length > 1) {
+                            const pathIdx = basePaths.length; basePaths.push(currentLine);
+                            rawLayers.push({
+                                id: Date.now() + Math.random(), itemId: item.id, pathIndices: [pathIdx],
+                                nome: `[${shortName}] C-${cCount++}`,
+                                delay: 0, selected: false, visible: true
+                            });
+                        }
+                    }
+                }
+
+                item.basePaths = basePaths;
+                item.cx = (localMinX + localMaxX) / 2;
+                item.cy = (localMinY + localMaxY) / 2;
+                
+                let tW = localMaxX - localMinX; let tH = localMaxY - localMinY;
+                if(tW <= 0) tW = 1; if(tH <= 0) tH = 1;
+                item.normScale = 1000 / Math.max(tW, tH);
+
+            } catch(e) { console.error(e); } 
+        }
+
+        // ==========================================
+        // CONTROLOS DE TRANSFORMAÇÃO LOCAL E GLOBAL
+        // ==========================================
+        function loadItemTransforms() {
+            const inst = projectItems.find(i => i.id === activeItemId);
+            
+            if(!inst) {
+                els.originalSvgViewer.innerHTML = '<span class="text-[10px] text-gray-600">Nenhum SVG selecionado</span>';
+                els.originalSvgBg.classList.remove('bg-slate-200'); els.originalSvgBg.classList.add('bg-slate-900');
+                els.itemTransformPanel.classList.add('opacity-50', 'pointer-events-none'); els.activeItemName.textContent = "Nenhum"; return; 
+            }
+            
+            els.originalSvgBg.classList.remove('bg-slate-900'); els.originalSvgBg.classList.add('bg-slate-200');
+            els.originalSvgViewer.innerHTML = inst.content;
+            const svg = els.originalSvgViewer.querySelector('svg');
+            if(svg) { svg.style.maxWidth = '100%'; svg.style.maxHeight = '100%'; svg.style.width = 'auto'; svg.style.height = 'auto'; }
+
+            els.itemTransformPanel.classList.remove('opacity-50', 'pointer-events-none'); els.activeItemName.textContent = inst.name;
+            
+            if(inst.isText) {
+                els.textEditGroup.classList.remove('hidden'); els.editTextInput.value = inst.textContent; els.editTextFont.value = inst.fontUrl;
+            } else {
+                els.textEditGroup.classList.add('hidden');
+            }
+
+            els.itemX.value = inst.x; els.itemY.value = inst.y;
+            els.itemXVal.textContent = inst.x + 'px'; els.itemYVal.textContent = inst.y + 'px';
+            els.itemScaleX.value = inst.scaleX; els.itemScaleY.value = inst.scaleY;
+            els.itemScale.value = inst.scaleX; els.itemScaleVal.textContent = inst.scaleX.toFixed(1) + 'x';
+            els.itemRot.value = inst.rot; els.itemRotVal.textContent = `${inst.rot}°`;
+            
+            els.itemFlipX.dataset.active = inst.flipX; els.itemFlipX.className = `flex-1 py-1.5 rounded text-xs flex justify-center gap-1 transition-colors ${inst.flipX ? 'bg-indigo-600 text-white' : 'bg-slate-700 hover:bg-slate-600 text-gray-300'}`;
+            els.itemFlipY.dataset.active = inst.flipY; els.itemFlipY.className = `flex-1 py-1.5 rounded text-xs flex justify-center gap-1 transition-colors ${inst.flipY ? 'bg-indigo-600 text-white' : 'bg-slate-700 hover:bg-slate-600 text-gray-300'}`;
+        }
+
+        function triggerUpdate() { if (rawLayers.length > 0) updateGeometryAndMap(); }
+        function triggerCodeUpdate() { if (scaledLayers.length > 0) { generateCode(); updateStats(); } }
+
+        const applyLocalTrans = () => {
+            const inst = projectItems.find(i => i.id === activeItemId); if(!inst) return;
+            inst.x = parseFloat(els.itemX.value); inst.y = parseFloat(els.itemY.value);
+            els.itemXVal.textContent = inst.x + 'px'; els.itemYVal.textContent = inst.y + 'px';
+            inst.scaleX = parseFloat(els.itemScaleX.value); inst.scaleY = parseFloat(els.itemScaleY.value);
+            inst.rot = parseFloat(els.itemRot.value); els.itemRotVal.textContent = `${inst.rot}°`;
+            triggerUpdate();
+        };
+
+        els.itemScale.addEventListener('input', (e) => {
+            const val = parseFloat(e.target.value);
+            els.itemScaleVal.textContent = val.toFixed(1) + 'x';
+            els.itemScaleX.value = val; els.itemScaleY.value = val;
+            applyLocalTrans();
+        });
+
+        els.itemX.addEventListener('input', applyLocalTrans); els.itemY.addEventListener('input', applyLocalTrans);
+        els.itemScaleX.addEventListener('input', applyLocalTrans); els.itemScaleY.addEventListener('input', applyLocalTrans);
+        els.itemRot.addEventListener('input', applyLocalTrans);
+        els.itemFlipX.onclick = () => { const inst = projectItems.find(i => i.id === activeItemId); if(inst) { inst.flipX = !inst.flipX; loadItemTransforms(); triggerUpdate(); }};
+        els.itemFlipY.onclick = () => { const inst = projectItems.find(i => i.id === activeItemId); if(inst) { inst.flipY = !inst.flipY; loadItemTransforms(); triggerUpdate(); }};
+
+        const applyGlobalTrans = () => {
+            els.globalXVal.textContent = els.globalX.value + 'px';
+            els.globalYVal.textContent = els.globalY.value + 'px';
+            els.globalScaleX.value = els.globalScale.value;
+            els.globalScaleY.value = els.globalScale.value;
+            els.globalScaleVal.textContent = parseFloat(els.globalScale.value).toFixed(1) + 'x';
+            els.globalRotVal.textContent = els.globalRot.value + '°';
+            triggerUpdate();
+        };
+        const applyGlobalTransDirect = () => {
+            els.globalXVal.textContent = els.globalX.value + 'px';
+            els.globalYVal.textContent = els.globalY.value + 'px';
+            els.globalRotVal.textContent = els.globalRot.value + '°';
+            triggerUpdate();
+        };
+
+        els.globalScale.addEventListener('input', applyGlobalTrans);
+        els.globalX.addEventListener('input', applyGlobalTransDirect);
+        els.globalY.addEventListener('input', applyGlobalTransDirect);
+        els.globalScaleX.addEventListener('input', applyGlobalTransDirect);
+        els.globalScaleY.addEventListener('input', applyGlobalTransDirect);
+        els.globalRot.addEventListener('input', applyGlobalTransDirect);
+
+        els.globalFlipXBtn.onclick = () => { globalFlipX = !globalFlipX; els.globalFlipXBtn.className = `flex-1 py-1.5 rounded text-xs flex justify-center gap-1 transition-colors ${globalFlipX ? 'bg-emerald-600 text-white' : 'bg-slate-700 hover:bg-slate-600 text-gray-300'}`; triggerUpdate(); };
+        els.globalFlipYBtn.onclick = () => { globalFlipY = !globalFlipY; els.globalFlipYBtn.className = `flex-1 py-1.5 rounded text-xs flex justify-center gap-1 transition-colors ${globalFlipY ? 'bg-emerald-600 text-white' : 'bg-slate-700 hover:bg-slate-600 text-gray-300'}`; triggerUpdate(); };
+
+        els.resetGlobalGeoBtn.onclick = () => {
+            els.globalScale.value = 1; els.globalScaleX.value = 1; els.globalScaleY.value = 1;
+            els.globalX.value = 0; els.globalY.value = 0; els.globalRot.value = 0;
+            globalFlipX = false; globalFlipY = false;
+            els.globalFlipXBtn.className = `flex-1 py-1.5 bg-slate-700 hover:bg-slate-600 rounded text-xs text-gray-300 flex justify-center gap-1`;
+            els.globalFlipYBtn.className = `flex-1 py-1.5 bg-slate-700 hover:bg-slate-600 rounded text-xs text-gray-300 flex justify-center gap-1`;
+            applyGlobalTrans();
+        };
+
+        const handleGlobalUpdate = () => { els.percentValue.textContent = `${els.drawPercent.value}%`; els.marginValue.textContent = `${els.drawMargin.value}px`; triggerUpdate(); };
+        els.drawPercent.addEventListener('input', handleGlobalUpdate); els.drawMargin.addEventListener('input', handleGlobalUpdate);
+        els.screenW.addEventListener('change', triggerUpdate); els.screenH.addEventListener('change', triggerUpdate);
+        els.stepPrecision.addEventListener('input', (e) => { els.precisionValue.textContent = `${e.target.value}px`; });
+        els.stepPrecision.addEventListener('change', triggerUpdate);
+        els.continuousLine.addEventListener('change', triggerUpdate);
+
+        els.drawSpeed.addEventListener('input', (e) => { els.speedValue.textContent = `${parseFloat(e.target.value).toFixed(1)}x`; triggerCodeUpdate(); });
+        els.drawPause.addEventListener('input', (e) => { els.pauseValue.textContent = `${e.target.value}ms`; triggerCodeUpdate(); });
+        els.turboMode.addEventListener('change', triggerCodeUpdate);
+        els.warmupMode.addEventListener('change', triggerCodeUpdate);
+
+        els.resetGeoBtn.onclick = () => {
+            els.itemScaleX.value = 1.0; els.itemScaleY.value = 1.0; els.itemScale.value = 1.0; els.itemScaleVal.textContent = "1.0x";
+            els.itemRot.value = 0; els.itemRotVal.textContent = "0°"; els.itemX.value = 0; els.itemY.value = 0;
+            els.itemXVal.textContent = "0px"; els.itemYVal.textContent = "0px";
+            
+            const inst = projectItems.find(i => i.id === activeItemId);
+            if(inst) { inst.flipX = false; inst.flipY = false; inst.x = 0; inst.y = 0; inst.scaleX = 1; inst.scaleY = 1; inst.rot = 0; }
+            loadItemTransforms(); triggerUpdate();
+        };
+
+        function resetZoom() { viewScale = 1.0; viewOffsetX = 0; viewOffsetY = 0; if(scaledLayers.length) drawStaticPreview(); }
+        document.getElementById('zoomInBtn').onclick = () => { viewScale *= 1.3; drawStaticPreview(); };
+        document.getElementById('zoomOutBtn').onclick = () => { viewScale /= 1.3; drawStaticPreview(); };
+        document.getElementById('zoomResetBtn').onclick = resetZoom;
+        els.canvas.addEventListener('wheel', (e) => { e.preventDefault(); viewScale *= (e.deltaY < 0) ? 1.1 : 0.9; drawStaticPreview(); }, { passive: false });
+        const getPos = (e) => (e.touches && e.touches.length > 0) ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : { x: e.clientX, y: e.clientY };
+        els.canvas.addEventListener('mousedown', startPan); els.canvas.addEventListener('touchstart', startPan, { passive: false });
+        function startPan(e) { if(!scaledLayers.length || isAnimating) return; isDraggingCanvas = true; const p = getPos(e); dragStartX = p.x - viewOffsetX; dragStartY = p.y - viewOffsetY; els.canvas.classList.replace('cursor-grab', 'cursor-grabbing'); }
+        els.canvas.addEventListener('mousemove', movePan); els.canvas.addEventListener('touchmove', movePan, { passive: false });
+        function movePan(e) { if (!isDraggingCanvas) return; e.preventDefault(); const p = getPos(e); viewOffsetX = p.x - dragStartX; viewOffsetY = p.y - dragStartY; drawStaticPreview(); }
+        const endPan = () => { isDraggingCanvas = false; els.canvas.classList.replace('cursor-grabbing', 'cursor-grab'); };
+        els.canvas.addEventListener('mouseup', endPan); els.canvas.addEventListener('mouseleave', endPan); els.canvas.addEventListener('touchend', endPan);
+        window.addEventListener('resize', () => { if(scaledLayers.length && !isAnimating) drawStaticPreview(); });
+
+        function updateStats() {
+            if (!scaledLayers || scaledLayers.length === 0) {
+                els.statsDisplay.innerHTML = "Aguardando composição...";
+                return;
+            }
+            
+            let totalPts = 0; let estimatedTimeMs = 0; let traceCount = 0;
+            const mult = 1 / (parseFloat(els.drawSpeed.value) || 2.0);
+            const pause = parseInt(els.drawPause.value) || 35;
+            const turbo = els.turboMode.checked;
+            const warmup = els.warmupMode.checked;
+            let activeLayerCount = 0;
+
+            scaledLayers.forEach(l => {
+                if(!l.visible) return;
+                activeLayerCount++; estimatedTimeMs += l.delay * 1000;
+                l.screenTraces.forEach(tr => {
+                    traceCount++; totalPts += tr.length;
+                    if(turbo) {
+                        let dur = Math.floor((tr.length * 6) * mult);
+                        if(dur < Math.max(40, tr.length * 4)) dur = Math.max(40, tr.length * 4);
+                        if(dur > 60000) dur = 60000;
+                        estimatedTimeMs += dur + 5;
+                    } else {
+                        let dur = Math.floor(Math.max(100, tr.length * 10) * mult);
+                        if(dur < Math.max(80, tr.length * 5)) dur = Math.max(80, tr.length * 5);
+                        if(dur > 60000) dur = 60000;
+                        estimatedTimeMs += dur + pause;
+                    }
+                });
+            });
+
+            if (warmup && activeLayerCount > 0 && scaledLayers[0].screenTraces.length > 0) {
+                const tr = scaledLayers[0].screenTraces[0];
+                const tAq = Math.max(3, Math.min(15, Math.floor(tr.length * 0.25)));
+                let dur = Math.max(300, tAq * 15);
+                estimatedTimeMs += dur + 200;
+            }
+
+            let timeStr = "";
+            if (estimatedTimeMs < 60000) timeStr = (estimatedTimeMs/1000).toFixed(1) + "s";
+            else {
+                let m = Math.floor(estimatedTimeMs / 60000); let s = Math.floor((estimatedTimeMs % 60000) / 1000);
+                timeStr = `${m}m ${s}s`;
+            }
+
+            els.statsDisplay.innerHTML = `Camadas: <b class="text-white">${activeLayerCount}/${rawLayers.length}</b> | Traços Finais: <b class="text-white">${traceCount}</b> | Pontos Mapeados: <b class="text-white">${totalPts}</b> | Tempo: <b class="text-amber-400">~${timeStr}</b>`;
+        }
+
+        function renderLayersUI() {
+            els.layersList.innerHTML = '';
+            if(rawLayers.length === 0) { els.layersList.innerHTML = `<div class="text-center text-xs text-gray-500 mt-8">Sem dados geográficos.</div>`; return; }
+            rawLayers.forEach((layer, index) => {
+                const el = document.createElement('div');
+                let baseClass = `flex items-center grid grid-cols-12 gap-1 p-1 rounded border transition-colors ${layer.selected ? 'bg-indigo-500/20 border-indigo-500/50' : 'bg-slate-800 border-slate-700 hover:bg-slate-700'}`;
+                if (!layer.visible) baseClass += ` opacity-40`;
+                el.className = baseClass;
+                
+                const divSel = document.createElement('div'); divSel.className = 'col-span-1 flex justify-center';
+                const chk = document.createElement('input'); chk.type = 'checkbox'; chk.className = 'w-3 h-3 accent-indigo-500 cursor-pointer'; chk.checked = layer.selected;
+                chk.onchange = () => { layer.selected = chk.checked; els.mergeBtn.disabled = rawLayers.filter(l=>l.selected).length < 2; renderLayersUI(); drawStaticPreview(); };
+                divSel.appendChild(chk);
+                
+                const divVis = document.createElement('div'); divVis.className = 'col-span-1 flex justify-center cursor-pointer text-gray-400 hover:text-white';
+                divVis.innerHTML = layer.visible ? '<i data-lucide="eye" class="w-3.5 h-3.5"></i>' : '<i data-lucide="eye-off" class="w-3.5 h-3.5"></i>';
+                divVis.onclick = () => { layer.visible = !layer.visible; renderLayersUI(); triggerUpdate(); };
+                
+                const divNome = document.createElement('div'); divNome.className = 'col-span-5 flex items-center';
+                const inpNome = document.createElement('input'); inpNome.type = 'text'; inpNome.className = 'w-full bg-transparent border-none outline-none px-1 text-gray-200 text-[10px]'; inpNome.value = layer.nome;
+                inpNome.onchange = (e) => { layer.nome = e.target.value; generateCode(); }; 
+                divNome.appendChild(inpNome);
+
+                const divDelay = document.createElement('div'); divDelay.className = 'col-span-3 flex justify-center items-center';
+                const inpDelay = document.createElement('input'); inpDelay.type = 'number'; inpDelay.min = 0; inpDelay.step = 0.5; inpDelay.className = 'w-8 bg-slate-900 border border-slate-600 rounded p-0.5 text-center outline-none text-white text-[10px]'; inpDelay.value = layer.delay;
+                inpDelay.onchange = (e) => { layer.delay = parseFloat(e.target.value) || 0; generateCode(); updateStats(); };
+                divDelay.appendChild(inpDelay);
+
+                const divOrder = document.createElement('div'); divOrder.className = 'col-span-2 flex justify-center gap-1';
+                const btnUp = document.createElement('button'); btnUp.innerHTML = '<i data-lucide="chevron-up" class="w-3 h-3"></i>'; btnUp.className = 'text-gray-500 hover:text-white disabled:opacity-30'; btnUp.disabled = index === 0; btnUp.onclick = () => moveLayer(index, -1);
+                const btnDown = document.createElement('button'); btnDown.innerHTML = '<i data-lucide="chevron-down" class="w-3 h-3"></i>'; btnDown.className = 'text-gray-500 hover:text-white disabled:opacity-30'; btnDown.disabled = index === rawLayers.length - 1; btnDown.onclick = () => moveLayer(index, 1);
+                divOrder.appendChild(btnUp); divOrder.appendChild(btnDown);
+
+                el.appendChild(divSel); el.appendChild(divVis); el.appendChild(divNome); el.appendChild(divDelay); el.appendChild(divOrder);
+                els.layersList.appendChild(el);
+            });
+            lucide.createIcons();
+            els.mergeBtn.disabled = rawLayers.filter(l => l.selected).length < 2;
+        }
+
+        function moveLayer(index, dir) { const t = rawLayers[index]; rawLayers[index] = rawLayers[index+dir]; rawLayers[index+dir] = t; renderLayersUI(); triggerUpdate(); }
+
+        els.mergeBtn.onclick = () => {
+            const sels = rawLayers.filter(l => l.selected); if(sels.length < 2) return;
+            const unsel = rawLayers.filter(l => !l.selected);
+            let mergedIndices = []; sels.forEach(l => mergedIndices.push(...l.pathIndices));
+            const newLayer = { id: Date.now(), itemId: sels[0].itemId, pathIndices: mergedIndices, nome: `[Mescla] M-${unsel.length+1}`, delay: 0, selected: false, visible: true };
+            rawLayers = [newLayer, ...unsel]; renderLayersUI(); triggerUpdate();
+        };
+
+        function updateGeometryAndMap() {
+            if(projectItems.length === 0) { scaledLayers = []; globalScaledTraces = []; drawStaticPreview(); generateCode(); updateStats(); return; }
+            stopAnimation(false);
+
+            const screenW = parseInt(els.screenW.value) || 1100;
+            const screenH = parseInt(els.screenH.value) || 2442;
+            const percent = parseInt(els.drawPercent.value) || 70;
+            const margin = parseInt(els.drawMargin.value) || 20;
+
+            const availW = (screenW * (percent/100)) - (margin * 2);
+            const availH = (screenH * (percent/100)) - (margin * 2);
+            const finalScale = Math.min(availW / 1000, availH / 1000) || 1;
+
+            const screenCX = screenW / 2;
+            const screenCY = screenH / 2;
+
+            const gPosX = parseFloat(els.globalX.value) || 0;
+            const gPosY = parseFloat(els.globalY.value) || 0;
+            const gScaleX = parseFloat(els.globalScaleX.value) || 1;
+            const gScaleY = parseFloat(els.globalScaleY.value) || 1;
+            const gRotRad = (parseFloat(els.globalRot.value) || 0) * Math.PI / 180;
+            const gCos = Math.cos(gRotRad); const gSin = Math.sin(gRotRad);
+
+            scaledLayers = [];
+            globalScaledTraces = [];
+            const userStep = parseInt(els.stepPrecision.value) || 3;
+            const isCont = els.continuousLine.checked;
+
+            rawLayers.forEach(layer => {
+                const item = projectItems.find(i => i.id === layer.itemId);
+                if(!item) return;
+
+                const cx = item.cx; const cy = item.cy;
+                const rad = item.rot * Math.PI / 180; const cos = Math.cos(rad); const sin = Math.sin(rad);
+
+                let tracesScreen = [];
+                let currentContinuous = [];
+
+                layer.pathIndices.forEach(pIdx => {
+                    const tr = item.basePaths[pIdx];
+                    if(!tr) return;
+
+                    let cleanPath = []; let lastPt = null;
+                    tr.forEach(p => {
+                        let px = (p.x - cx) * item.normScale; 
+                        let py = (p.y - cy) * item.normScale;
+                        if(item.flipX) px = -px; if(item.flipY) py = -py;
+                        px *= item.scaleX; py *= item.scaleY;
+                        let rx = px * cos - py * sin; let ry = px * sin + py * cos;
+                        
+                        let lx = rx + item.x;
+                        let ly = ry + item.y;
+
+                        if(globalFlipX) lx = -lx; if(globalFlipY) ly = -ly;
+                        lx *= gScaleX; ly *= gScaleY;
+                        let grx = lx * gCos - ly * gSin;
+                        let gry = lx * gSin + ly * gCos;
+
+                        let sx = Math.floor(screenCX + grx * finalScale + gPosX);
+                        let sy = Math.floor(screenCY + gry * finalScale + gPosY);
+                        
+                        if(!lastPt) { cleanPath.push({x: sx, y: sy}); lastPt = {x: sx, y: sy}; }
+                        else {
+                            let dx = sx - lastPt.x; let dy = sy - lastPt.y;
+                            if((dx*dx + dy*dy) >= (userStep*userStep)) { cleanPath.push({x: sx, y: sy}); lastPt = {x: sx, y: sy}; }
+                        }
+                    });
+                    
+                    if(tr.length > 1) {
+                        let p = tr[tr.length-1];
+                        let px = (p.x - cx) * item.normScale; let py = (p.y - cy) * item.normScale;
+                        if(item.flipX) px = -px; if(item.flipY) py = -py;
+                        px *= item.scaleX; py *= item.scaleY;
+                        let rx = px * cos - py * sin; let ry = px * sin + py * cos;
+                        let lx = rx + item.x; let ly = ry + item.y;
+                        if(globalFlipX) lx = -lx; if(globalFlipY) ly = -ly;
+                        lx *= gScaleX; ly *= gScaleY;
+                        let grx = lx * gCos - ly * gSin; let gry = lx * gSin + ly * gCos;
+                        let sx = Math.floor(screenCX + grx * finalScale + gPosX);
+                        let sy = Math.floor(screenCY + gry * finalScale + gPosY);
+                        cleanPath.push({x: sx, y: sy});
+                    }
+
+                    if (cleanPath.length > 2) {
+                        let firstPoint = cleanPath[0];
+                        let lastPoint = cleanPath[cleanPath.length - 1];
+                        let gap = (firstPoint.x - lastPoint.x) ** 2 + (firstPoint.y - lastPoint.y) ** 2;
+                        if (gap > 0 && gap <= 400) { 
+                            cleanPath.push({x: firstPoint.x, y: firstPoint.y});
+                        }
+                    }
+
+                    if (cleanPath.length > 1) {
+                        if (isCont) {
+                            if (currentContinuous.length > 0) {
+                                let lastP = currentContinuous[currentContinuous.length - 1];
+                                let firstP = cleanPath[0];
+                                let gapSq = (lastP.x - firstP.x) ** 2 + (lastP.y - firstP.y) ** 2;
+                                
+                                if (gapSq > 600) { 
+                                    tracesScreen.push(currentContinuous);
+                                    if(layer.visible) globalScaledTraces.push(currentContinuous);
+                                    currentContinuous = [...cleanPath]; 
+                                } else {
+                                    currentContinuous.push(...cleanPath);
+                                }
+                            } else {
+                                currentContinuous.push(...cleanPath);
+                            }
+                        } 
+                        else { 
+                            tracesScreen.push(cleanPath); 
+                            if(layer.visible) globalScaledTraces.push(cleanPath); 
+                        }
+                    }
+                });
+
+                if(isCont && currentContinuous.length > 1) {
+                    tracesScreen.push(currentContinuous);
+                    if(layer.visible) globalScaledTraces.push(currentContinuous);
+                }
+
+                scaledLayers.push({
+                    nome: layer.nome, delay: layer.delay, visible: layer.visible, selected: layer.selected,
+                    screenTraces: tracesScreen
+                });
+            });
+
+            drawStaticPreview(); generateCode(); updateStats();
+        }
+
+        function getLayerColor(index, total) { return total <= 1 ? `hsl(280, 80%, 60%)` : `hsl(280, 80%, ${80 - ((index / (total - 1)) * 50)}%)`; }
+
+        function drawStaticPreview() {
+            if (!scaledLayers.length) return;
+            const noPreviewMsg = document.getElementById('noPreviewMsg');
+            if(noPreviewMsg) noPreviewMsg.style.display = 'none';
+            els.canvas.width = els.canvasWrapper.clientWidth; els.canvas.height = els.canvasWrapper.clientHeight;
+            const sw = parseInt(els.screenW.value)||1100; const sh = parseInt(els.screenH.value)||2442;
+            const bScale = Math.min((els.canvas.width-40)/sw, (els.canvas.height-40)/sh);
+            
+            drawBackgroundAndGrid(ctx, els.canvas.width, els.canvas.height, viewScale, viewOffsetX, viewOffsetY, sw, sh, bScale);
+
+            ctx.save(); ctx.translate(viewOffsetX, viewOffsetY); ctx.translate(els.canvas.width/2, els.canvas.height/2); ctx.scale(viewScale, viewScale); ctx.translate(-els.canvas.width/2, -els.canvas.height/2);
+            const cx = (els.canvas.width - sw*bScale)/2; const cy = (els.canvas.height - sh*bScale)/2;
+            
+            const anySel = scaledLayers.some(l => l.selected);
+
+            scaledLayers.forEach((layer, idx) => {
+                if (!layer.visible) return; 
+                ctx.beginPath(); 
+                if (anySel) { ctx.strokeStyle = getLayerColor(idx, scaledLayers.length); ctx.lineWidth = layer.selected ? Math.max(1, 2/viewScale) : Math.max(0.5, 1/viewScale); ctx.globalAlpha = layer.selected ? 1 : 0.1; } 
+                else { ctx.strokeStyle = getLayerColor(idx, scaledLayers.length); ctx.lineWidth = Math.max(0.5, 1.5/viewScale); ctx.globalAlpha = 1; }
+
+                layer.screenTraces.forEach(tr => { tr.forEach((p, i) => { if (i === 0) ctx.moveTo(cx+p.x*bScale, cy+p.y*bScale); else ctx.lineTo(cx+p.x*bScale, cy+p.y*bScale); }); });
+                ctx.stroke();
+            });
+            ctx.globalAlpha = 1; ctx.restore();
+        }
+
+        els.exportGifBtn.onclick = startGifRecording;
+
+        async function startGifRecording() {
+            if (!globalScaledTraces.length) return;
+            
+            stopAnimation(false);
+            
+            isRecordingGif = true;
+            isProcessing = true;
+            await requestWakeLock();
+
+            els.exportGifBtn.disabled = true;
+            els.exportGifBtn.innerHTML = '<i data-lucide="video" class="w-3.5 h-3.5 animate-pulse"></i> A gravar...';
+            lucide.createIcons();
+            
+            try {
+                const workerBlob = new Blob([`importScripts('https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js');`], {type: 'application/javascript'});
+                const workerUrl = URL.createObjectURL(workerBlob);
+                
+                gifEncoder = new GIF({
+                    workers: 2,
+                    quality: 10,
+                    workerScript: workerUrl,
+                    width: els.canvas.width,
+                    height: els.canvas.height,
+                    background: '#020617'
+                });
+                
+                gifEncoder.on('finished', function(blob) {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = (els.jsFileName.value.trim() || 'animacao') + '.gif';
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    
+                    isRecordingGif = false;
+                    isProcessing = false;
+                    releaseWakeLock();
+                    gifEncoder = null;
+                    els.exportGifBtn.innerHTML = '<i data-lucide="video" class="w-3.5 h-3.5"></i> Exportar';
+                    els.exportGifBtn.disabled = false;
+                    lucide.createIcons();
+                });
+                
+                startAnimation(true);
+            } catch(e) {
+                console.error("Erro ao iniciar GIF", e);
+                isRecordingGif = false;
+                isProcessing = false;
+                releaseWakeLock();
+                els.exportGifBtn.innerHTML = '<i data-lucide="video" class="w-3.5 h-3.5"></i> Exportar';
+                els.exportGifBtn.disabled = false;
+                lucide.createIcons();
+            }
+        }
+
+        els.playBtn.onclick = () => { stopAnimation(false); startAnimation(false); };
+
+        async function startAnimation(keepRecordingState = false) {
+            if (!globalScaledTraces.length) return;
+            
+            isAnimating = true;
+            els.playBtn.classList.add('hidden'); els.stopBtn.classList.remove('hidden'); els.canvas.style.pointerEvents = 'none';
+
+            els.canvas.width = els.canvasWrapper.clientWidth; els.canvas.height = els.canvasWrapper.clientHeight;
+            const sw = parseInt(els.screenW.value)||1100; const sh = parseInt(els.screenH.value)||2442;
+            const bScale = Math.min((els.canvas.width - 40) / sw, (els.canvas.height - 40) / sh);
+            const sOffsetX = (els.canvas.width - (sw * bScale)) / 2; const sOffsetY = (els.canvas.height - (sh * bScale)) / 2;
+
+            const clearCanvas = () => {
+                drawBackgroundAndGrid(ctx, els.canvas.width, els.canvas.height, viewScale, viewOffsetX, viewOffsetY, sw, sh, bScale);
+            };
+
+            clearCanvas();
+            
+            let cL=0, cT=0, cP=0, cBuf=[], fPaths=[], isDelay=false, delEnd=0;
+            const anySel = scaledLayers.some(l => l.selected);
+
+            const loop = (t) => {
+                if(!isAnimating) return;
+                
+                if (isRecordingGif) {
+                    if (!lastGifFrameTime || t - lastGifFrameTime >= 40) { 
+                        gifEncoder.addFrame(els.canvas, {copy: true, delay: 40});
+                        lastGifFrameTime = t;
+                    }
+                }
+
+                if(isDelay) { if(t < delEnd) { animReqId = requestAnimationFrame(loop); return; } isDelay = false; }
+                let pts = Math.max(1, Math.floor((parseFloat(els.drawSpeed.value)||2)*2));
+
+                while(pts>0 && isAnimating && !isDelay) {
+                    if(cL >= scaledLayers.length) { stopAnimation(true); return; }
+                    const l = scaledLayers[cL];
+                    if(!l.visible) { cL++; cT=0; cP=0; continue; }
+                    const tr = l.screenTraces[cT];
+                    if(cT===0 && cP===0 && l.delay>0) { isDelay=true; delEnd=t+(l.delay*1000); ctx.save(); ctx.setTransform(1,0,0,1,0,0); ctx.fillStyle='rgba(0,0,0,0.8)'; ctx.roundRect((els.canvas.width/2)-100,20,200,30,8); ctx.fill(); ctx.fillStyle='#fff'; ctx.font='12px sans-serif'; ctx.textAlign='center'; ctx.fillText(`Delay: ${l.nome}`, els.canvas.width/2,40); ctx.restore(); animReqId=requestAnimationFrame(loop); return; }
+
+                    if(cP < tr.length) { cBuf.push(tr[cP]); cP++; pts--; } 
+                    else { fPaths.push({ c: getLayerColor(cL, scaledLayers.length), p: [...cBuf], s: l.selected }); cBuf=[]; cT++; cP=0; if(cT >= l.screenTraces.length) { cL++; cT=0; } }
+                }
+
+                clearCanvas();
+                fPaths.forEach(fp => { ctx.beginPath(); ctx.strokeStyle=fp.c; if(anySel){ ctx.lineWidth=fp.s?Math.max(1,2/viewScale):Math.max(0.5,1/viewScale); ctx.globalAlpha=fp.s?1:0.1;} else {ctx.lineWidth=Math.max(0.5,1.5/viewScale); ctx.globalAlpha=1;} fp.p.forEach((p,i)=>{ if(i===0)ctx.moveTo(sOffsetX+p.x*bScale,sOffsetY+p.y*bScale); else ctx.lineTo(sOffsetX+p.x*bScale,sOffsetY+p.y*bScale); }); ctx.stroke(); });
+                if(cBuf.length>0) { const l = scaledLayers[cL]; ctx.beginPath(); ctx.strokeStyle=getLayerColor(cL, scaledLayers.length); if(anySel){ctx.lineWidth=l.selected?Math.max(1,2/viewScale):Math.max(0.5,1/viewScale); ctx.globalAlpha=l.selected?1:0.1;} else {ctx.lineWidth=Math.max(0.5,1.5/viewScale); ctx.globalAlpha=1;} ctx.shadowColor='#fff'; ctx.shadowBlur=5; cBuf.forEach((p,i)=>{ if(i===0)ctx.moveTo(sOffsetX+p.x*bScale,sOffsetY+p.y*bScale); else ctx.lineTo(sOffsetX+p.x*bScale,sOffsetY+p.y*bScale); }); ctx.stroke(); ctx.shadowBlur=0; }
+                ctx.globalAlpha=1; ctx.restore();
+                if(isAnimating) animReqId = requestAnimationFrame(loop);
+            };
+            animReqId = requestAnimationFrame(loop);
+        }
+
+        function stopAnimation(isComplete = false) { 
+            isAnimating=false; 
+            if(animReqId) cancelAnimationFrame(animReqId); 
+            els.playBtn.classList.remove('hidden'); 
+            els.stopBtn.classList.add('hidden'); 
+            els.canvas.style.pointerEvents='auto'; 
+            
+            if (isRecordingGif) {
+                if (isComplete && gifEncoder) {
+                    els.exportGifBtn.innerHTML = '<i data-lucide="loader" class="w-3.5 h-3.5 animate-spin"></i> Processando...';
+                    lucide.createIcons();
+                    gifEncoder.addFrame(els.canvas, {copy: true, delay: 2000}); 
+                    gifEncoder.render();
+                } else {
+                    isRecordingGif = false;
+                    isProcessing = false;
+                    releaseWakeLock();
+                    gifEncoder = null;
+                    els.exportGifBtn.innerHTML = '<i data-lucide="video" class="w-3.5 h-3.5"></i> Exportar';
+                    els.exportGifBtn.disabled = false;
+                    lucide.createIcons();
+                }
+            }
+
+            drawStaticPreview(); 
+        }
+
+        function generateCode() {
+            if (!scaledLayers.length) { els.outputCode.value = "// Sem dados."; return; }
+            const sw = parseInt(els.screenW.value) || 1100; const sh = parseInt(els.screenH.value) || 2442;
+            const mult = 1 / (parseFloat(els.drawSpeed.value) || 2.0);
+            const pause = parseInt(els.drawPause.value) || 35;
+            const turbo = els.turboMode.checked;
+            const warmup = els.warmupMode.checked;
+            const visL = scaledLayers.filter(l => l.visible);
+
+            let c = []; 
+            c.push(`// --- AUTO.JS VECTOR STUDIO ---`);
+            c.push(`// Engine de Múltiplos Arquivos | Modo: ${turbo ? 'Turbo' : 'Precisão'}`);
+            c.push(`// Continuidade de Traço Ativa: Sem quebras em segmentos!\n`);
+            
+            if(!visL.length) { els.outputCode.value = "// Nenhuma camada visível selecionada."; return; }
+
+            c.push(`setScreenMetrics(${sw}, ${sh});\n`);
+            c.push(`var MULTIPLICADOR = ${mult.toFixed(3)};\n`);
+            
+            c.push(`function desenharWarmup(pts) {`);
+            c.push(`    if(pts.length < 2) return;`);
+            c.push(`    var dur = Math.max(300, pts.length * 15);`);
+            c.push(`    gesture.apply(null, [dur].concat(pts));`);
+            c.push(`    sleep(200);`);
+            c.push(`}\n`);
+
+            c.push(`function desenharTraco(pts) {`);
+            c.push(`    if(pts.length < 2) return;`);
+            if(turbo) {
+                c.push(`    var dur = Math.floor((pts.length * 6) * MULTIPLICADOR);`);
+                c.push(`    if(dur < Math.max(40, pts.length * 4)) dur = Math.max(40, pts.length * 4);`);
+                c.push(`    if(dur > 60000) dur = 60000;`);
+                c.push(`    gesture.apply(null, [dur].concat(pts)); sleep(5);`);
+            } else {
+                c.push(`    var dur = Math.floor(Math.max(100, pts.length * 10) * MULTIPLICADOR);`);
+                c.push(`    if(dur < Math.max(80, pts.length * 5)) dur = Math.max(80, pts.length * 5);`);
+                c.push(`    if(dur > 60000) dur = 60000;`);
+                c.push(`    gesture.apply(null, [dur].concat(pts)); sleep(${pause});`);
+            }
+            c.push(`}\n`);
+
+            c.push(`var cam = [`);
+            if (warmup && visL.length > 0 && visL[0].screenTraces.length > 0) {
+                const tr = visL[0].screenTraces[0];
+                const tAq = Math.max(3, Math.min(15, Math.floor(tr.length * 0.25)));
+                const warmupStr = tr.slice(0, tAq).map(p=>`[${p.x},${p.y}]`).join(', ');
+                c.push(`  { nome: "Pré-Traço Inicial (Anti-Bug)", isWarmup: true, del: 0, trs: [\n    [\n      ${warmupStr}\n    ]\n  ] },`); 
+            }
+            
+            visL.forEach((l, idx) => {
+                c.push(`  { nome: "${l.nome}", del: ${l.delay * 1000}, trs: [`);
+                
+                const trStrs = l.screenTraces.map(tr => {
+                    let pts = tr.map(p => `[${p.x},${p.y}]`);
+                    let chunks = [];
+                    for(let i=0; i < pts.length; i+=10) {
+                        chunks.push(pts.slice(i, i+10).join(', '));
+                    }
+                    return `    [\n      ${chunks.join(',\n      ')}\n    ]`;
+                });
+                
+                c.push(trStrs.join(',\n'));
+                c.push(`  ] }${idx < visL.length - 1 ? ',' : ''}`);
+            });
+            c.push(`];\n`);
+
+            c.push(`// --- EXECUÇÃO PRINCIPAL ---`);
+            c.push(`for (var k = 0; k < cam.length; k++) {`);
+            c.push(`    var cmd = cam[k];`);
+            c.push(`    if (cmd.isWarmup) {`);
+            c.push(`        toast("Executando Pré-Traço...");`);
+            c.push(`        for (var t = 0; t < cmd.trs.length; t++) { desenharWarmup(cmd.trs[t]); }`);
+            c.push(`        continue;`);
+            c.push(`    }`);
+            c.push(`    if (cmd.del > 0) { toast("Espere " + (cmd.del/1000) + "s: " + cmd.nome); sleep(cmd.del); }`);
+            c.push(`    else { toast("A desenhar: " + cmd.nome); }`);
+            c.push(`    for (var t = 0; t < cmd.trs.length; t++) { desenharTraco(cmd.trs[t]); sleep(${pause}); }`);
+            c.push(`}`);
+            c.push(`toast("Composição Finalizada!");`);
+
+            els.outputCode.value = c.join('\n');
+        }
+
+        document.getElementById('copyBtn').onclick = () => { els.outputCode.select(); document.execCommand('copy'); };
+        document.getElementById('saveBtn').onclick = () => {
+            let name = els.jsFileName.value.trim() || 'composicao'; if (!name.endsWith('.js')) name += '.js';
+            const blob = new Blob([els.outputCode.value], { type: 'text/javascript' }); const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url; a.download = name; a.click(); URL.revokeObjectURL(url);
+        };
+    </script>
+</body>
+</html>
