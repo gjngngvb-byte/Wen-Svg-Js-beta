@@ -76,7 +76,7 @@
     <div id="progressOverlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center hidden transition-opacity duration-300">
         <div class="bg-slate-800 p-6 rounded-xl shadow-2xl border border-slate-600 w-80 max-w-[90%] transform scale-100">
             <div class="flex justify-between items-center mb-3">
-                <h3 class="text-white font-bold text-sm" id="progressTitle">Importando...</h3>
+                <h3 class="text-white font-bold text-sm" id="progressTitle">A importar...</h3>
                 <span class="text-indigo-400 font-bold text-xs" id="progressText">0%</span>
             </div>
             <div class="w-full bg-slate-900 rounded-full h-3 border border-slate-700 overflow-hidden relative">
@@ -105,8 +105,8 @@
                 <label class="flex items-center justify-between cursor-pointer p-1.5 px-3 bg-blue-500/10 rounded-lg border border-blue-500/20" title="Impede a tela de apagar durante cálculos pesados">
                     <i data-lucide="sun" class="w-3.5 h-3.5 text-blue-400 mr-2"></i>
                     <span class="text-xs font-medium text-blue-300 mr-2 flex items-center">
-                        Tela Acesa
-                        <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-blue-400"></i><span class="tooltip-text">Impede a tela de apagar enquanto processa arquivos SVGs muito grandes e pesados.</span></span>
+                        Ecrã Aceso
+                        <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-blue-400"></i><span class="tooltip-text">Impede o ecrã de apagar enquanto processa ficheiros SVGs muito grandes e pesados.</span></span>
                     </span>
                     <input type="checkbox" id="wakeLockMode" checked class="w-3.5 h-3.5 accent-blue-500 rounded cursor-pointer">
                 </label>
@@ -122,7 +122,7 @@
                     <i data-lucide="git-merge" class="w-3.5 h-3.5 text-emerald-400 mr-2"></i>
                     <span class="text-xs font-medium text-emerald-300 mr-2 flex items-center">
                         Traço Contínuo
-                        <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-emerald-400"></i><span class="tooltip-text">Une linhas muito próximas num único traço para o robô não precisar levantar tanto a caneta.</span></span>
+                        <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-emerald-400"></i><span class="tooltip-text">Une linhas muito próximas num único traço para o robô não precisar de levantar tanto a caneta.</span></span>
                     </span>
                     <input type="checkbox" id="continuousLine" class="w-3.5 h-3.5 accent-emerald-500 rounded cursor-pointer">
                 </label>
@@ -145,7 +145,7 @@
                 <!-- Gestor de Ficheiros & Texto -->
                 <div class="panel p-4 rounded-xl shadow-lg border flex flex-col gap-3">
                     <h2 class="text-sm font-bold text-gray-200 flex items-center gap-2">
-                        <i data-lucide="folder-open" class="w-4 h-4 text-indigo-400"></i> Arquivos do Projeto
+                        <i data-lucide="folder-open" class="w-4 h-4 text-indigo-400"></i> Ficheiros do Projeto
                     </h2>
                     
                     <div id="projectItemsList" class="flex flex-col gap-1.5 max-h-32 overflow-y-auto custom-scrollbar">
@@ -323,7 +323,7 @@
                         
                         <div class="col-span-2">
                             <label class="flex justify-between mb-1">
-                                <span class="font-bold text-emerald-400 flex items-center gap-1">Escala Global <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-emerald-400"></i><span class="tooltip-text">Altera o tamanho do conjunto inteiro sem deformar as proporções ou as posições relativas dos arquivos misturados.</span></span></span>
+                                <span class="font-bold text-emerald-400 flex items-center gap-1">Escala Global <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-emerald-400"></i><span class="tooltip-text">Altera o tamanho do conjunto inteiro sem deformar as proporções ou as posições relativas dos ficheiros misturados.</span></span></span>
                                 <span id="globalScaleVal" class="text-emerald-400 font-bold">1.0x</span>
                             </label>
                             <input type="range" id="globalScale" min="0.1" max="5" step="0.1" value="1" class="w-full range-sm accent-emerald-500">
@@ -339,7 +339,7 @@
                         
                         <div class="col-span-2">
                             <label class="flex justify-between mb-1">
-                                <span class="flex items-center gap-1">Rotação Global <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-emerald-400"></i><span class="tooltip-text">Gira todo o mosaico do projeto na tela a partir do eixo central.</span></span></span>
+                                <span class="flex items-center gap-1">Rotação Global <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-emerald-400"></i><span class="tooltip-text">Gira todo o mosaico do projeto no ecrã a partir do eixo central.</span></span></span>
                                 <span id="globalRotVal">0°</span>
                             </label>
                             <input type="range" id="globalRot" min="0" max="360" value="0" class="w-full range-sm accent-emerald-500">
@@ -352,8 +352,8 @@
                     </div>
 
                     <div class="grid grid-cols-2 gap-2 pt-1">
-                        <div><label class="block mb-1 flex items-center gap-1">Ecrã X <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-gray-400"></i><span class="tooltip-text">A largura real em pixels da tela do dispositivo onde o auto.js vai reproduzir (ex: 1080).</span></span></label><input type="number" id="screenW" value="1100" class="w-full bg-slate-800 border border-slate-600 rounded p-1.5 outline-none text-white"></div>
-                        <div><label class="block mb-1 flex items-center gap-1">Ecrã Y <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-gray-400"></i><span class="tooltip-text">A altura real em pixels da tela do dispositivo alvo (ex: 2400).</span></span></label><input type="number" id="screenH" value="2442" class="w-full bg-slate-800 border border-slate-600 rounded p-1.5 outline-none text-white"></div>
+                        <div><label class="block mb-1 flex items-center gap-1">Ecrã X <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-gray-400"></i><span class="tooltip-text">A largura real em pixels do ecrã do dispositivo onde o auto.js vai reproduzir (ex: 1080).</span></span></label><input type="number" id="screenW" value="1100" class="w-full bg-slate-800 border border-slate-600 rounded p-1.5 outline-none text-white"></div>
+                        <div><label class="block mb-1 flex items-center gap-1">Ecrã Y <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-gray-400"></i><span class="tooltip-text">A altura real em pixels do ecrã do dispositivo alvo (ex: 2400).</span></span></label><input type="number" id="screenH" value="2442" class="w-full bg-slate-800 border border-slate-600 rounded p-1.5 outline-none text-white"></div>
                     </div>
 
                     <div>
@@ -365,7 +365,7 @@
                     </div>
                     <div>
                         <label class="flex justify-between mb-1">
-                            <span class="flex items-center gap-1">Margem Ecrã <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-gray-400"></i><span class="tooltip-text">Margem de recuo (em pixels) nas bordas da tela para impedir que o desenho seja feito até ao limite e cause erros de clique.</span></span></span>
+                            <span class="flex items-center gap-1">Margem Ecrã <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-gray-400"></i><span class="tooltip-text">Margem de recuo (em pixels) nas bordas para impedir que o desenho seja feito até ao limite e cause erros de clique.</span></span></span>
                             <span id="marginValue">20px</span>
                         </label>
                         <input type="range" id="drawMargin" min="0" max="200" value="20" class="w-full range-sm">
@@ -441,7 +441,7 @@
                     </div>
                     
                     <div id="statsDisplay" class="mt-3 p-2 bg-slate-800/50 rounded-lg border border-slate-700 text-center text-[10px] text-gray-400 font-mono tracking-wide leading-relaxed">
-                        Aguardando composição...
+                        Aguardar ficheiros...
                     </div>
                 </div>
 
@@ -515,19 +515,25 @@
         // ----------------------------------------------------
         // HELPER: Sanitização Inteligente de Nomes
         // ----------------------------------------------------
-        function getBaseName(filename) {
-            return filename.replace(/\.[^/.]+$/, ""); 
-        }
-        function sanitizeFileName(name) {
-            return getBaseName(name).replace(/[^a-z0-9]/gi, '_').toLowerCase();
-        }
+        function getBaseName(filename) { return filename.replace(/\.[^/.]+$/, ""); }
+        function sanitizeFileName(name) { return getBaseName(name).replace(/[^a-z0-9]/gi, '_').toLowerCase(); }
+
+        // ----------------------------------------------------
+        // HELPER: Respiração do Processador (Time-Slicing) 
+        // ----------------------------------------------------
+        let lastYield = performance.now();
+        const yieldUI = async (force = false) => {
+            if (force || performance.now() - lastYield > 15) {
+                await new Promise(r => setTimeout(r, 0));
+                lastYield = performance.now();
+            }
+        };
 
         // ----------------------------------------------------
         // PROTEÇÃO DE ESCALA NO PAPER.JS
         // ----------------------------------------------------
         const dummyCanvas = document.createElement('canvas');
-        dummyCanvas.width = 2000;
-        dummyCanvas.height = 2000;
+        dummyCanvas.width = 2000; dummyCanvas.height = 2000;
         paper.setup(dummyCanvas);
 
         // ==========================================
@@ -543,67 +549,31 @@
         let isDraggingCanvas = false, dragStartX = 0, dragStartY = 0;
         let animReqId = null, isAnimating = false;
 
-        let isProcessing = false;
-        let wakeLock = null; 
+        let isProcessing = false; let wakeLock = null; 
+        let isRecordingGif = false; let gifEncoder = null; let lastGifFrameTime = 0;
 
-        let isRecordingGif = false;
-        let gifEncoder = null;
-        let lastGifFrameTime = 0;
-
-        let globalFlipX = false;
-        let globalFlipY = false;
-
+        let globalFlipX = false; let globalFlipY = false;
         let advancedSettings = { experimental: {}, hiddenFlags: {} };
 
+        // SISTEMA DE TOKENS (ABORTA CÁLCULOS PESADOS SE O USUÁRIO MOVER O MOUSE RÁPIDO)
+        let currentGeoToken = 0; 
+        let geoUpdateTimer = null;
+        let isUpdatingGeo = false;
+        let codeUpdateTimer = null;
+
         const els = {
-            addSvgBtn: document.getElementById('addSvgBtn'), fileInput: document.getElementById('fileInput'),
-            projectItemsList: document.getElementById('projectItemsList'), emptyProjectMsg: document.getElementById('emptyProjectMsg'),
-            newTextInput: document.getElementById('newTextInput'), newTextFont: document.getElementById('newTextFont'), addTextBtn: document.getElementById('addTextBtn'),
-            textEditGroup: document.getElementById('textEditGroup'), editTextInput: document.getElementById('editTextInput'), editTextFont: document.getElementById('editTextFont'),
+            addSvgBtn: document.getElementById('addSvgBtn'), fileInput: document.getElementById('fileInput'), projectItemsList: document.getElementById('projectItemsList'), emptyProjectMsg: document.getElementById('emptyProjectMsg'),
+            newTextInput: document.getElementById('newTextInput'), newTextFont: document.getElementById('newTextFont'), addTextBtn: document.getElementById('addTextBtn'), textEditGroup: document.getElementById('textEditGroup'), editTextInput: document.getElementById('editTextInput'), editTextFont: document.getElementById('editTextFont'),
             originalSvgViewer: document.getElementById('originalSvgViewer'), originalSvgBg: document.getElementById('originalSvgBg'),
-            itemTransformPanel: document.getElementById('itemTransformPanel'), activeItemName: document.getElementById('activeItemName'),
-            itemX: document.getElementById('itemX'), itemY: document.getElementById('itemY'), itemXVal: document.getElementById('itemXVal'), itemYVal: document.getElementById('itemYVal'),
-            itemScale: document.getElementById('itemScale'), itemScaleVal: document.getElementById('itemScaleVal'),
-            itemScaleX: document.getElementById('itemScaleX'), itemScaleY: document.getElementById('itemScaleY'),
-            itemRot: document.getElementById('itemRot'), itemRotVal: document.getElementById('itemRotVal'),
-            itemFlipX: document.getElementById('itemFlipX'), itemFlipY: document.getElementById('itemFlipY'),
-            screenW: document.getElementById('screenW'), screenH: document.getElementById('screenH'),
-            drawPercent: document.getElementById('drawPercent'), percentValue: document.getElementById('percentValue'),
-            drawMargin: document.getElementById('drawMargin'), marginValue: document.getElementById('marginValue'),
-            drawSpeed: document.getElementById('drawSpeed'), speedValue: document.getElementById('speedValue'),
-            targetTimeMin: document.getElementById('targetTimeMin'), calcTimeBtn: document.getElementById('calcTimeBtn'),
-            drawPause: document.getElementById('drawPause'), pauseValue: document.getElementById('pauseValue'),
-            stepPrecision: document.getElementById('stepPrecision'), precisionValue: document.getElementById('precisionValue'),
-            turboMode: document.getElementById('turboMode'), continuousLine: document.getElementById('continuousLine'), warmupMode: document.getElementById('warmupMode'),
-            wakeLockMode: document.getElementById('wakeLockMode'), 
+            itemTransformPanel: document.getElementById('itemTransformPanel'), activeItemName: document.getElementById('activeItemName'), itemX: document.getElementById('itemX'), itemY: document.getElementById('itemY'), itemXVal: document.getElementById('itemXVal'), itemYVal: document.getElementById('itemYVal'), itemScale: document.getElementById('itemScale'), itemScaleVal: document.getElementById('itemScaleVal'), itemScaleX: document.getElementById('itemScaleX'), itemScaleY: document.getElementById('itemScaleY'), itemRot: document.getElementById('itemRot'), itemRotVal: document.getElementById('itemRotVal'), itemFlipX: document.getElementById('itemFlipX'), itemFlipY: document.getElementById('itemFlipY'),
+            screenW: document.getElementById('screenW'), screenH: document.getElementById('screenH'), drawPercent: document.getElementById('drawPercent'), percentValue: document.getElementById('percentValue'), drawMargin: document.getElementById('drawMargin'), marginValue: document.getElementById('marginValue'), drawSpeed: document.getElementById('drawSpeed'), speedValue: document.getElementById('speedValue'), targetTimeMin: document.getElementById('targetTimeMin'), calcTimeBtn: document.getElementById('calcTimeBtn'), drawPause: document.getElementById('drawPause'), pauseValue: document.getElementById('pauseValue'), stepPrecision: document.getElementById('stepPrecision'), precisionValue: document.getElementById('precisionValue'), turboMode: document.getElementById('turboMode'), continuousLine: document.getElementById('continuousLine'), warmupMode: document.getElementById('warmupMode'), wakeLockMode: document.getElementById('wakeLockMode'), 
             fillMode: document.getElementById('fillMode'), fillDensity: document.getElementById('fillDensity'), fillShading: document.getElementById('fillShading'),
-            globalX: document.getElementById('globalX'), globalY: document.getElementById('globalY'),
-            globalXVal: document.getElementById('globalXVal'), globalYVal: document.getElementById('globalYVal'),
-            globalScale: document.getElementById('globalScale'), globalScaleVal: document.getElementById('globalScaleVal'),
-            globalScaleX: document.getElementById('globalScaleX'), globalScaleY: document.getElementById('globalScaleY'),
-            globalRot: document.getElementById('globalRot'), globalRotVal: document.getElementById('globalRotVal'),
-            globalFlipXBtn: document.getElementById('globalFlipXBtn'), globalFlipYBtn: document.getElementById('globalFlipYBtn'),
-            resetGlobalGeoBtn: document.getElementById('resetGlobalGeoBtn'),
-            selectAllBtn: document.getElementById('selectAllBtn'), deselectAllBtn: document.getElementById('deselectAllBtn'),
-            showAllBtn: document.getElementById('showAllBtn'), hideAllBtn: document.getElementById('hideAllBtn'),
-            reverseOrderBtn: document.getElementById('reverseOrderBtn'),
-            layersList: document.getElementById('layersList'), mergeBtn: document.getElementById('mergeBtn'),
-            canvasWrapper: document.getElementById('canvasWrapper'), canvas: document.getElementById('previewCanvas'),
-            playBtn: document.getElementById('playBtn'), stopBtn: document.getElementById('stopBtn'), exportGifBtn: document.getElementById('exportGifBtn'),
-            outputCode: document.getElementById('outputCode'), statsDisplay: document.getElementById('statsDisplay'),
-            progressOverlay: document.getElementById('progressOverlay'), progressTitle: document.getElementById('progressTitle'),
-            progressBar: document.getElementById('progressBar'), progText: document.getElementById('progressText'),
-            statusMsg: document.getElementById('statusMsg'), jsFileName: document.getElementById('jsFileName'),
-            resetGeoBtn: document.getElementById('resetGeoBtn'), importUnyBtn: document.getElementById('importUnyBtn'),
-            exportUnyBtn: document.getElementById('exportUnyBtn'), unyFileInput: document.getElementById('unyFileInput'),
-            welcomeMessageDisplay: document.getElementById('welcomeMessageDisplay')
+            globalX: document.getElementById('globalX'), globalY: document.getElementById('globalY'), globalXVal: document.getElementById('globalXVal'), globalYVal: document.getElementById('globalYVal'), globalScale: document.getElementById('globalScale'), globalScaleVal: document.getElementById('globalScaleVal'), globalScaleX: document.getElementById('globalScaleX'), globalScaleY: document.getElementById('globalScaleY'), globalRot: document.getElementById('globalRot'), globalRotVal: document.getElementById('globalRotVal'), globalFlipXBtn: document.getElementById('globalFlipXBtn'), globalFlipYBtn: document.getElementById('globalFlipYBtn'), resetGlobalGeoBtn: document.getElementById('resetGlobalGeoBtn'), selectAllBtn: document.getElementById('selectAllBtn'), deselectAllBtn: document.getElementById('deselectAllBtn'), showAllBtn: document.getElementById('showAllBtn'), hideAllBtn: document.getElementById('hideAllBtn'), reverseOrderBtn: document.getElementById('reverseOrderBtn'),
+            layersList: document.getElementById('layersList'), mergeBtn: document.getElementById('mergeBtn'), canvasWrapper: document.getElementById('canvasWrapper'), canvas: document.getElementById('previewCanvas'), playBtn: document.getElementById('playBtn'), stopBtn: document.getElementById('stopBtn'), exportGifBtn: document.getElementById('exportGifBtn'), outputCode: document.getElementById('outputCode'), statsDisplay: document.getElementById('statsDisplay'), progressOverlay: document.getElementById('progressOverlay'), progressTitle: document.getElementById('progressTitle'), progressBar: document.getElementById('progressBar'), progText: document.getElementById('progressText'), statusMsg: document.getElementById('statusMsg'), jsFileName: document.getElementById('jsFileName'), resetGeoBtn: document.getElementById('resetGeoBtn'), importUnyBtn: document.getElementById('importUnyBtn'), exportUnyBtn: document.getElementById('exportUnyBtn'), unyFileInput: document.getElementById('unyFileInput'), welcomeMessageDisplay: document.getElementById('welcomeMessageDisplay')
         };
         const ctx = els.canvas.getContext('2d');
 
-        async function requestWakeLock() {
-            if (!('wakeLock' in navigator) || !els.wakeLockMode.checked) return;
-            try { if (wakeLock === null) wakeLock = await navigator.wakeLock.request('screen'); } catch (err) { els.wakeLockMode.checked = false; }
-        }
+        async function requestWakeLock() { if (!('wakeLock' in navigator) || !els.wakeLockMode.checked) return; try { if (wakeLock === null) wakeLock = await navigator.wakeLock.request('screen'); } catch (err) { els.wakeLockMode.checked = false; } }
         function releaseWakeLock() { if (wakeLock !== null) { wakeLock.release().then(() => { wakeLock = null; }).catch(() => {}); } }
         document.addEventListener('visibilitychange', async () => { if (wakeLock !== null && document.visibilityState === 'visible' && isProcessing && els.wakeLockMode.checked) await requestWakeLock(); });
         els.wakeLockMode.addEventListener('change', async () => { if (els.wakeLockMode.checked && isProcessing) await requestWakeLock(); else if (!els.wakeLockMode.checked) releaseWakeLock(); });
@@ -611,8 +581,7 @@
         function drawBackgroundAndGrid(context, w, h, vScale, vOffsetX, vOffsetY, sw, sh, bScale) {
             context.fillStyle = "#0f172a"; context.fillRect(0, 0, w, h);
             context.save(); context.translate(vOffsetX, vOffsetY); context.translate(w/2, h/2); context.scale(vScale, vScale); context.translate(-w/2, -h/2);
-            const cx = (w - sw * bScale) / 2; const cy = (h - sh * bScale) / 2;
-            const rectW = sw * bScale; const rectH = sh * bScale;
+            const cx = (w - sw * bScale) / 2; const cy = (h - sh * bScale) / 2; const rectW = sw * bScale; const rectH = sh * bScale;
             context.fillStyle = "#020617"; context.fillRect(cx, cy, rectW, rectH);
             context.save(); context.beginPath(); context.rect(cx, cy, rectW, rectH); context.clip();
             context.strokeStyle = "rgba(255,255,255,0.04)"; context.lineWidth = 1; context.beginPath();
@@ -626,96 +595,61 @@
         els.addSvgBtn.onclick = () => els.fileInput.click();
         els.fileInput.onchange = async (e) => {
             if(!e.target.files.length) return;
-            isProcessing = true; await requestWakeLock();
-            els.progressOverlay.classList.remove('hidden');
+            isProcessing = true; await requestWakeLock(); els.progressOverlay.classList.remove('hidden');
 
             for(let file of e.target.files) {
                 if(!file.name.toLowerCase().endsWith('.svg')) continue;
-                const isFirst = projectItems.length === 0;
-                if (isFirst) els.jsFileName.value = sanitizeFileName(file.name) + '_script';
-
-                const text = await file.text();
-                const id = 'item_' + Date.now() + Math.floor(Math.random()*1000);
-                
-                projectItems.push({
-                    id, name: file.name, content: text,
-                    x: 0, y: 0, scaleX: 1, scaleY: 1, rot: 0, flipX: false, flipY: false,
-                    basePaths: [], cx: 0, cy: 0, isText: false, normScale: 1
-                });
-                activeItemId = id;
-                await extractBasePaths(id);
+                const isFirst = projectItems.length === 0; if (isFirst) els.jsFileName.value = sanitizeFileName(file.name) + '_script';
+                const text = await file.text(); const id = 'item_' + Date.now() + Math.floor(Math.random()*1000);
+                projectItems.push({ id, name: file.name, content: text, x: 0, y: 0, scaleX: 1, scaleY: 1, rot: 0, flipX: false, flipY: false, basePaths: [], cx: 0, cy: 0, isText: false, normScale: 1 });
+                activeItemId = id; await extractBasePaths(id);
             }
-            e.target.value = ''; 
-            
-            isProcessing = false; releaseWakeLock(); els.progressOverlay.classList.add('hidden');
-            renderProjectItems(); renderLayersUI(); updateGeometryAndMap();
+            e.target.value = ''; isProcessing = false; releaseWakeLock(); els.progressOverlay.classList.add('hidden');
+            renderProjectItems(); renderLayersUI(); triggerUpdate();
         };
 
         function textToSvgString(text, fontUrl) {
             return new Promise((resolve, reject) => {
                 if(!text.trim()) return reject("Texto vazio.");
                 const makeSvg = (font) => {
-                    const glyphPaths = font.getPaths(text, 0, 0, 100);
-                    let finalPaperItem = null;
+                    const glyphPaths = font.getPaths(text, 0, 0, 100); let finalPaperItem = null;
                     glyphPaths.forEach(gp => {
                         const d = gp.toPathData(2); if (!d || d === "") return;
-                        try {
-                            const pPath = new paper.CompoundPath(d);
-                            if (!finalPaperItem) { finalPaperItem = pPath; } else {
-                                const united = finalPaperItem.unite(pPath);
-                                finalPaperItem.remove(); pPath.remove(); finalPaperItem = united;
-                            }
-                        } catch(e) {}
+                        try { const pPath = new paper.CompoundPath(d); if (!finalPaperItem) { finalPaperItem = pPath; } else { const united = finalPaperItem.unite(pPath); finalPaperItem.remove(); pPath.remove(); finalPaperItem = united; } } catch(e) {}
                     });
                     if (!finalPaperItem) return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"></svg>`;
                     const bounds = finalPaperItem.bounds; const padding = 10;
-                    const vx = bounds.x - padding; const vy = bounds.y - padding;
-                    const vw = bounds.width + padding * 2; const vh = bounds.height + padding * 2;
-                    const svgInner = finalPaperItem.exportSVG({ asString: true });
-                    finalPaperItem.remove(); paper.project.clear();
+                    const vx = bounds.x - padding; const vy = bounds.y - padding; const vw = bounds.width + padding * 2; const vh = bounds.height + padding * 2;
+                    const svgInner = finalPaperItem.exportSVG({ asString: true }); finalPaperItem.remove(); paper.project.clear();
                     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vx} ${vy} ${vw} ${vh}">${svgInner}</svg>`;
                 };
                 opentype.load(fontUrl, function(err, font) {
-                    if (err) { opentype.load('https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/fonts/Roboto/Roboto-Regular.ttf', function(err2, fallbackFont) {
-                            if (err2) return reject(err2); resolve(makeSvg(fallbackFont)); });
-                    } else { resolve(makeSvg(font)); }
+                    if (err) { opentype.load('https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/fonts/Roboto/Roboto-Regular.ttf', function(err2, fallbackFont) { if (err2) return reject(err2); resolve(makeSvg(fallbackFont)); }); } 
+                    else { resolve(makeSvg(font)); }
                 });
             });
         }
 
         els.addTextBtn.onclick = async () => {
-            const text = els.newTextInput.value.trim(); const font = els.newTextFont.value;
-            if(!text) return;
-            isProcessing = true; await requestWakeLock();
-            els.progressOverlay.classList.remove('hidden'); els.progressTitle.textContent = "Desenhando texto...";
-            els.statusMsg.textContent = "A fundir letras..."; els.progressBar.style.width = "20%";
-
+            const text = els.newTextInput.value.trim(); const font = els.newTextFont.value; if(!text) return;
+            isProcessing = true; await requestWakeLock(); els.progressOverlay.classList.remove('hidden'); els.progressTitle.textContent = "A desenhar texto..."; els.statusMsg.textContent = "A fundir letras..."; els.progressBar.style.width = "20%";
             try {
                 const isFirst = projectItems.length === 0; if (isFirst) els.jsFileName.value = sanitizeFileName(text) + '_script';
-                const svgString = await textToSvgString(text, font);
-                const id = 'item_' + Date.now() + Math.floor(Math.random()*1000);
+                const svgString = await textToSvgString(text, font); const id = 'item_' + Date.now() + Math.floor(Math.random()*1000);
                 projectItems.push({ id, name: `Texto: ${text.substring(0,8)}`, content: svgString, x: 0, y: 0, scaleX: 1, scaleY: 1, rot: 0, flipX: false, flipY: false, basePaths: [], cx: 0, cy: 0, isText: true, textContent: text, fontUrl: font, normScale: 1 });
-                activeItemId = id; els.newTextInput.value = ''; 
-                await extractBasePaths(id);
+                activeItemId = id; els.newTextInput.value = ''; await extractBasePaths(id);
             } catch(e) { els.statusMsg.textContent = "Erro na Fonte!"; await new Promise(r => setTimeout(r, 2000)); } 
-            finally { isProcessing = false; releaseWakeLock(); els.progressOverlay.classList.add('hidden'); renderProjectItems(); renderLayersUI(); updateGeometryAndMap(); }
+            finally { isProcessing = false; releaseWakeLock(); els.progressOverlay.classList.add('hidden'); renderProjectItems(); renderLayersUI(); triggerUpdate(); }
         };
 
         const handleTextEdit = async () => {
-            const inst = projectItems.find(i => i.id === activeItemId);
-            if(!inst || !inst.isText) return;
-            const newText = els.editTextInput.value.trim(); const newFont = els.editTextFont.value;
-            if(!newText || (newText === inst.textContent && newFont === inst.fontUrl)) return;
-            isProcessing = true; await requestWakeLock();
-            els.progressOverlay.classList.remove('hidden'); els.progressTitle.textContent = "A atualizar texto...";
-            els.statusMsg.textContent = "A re-fundir curvas..."; els.progressBar.style.width = "40%";
+            const inst = projectItems.find(i => i.id === activeItemId); if(!inst || !inst.isText) return;
+            const newText = els.editTextInput.value.trim(); const newFont = els.editTextFont.value; if(!newText || (newText === inst.textContent && newFont === inst.fontUrl)) return;
+            isProcessing = true; await requestWakeLock(); els.progressOverlay.classList.remove('hidden'); els.progressTitle.textContent = "A atualizar texto..."; els.statusMsg.textContent = "A re-fundir curvas..."; els.progressBar.style.width = "40%";
             try {
-                inst.textContent = newText; inst.fontUrl = newFont; inst.name = `Texto: ${newText.substring(0,8)}`;
-                inst.content = await textToSvgString(newText, newFont);
-                rawLayers = rawLayers.filter(l => l.itemId !== inst.id);
-                await extractBasePaths(inst.id);
+                inst.textContent = newText; inst.fontUrl = newFont; inst.name = `Texto: ${newText.substring(0,8)}`; inst.content = await textToSvgString(newText, newFont); rawLayers = rawLayers.filter(l => l.itemId !== inst.id); await extractBasePaths(inst.id);
             } catch(e) { els.statusMsg.textContent = "Erro ao atualizar texto!"; await new Promise(r => setTimeout(r, 2000)); } 
-            finally { isProcessing = false; releaseWakeLock(); els.progressOverlay.classList.add('hidden'); renderProjectItems(); renderLayersUI(); updateGeometryAndMap(); }
+            finally { isProcessing = false; releaseWakeLock(); els.progressOverlay.classList.add('hidden'); renderProjectItems(); renderLayersUI(); triggerUpdate(); }
         };
         els.editTextInput.addEventListener('change', handleTextEdit); els.editTextFont.addEventListener('change', handleTextEdit);
 
@@ -724,43 +658,23 @@
             projectItems.forEach(item => {
                 const div = document.createElement('div'); const isActive = activeItemId === item.id;
                 div.className = `p-2 rounded text-xs cursor-pointer flex justify-between items-center transition ${isActive ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-gray-300 hover:bg-slate-700'}`;
-                const nameSpan = document.createElement('span'); 
-                nameSpan.innerHTML = item.isText ? `<i data-lucide="type" class="w-3 h-3 inline mr-1"></i>${item.name}` : `<i data-lucide="image" class="w-3 h-3 inline mr-1"></i>${item.name}`;
-                nameSpan.className = 'truncate max-w-[150px] flex items-center';
-                const delBtn = document.createElement('button'); delBtn.innerHTML = '<i data-lucide="trash-2" class="w-3 h-3"></i>';
-                delBtn.className = `p-1 rounded ${isActive ? 'hover:bg-indigo-500' : 'hover:bg-rose-500 hover:text-white'}`;
-                delBtn.onclick = (e) => { e.stopPropagation(); deleteItem(item.id); };
+                const nameSpan = document.createElement('span'); nameSpan.innerHTML = item.isText ? `<i data-lucide="type" class="w-3 h-3 inline mr-1"></i>${item.name}` : `<i data-lucide="image" class="w-3 h-3 inline mr-1"></i>${item.name}`; nameSpan.className = 'truncate max-w-[150px] flex items-center';
+                const delBtn = document.createElement('button'); delBtn.innerHTML = '<i data-lucide="trash-2" class="w-3 h-3"></i>'; delBtn.className = `p-1 rounded ${isActive ? 'hover:bg-indigo-500' : 'hover:bg-rose-500 hover:text-white'}`; delBtn.onclick = (e) => { e.stopPropagation(); deleteItem(item.id); };
                 div.onclick = () => { activeItemId = item.id; renderProjectItems(); };
                 div.appendChild(nameSpan); div.appendChild(delBtn); els.projectItemsList.appendChild(div);
-            });
-            lucide.createIcons(); loadItemTransforms();
+            }); lucide.createIcons(); loadItemTransforms();
         }
 
         function deleteItem(id) {
-            projectItems = projectItems.filter(i => i.id !== id);
-            rawLayers = rawLayers.filter(l => l.itemId !== id);
+            projectItems = projectItems.filter(i => i.id !== id); rawLayers = rawLayers.filter(l => l.itemId !== id);
             if(activeItemId === id) activeItemId = projectItems.length ? projectItems[0].id : null;
-            renderProjectItems(); renderLayersUI(); updateGeometryAndMap();
+            renderProjectItems(); renderLayersUI(); triggerUpdate();
         }
 
         els.exportUnyBtn.onclick = () => {
-            let prjName = projectItems.length > 0 ? getBaseName(projectItems[0].name) : "Auto.js Vector Studio";
-            let safeName = sanitizeFileName(prjName) || 'projeto';
+            let prjName = projectItems.length > 0 ? getBaseName(projectItems[0].name) : "Auto.js Vector Studio"; let safeName = sanitizeFileName(prjName) || 'projeto';
             const profile = {
-                projectName: prjName, elements: { projectItems, rawLayers },
-                settings: {
-                    globalX: parseFloat(els.globalX.value), globalY: parseFloat(els.globalY.value),
-                    globalScale: parseFloat(els.globalScale.value), globalScaleX: parseFloat(els.globalScaleX.value),
-                    globalScaleY: parseFloat(els.globalScaleY.value), globalRot: parseFloat(els.globalRot.value),
-                    globalFlipX: globalFlipX, globalFlipY: globalFlipY, screenW: parseInt(els.screenW.value), screenH: parseInt(els.screenH.value),
-                    drawPercent: parseInt(els.drawPercent.value), drawMargin: parseInt(els.drawMargin.value),
-                    drawSpeed: parseFloat(els.drawSpeed.value), drawPause: parseInt(els.drawPause.value),
-                    stepPrecision: parseInt(els.stepPrecision.value), wakeLockMode: els.wakeLockMode.checked,
-                    turboMode: els.turboMode.checked, continuousLine: els.continuousLine.checked,
-                    warmupMode: els.warmupMode.checked, fillMode: els.fillMode.checked,
-                    fillDensity: parseInt(els.fillDensity.value), fillShading: parseInt(els.fillShading.value)
-                },
-                advanced: advancedSettings, welcomeMessage: els.welcomeMessageDisplay.dataset.customMessage || ""
+                projectName: prjName, elements: { projectItems, rawLayers }, settings: { globalX: parseFloat(els.globalX.value), globalY: parseFloat(els.globalY.value), globalScale: parseFloat(els.globalScale.value), globalScaleX: parseFloat(els.globalScaleX.value), globalScaleY: parseFloat(els.globalScaleY.value), globalRot: parseFloat(els.globalRot.value), globalFlipX: globalFlipX, globalFlipY: globalFlipY, screenW: parseInt(els.screenW.value), screenH: parseInt(els.screenH.value), drawPercent: parseInt(els.drawPercent.value), drawMargin: parseInt(els.drawMargin.value), drawSpeed: parseFloat(els.drawSpeed.value), drawPause: parseInt(els.drawPause.value), stepPrecision: parseInt(els.stepPrecision.value), wakeLockMode: els.wakeLockMode.checked, turboMode: els.turboMode.checked, continuousLine: els.continuousLine.checked, warmupMode: els.warmupMode.checked, fillMode: els.fillMode.checked, fillDensity: parseInt(els.fillDensity.value), fillShading: parseInt(els.fillShading.value) }, advanced: advancedSettings, welcomeMessage: els.welcomeMessageDisplay.dataset.customMessage || ""
             };
             const blob = new Blob([JSON.stringify(profile, null, 2)], { type: 'application/json' }); const url = URL.createObjectURL(blob);
             const a = document.createElement('a'); a.href = url; a.download = `${safeName}_perfil.uny`; a.click(); URL.revokeObjectURL(url);
@@ -768,56 +682,25 @@
 
         els.importUnyBtn.onclick = () => els.unyFileInput.click();
         els.unyFileInput.onchange = async (e) => {
-            if(!e.target.files.length) return;
-            const file = e.target.files[0];
+            if(!e.target.files.length) return; const file = e.target.files[0];
             try {
                 const text = await file.text(); const data = JSON.parse(text);
                 if(!data.elements || !data.settings) throw new Error("Arquivo .uny inválido ou corrompido.");
-                
-                projectItems = data.elements.projectItems || []; rawLayers = data.elements.rawLayers || [];
-                activeItemId = projectItems.length > 0 ? projectItems[0].id : null;
+                projectItems = data.elements.projectItems || []; rawLayers = data.elements.rawLayers || []; activeItemId = projectItems.length > 0 ? projectItems[0].id : null;
                 els.jsFileName.value = data.projectName ? sanitizeFileName(data.projectName) + "_script" : "composicao_vetorial";
-                const s = data.settings;
-                els.globalX.value = s.globalX || 0; els.globalY.value = s.globalY || 0;
-                els.globalScale.value = s.globalScale || 1; els.globalScaleX.value = s.globalScaleX || 1;
-                els.globalScaleY.value = s.globalScaleY || 1; els.globalRot.value = s.globalRot || 0;
-                globalFlipX = !!s.globalFlipX; globalFlipY = !!s.globalFlipY;
-                els.screenW.value = s.screenW || 1100; els.screenH.value = s.screenH || 2442;
-                els.drawPercent.value = s.drawPercent || 70; els.drawMargin.value = s.drawMargin || 20;
-                els.drawSpeed.value = s.drawSpeed || 2.0; els.drawPause.value = s.drawPause || 35;
-                els.stepPrecision.value = s.stepPrecision || 3;
-                els.wakeLockMode.checked = !!s.wakeLockMode; els.turboMode.checked = !!s.turboMode;
-                els.continuousLine.checked = !!s.continuousLine; els.warmupMode.checked = s.warmupMode !== undefined ? s.warmupMode : true;
-                els.fillMode.checked = !!s.fillMode; els.fillDensity.value = s.fillDensity || 5; els.fillShading.value = s.fillShading || 1;
-
-                els.globalXVal.textContent = els.globalX.value + 'px'; els.globalYVal.textContent = els.globalY.value + 'px';
-                els.globalScaleVal.textContent = parseFloat(els.globalScale.value).toFixed(1) + 'x'; els.globalRotVal.textContent = els.globalRot.value + '°';
-                els.percentValue.textContent = els.drawPercent.value + '%'; els.marginValue.textContent = els.drawMargin.value + 'px';
-                els.speedValue.textContent = parseFloat(els.drawSpeed.value).toFixed(1) + 'x'; els.pauseValue.textContent = els.drawPause.value + 'ms';
-                els.precisionValue.textContent = els.stepPrecision.value + 'px';
-                
-                els.globalFlipXBtn.className = `flex-1 py-1.5 rounded text-xs flex justify-center gap-1 transition-colors ${globalFlipX ? 'bg-emerald-600 text-white' : 'bg-slate-700 hover:bg-slate-600 text-gray-300'}`;
-                els.globalFlipYBtn.className = `flex-1 py-1.5 rounded text-xs flex justify-center gap-1 transition-colors ${globalFlipY ? 'bg-emerald-600 text-white' : 'bg-slate-700 hover:bg-slate-600 text-gray-300'}`;
-
-                advancedSettings = data.advanced || { experimental: {}, hiddenFlags: {} };
-                const msg = (data.welcomeMessage && typeof data.welcomeMessage === 'string' && data.welcomeMessage.trim() !== "") ? data.welcomeMessage : "Bem Vindo Jociel";
-                els.welcomeMessageDisplay.textContent = msg; els.welcomeMessageDisplay.dataset.customMessage = msg !== "Bem Vindo Jociel" ? msg : "";
-
-                renderProjectItems(); renderLayersUI(); updateGeometryAndMap();
+                const s = data.settings; els.globalX.value = s.globalX || 0; els.globalY.value = s.globalY || 0; els.globalScale.value = s.globalScale || 1; els.globalScaleX.value = s.globalScaleX || 1; els.globalScaleY.value = s.globalScaleY || 1; els.globalRot.value = s.globalRot || 0; globalFlipX = !!s.globalFlipX; globalFlipY = !!s.globalFlipY; els.screenW.value = s.screenW || 1100; els.screenH.value = s.screenH || 2442; els.drawPercent.value = s.drawPercent || 70; els.drawMargin.value = s.drawMargin || 20; els.drawSpeed.value = s.drawSpeed || 2.0; els.drawPause.value = s.drawPause || 35; els.stepPrecision.value = s.stepPrecision || 3; els.wakeLockMode.checked = !!s.wakeLockMode; els.turboMode.checked = !!s.turboMode; els.continuousLine.checked = !!s.continuousLine; els.warmupMode.checked = s.warmupMode !== undefined ? s.warmupMode : true; els.fillMode.checked = !!s.fillMode; els.fillDensity.value = s.fillDensity || 5; els.fillShading.value = s.fillShading || 1;
+                els.globalXVal.textContent = els.globalX.value + 'px'; els.globalYVal.textContent = els.globalY.value + 'px'; els.globalScaleVal.textContent = parseFloat(els.globalScale.value).toFixed(1) + 'x'; els.globalRotVal.textContent = els.globalRot.value + '°'; els.percentValue.textContent = els.drawPercent.value + '%'; els.marginValue.textContent = els.drawMargin.value + 'px'; els.speedValue.textContent = parseFloat(els.drawSpeed.value).toFixed(1) + 'x'; els.pauseValue.textContent = els.drawPause.value + 'ms'; els.precisionValue.textContent = els.stepPrecision.value + 'px';
+                els.globalFlipXBtn.className = `flex-1 py-1.5 rounded text-xs flex justify-center gap-1 transition-colors ${globalFlipX ? 'bg-emerald-600 text-white' : 'bg-slate-700 hover:bg-slate-600 text-gray-300'}`; els.globalFlipYBtn.className = `flex-1 py-1.5 rounded text-xs flex justify-center gap-1 transition-colors ${globalFlipY ? 'bg-emerald-600 text-white' : 'bg-slate-700 hover:bg-slate-600 text-gray-300'}`;
+                advancedSettings = data.advanced || { experimental: {}, hiddenFlags: {} }; const msg = (data.welcomeMessage && typeof data.welcomeMessage === 'string' && data.welcomeMessage.trim() !== "") ? data.welcomeMessage : "Bem Vindo Jociel"; els.welcomeMessageDisplay.textContent = msg; els.welcomeMessageDisplay.dataset.customMessage = msg !== "Bem Vindo Jociel" ? msg : "";
+                renderProjectItems(); renderLayersUI(); triggerUpdate();
             } catch(err) { console.error(err); alert("Falha ao importar o arquivo .uny"); } finally { e.target.value = ''; }
         };
 
         async function reprocessFills() {
             if (projectItems.length === 0) return;
-            isProcessing = true; await requestWakeLock();
-            els.progressOverlay.classList.remove('hidden'); els.progressTitle.textContent = "Recalculando Preenchimentos...";
-            els.progressBar.style.width = "0%"; els.statusMsg.textContent = "A refazer cálculos matemáticos...";
-            
-            rawLayers = [];
-            for (let i = 0; i < projectItems.length; i++) { projectItems[i].basePaths = []; await extractBasePaths(projectItems[i].id); }
-            
-            isProcessing = false; releaseWakeLock(); els.progressOverlay.classList.add('hidden');
-            renderLayersUI(); updateGeometryAndMap();
+            isProcessing = true; await requestWakeLock(); els.progressOverlay.classList.remove('hidden'); els.progressTitle.textContent = "A recalcular Preenchimentos..."; els.progressBar.style.width = "0%"; els.statusMsg.textContent = "A refazer cálculos matemáticos...";
+            rawLayers = []; for (let i = 0; i < projectItems.length; i++) { projectItems[i].basePaths = []; await extractBasePaths(projectItems[i].id); }
+            isProcessing = false; releaseWakeLock(); els.progressOverlay.classList.add('hidden'); renderLayersUI(); triggerUpdate();
         }
         els.fillMode.addEventListener('change', reprocessFills); els.fillDensity.addEventListener('change', reprocessFills); els.fillShading.addEventListener('change', reprocessFills);
 
@@ -827,433 +710,6 @@
         els.showAllBtn.onclick = () => { rawLayers.forEach(l => l.visible = true); renderLayersUI(); triggerUpdate(); };
         els.hideAllBtn.onclick = () => { rawLayers.forEach(l => l.visible = false); renderLayersUI(); triggerUpdate(); };
         els.reverseOrderBtn.onclick = () => { rawLayers.reverse(); renderLayersUI(); triggerUpdate(); };
-
-        // ==========================================
-        // NOVO MOTOR DE EXTRACÇÃO (Super Rápido + Menos Camadas)
-        // ==========================================
-        async function extractBasePaths(itemId) {
-            const item = projectItems.find(i => i.id === itemId);
-            if(!item) return;
-            
-            if (!els.progressOverlay.classList.contains('hidden')) {
-                els.progressTitle.textContent = item.isText ? "Processando..." : `A ler ${item.name}...`;
-                els.statusMsg.textContent = "A extrair dados do vetor (Novo Motor)...";
-                els.progressBar.style.width = "5%"; els.progText.textContent = "5%";
-            }
-            await new Promise(r => requestAnimationFrame(r));
-
-            try {
-                paper.project.clear();
-                
-                // PREPARA O SVG
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(item.content, "image/svg+xml");
-                const svgEl = doc.querySelector('svg');
-                
-                if (!svgEl.hasAttribute("viewBox")) {
-                    let w = parseFloat(svgEl.getAttribute("width")) || 1000;
-                    let h = parseFloat(svgEl.getAttribute("height")) || 1000;
-                    svgEl.setAttribute("viewBox", `0 0 ${w} ${h}`);
-                }
-                
-                let imported = paper.project.importSVG(svgEl.outerHTML, { expandShapes: true, insert: true });
-                if (!imported) throw new Error("Falha ao ler o ficheiro SVG.");
-
-                let basePaths = [];
-                let localMinX = Infinity, localMinY = Infinity, localMaxX = -Infinity, localMaxY = -Infinity;
-                
-                let bounds = paper.project.activeLayer.bounds;
-                if (bounds.width === 0 || bounds.height === 0) throw new Error("SVG Vazio");
-                
-                let maxDiag = Math.sqrt(bounds.width * bounds.width + bounds.height * bounds.height);
-                let shortName = getBaseName(item.name).substring(0, 10);
-
-                // Variáveis para agrupar as camadas de forma simples
-                let hatchIndices = [];
-                let outlineIndices = [];
-                let detailIndices = [];
-
-                // MÓDULO 1: PREENCHIMENTOS (Mantido e otimizado para ir para uma única camada)
-                if (els.fillMode.checked) {
-                    if (!els.progressOverlay.classList.contains('hidden')) { els.statusMsg.textContent = "A calcular preenchimentos..."; }
-                    await new Promise(r => requestAnimationFrame(r));
-
-                    let filledItems = paper.project.getItems({
-                        class: paper.PathItem,
-                        match: function(i) {
-                            try {
-                                if (i.clipMask) return false;
-                                if (!i.fillColor) return false;
-                                if (i.fillColor.alpha === 0) return false;
-                                if (i.bounds.width === 0 || i.bounds.height === 0) return false;
-                                return true;
-                            } catch(e) { return false; }
-                        }
-                    });
-
-                    let angles = [45];
-                    let shading = parseInt(els.fillShading.value) || 1;
-                    let density = parseInt(els.fillDensity.value) || 5;
-
-                    if (shading >= 2) angles.push(-45);
-                    if (shading >= 3) angles.push(0);
-                    
-                    let wAmp = Math.max(bounds.width, bounds.height) * 0.001;
-                    let wobble = () => (Math.random() - 0.5) * wAmp;
-
-                    for (let i = 0; i < filledItems.length; i++) {
-                        let pItem = filledItems[i];
-                        let iBounds = pItem.bounds;
-                        
-                        angles.forEach(angle => {
-                            let diag = Math.sqrt(iBounds.width*iBounds.width + iBounds.height*iBounds.height);
-                            let center = iBounds.center;
-                            let dir = new paper.Point({ length: 1, angle: angle });
-                            let norm = new paper.Point({ length: 1, angle: angle + 90 });
-
-                            let startT = -diag / 2; let endT = diag / 2;
-                            let t = startT;
-                            
-                            while(t <= endT) {
-                                let rayCenter = center.add(norm.multiply(t));
-                                let p1 = rayCenter.subtract(dir.multiply(diag));
-                                let p2 = rayCenter.add(dir.multiply(diag));
-                                
-                                let line = new paper.Path.Line(p1, p2);
-                                let inters = pItem.getIntersections(line);
-                                
-                                if (inters.length > 0) {
-                                    inters.sort((a, b) => a.point.getDistance(p1) - b.point.getDistance(p1));
-                                    
-                                    let unique = [inters[0]];
-                                    for(let k=1; k<inters.length; k++) {
-                                        if (inters[k].point.getDistance(unique[unique.length-1].point) > 0.1) unique.push(inters[k]);
-                                    }
-                                    
-                                    for (let k=0; k<unique.length-1; k++) {
-                                        let mid = unique[k].point.add(unique[k+1].point).divide(2);
-                                        if (pItem.contains(mid)) {
-                                            let sx1 = unique[k].point.x + wobble(); let sy1 = unique[k].point.y + wobble();
-                                            let sx2 = unique[k+1].point.x + wobble(); let sy2 = unique[k+1].point.y + wobble();
-                                            
-                                            hatchIndices.push(basePaths.length);
-                                            basePaths.push([{x: sx1, y: sy1}, {x: sx2, y: sy2}]);
-                                            
-                                            if(sx1 < localMinX) localMinX = sx1; if(sx1 > localMaxX) localMaxX = sx1;
-                                            if(sy1 < localMinY) localMinY = sy1; if(sy1 > localMaxY) localMaxY = sy1;
-                                            if(sx2 < localMinX) localMinX = sx2; if(sx2 > localMaxX) localMaxX = sx2;
-                                            if(sy2 < localMinY) localMinY = sy2; if(sy2 > localMaxY) localMaxY = sy2;
-                                        }
-                                    }
-                                }
-                                line.remove(); 
-                                t += density + (Math.random() - 0.5) * (density * 0.3);
-                            }
-                        });
-                        
-                        // Respiro da UI para preenchimentos complexos
-                        if (i % 10 === 0) await new Promise(r => requestAnimationFrame(r));
-                    }
-                }
-
-                // MÓDULO 2: EXTRAÇÃO RÁPIDA COM FLATTEN E CLASSIFICAÇÃO
-                if (!els.progressOverlay.classList.contains('hidden')) { els.statusMsg.textContent = "A mapear contornos com o novo motor..."; }
-                await new Promise(r => requestAnimationFrame(r));
-
-                let allPaths = paper.project.getItems({ 
-                    class: paper.Path,
-                    match: function(i) {
-                        if (i.clipMask) return false;
-                        if (i.length === 0) return false;
-                        return true;
-                    }
-                });
-                
-                if (allPaths.length === 0 && basePaths.length === 0) throw new Error("Sem contornos visíveis.");
-
-                // Descobrir limite para decidir o que é contorno principal e o que é detalhe
-                let outlineThreshold = 0;
-                if (allPaths.length > 0) {
-                    let lengths = allPaths.map(p => p.length).sort((a,b) => b - a);
-                    // O top 15% das linhas mais compridas serão consideradas "Contornos" (Bordas)
-                    let tIdx = Math.floor(lengths.length * 0.15);
-                    outlineThreshold = lengths[tIdx] || 0;
-                    if (outlineThreshold < maxDiag * 0.1) outlineThreshold = maxDiag * 0.1; // Mínimo lógico
-                }
-
-                let stepPrecision = parseInt(els.stepPrecision.value) || 3;
-
-                for (let i = 0; i < allPaths.length; i++) {
-                    let path = allPaths[i];
-                    
-                    // Respiro da UI (Atualiza a barra sem travar o PC)
-                    if (i % 20 === 0 && !els.progressOverlay.classList.contains('hidden')) {
-                        let pct = 10 + Math.floor((i / allPaths.length) * 85);
-                        els.progressBar.style.width = `${pct}%`; els.progText.textContent = `${pct}%`;
-                        await new Promise(r => requestAnimationFrame(r)); 
-                    }
-
-                    // O SEGREDO DO NOVO MOTOR: achatar as curvas usando o código C++/WASM interno do paper.js em vez de iterar com JS
-                    path.flatten(stepPrecision);
-
-                    let currentLine = [];
-                    for (let j = 0; j < path.segments.length; j++) {
-                        let pt = path.segments[j].point;
-                        currentLine.push({x: pt.x, y: pt.y});
-                        
-                        if(pt.x < localMinX) localMinX = pt.x; if(pt.x > localMaxX) localMaxX = pt.x;
-                        if(pt.y < localMinY) localMinY = pt.y; if(pt.y > localMaxY) localMaxY = pt.y;
-                    }
-
-                    if (currentLine.length > 1) {
-                        let pathIdx = basePaths.length;
-                        basePaths.push(currentLine);
-
-                        // Lógica de agrupar em camadas simples
-                        if (path.length >= outlineThreshold) {
-                            outlineIndices.push(pathIdx);
-                        } else {
-                            detailIndices.push(pathIdx);
-                        }
-                    }
-                }
-
-                item.basePaths = basePaths;
-                item.cx = (localMinX + localMaxX) / 2;
-                item.cy = (localMinY + localMaxY) / 2;
-                
-                let tW = localMaxX - localMinX; let tH = localMaxY - localMinY;
-                if(tW <= 0) tW = 1; if(tH <= 0) tH = 1;
-                item.normScale = 1000 / Math.max(tW, tH);
-
-                // CRIAR AS 3 CAMADAS MASTER EM VEZ DE CENTENAS
-                if (hatchIndices.length > 0) {
-                    rawLayers.push({ id: Date.now() + Math.random(), itemId: item.id, pathIndices: hatchIndices, nome: `[${shortName}] Hachuras`, delay: 0, selected: false, visible: true });
-                }
-                if (outlineIndices.length > 0) {
-                    rawLayers.push({ id: Date.now() + Math.random(), itemId: item.id, pathIndices: outlineIndices, nome: `[${shortName}] Bordas Contorno`, delay: 0, selected: false, visible: true });
-                }
-                if (detailIndices.length > 0) {
-                    rawLayers.push({ id: Date.now() + Math.random(), itemId: item.id, pathIndices: detailIndices, nome: `[${shortName}] Detalhes`, delay: 0, selected: false, visible: true });
-                }
-
-                if (!els.progressOverlay.classList.contains('hidden')) {
-                    els.progressBar.style.width = `100%`; els.progText.textContent = `100%`;
-                }
-
-            } catch(e) { console.error(e); } 
-        }
-
-        // ==========================================
-        // CONTROLOS DE TRANSFORMAÇÃO LOCAL E GLOBAL
-        // ==========================================
-        function loadItemTransforms() {
-            const inst = projectItems.find(i => i.id === activeItemId);
-            
-            if(!inst) {
-                els.originalSvgViewer.innerHTML = '<span class="text-[10px] text-gray-600">Nenhum SVG selecionado</span>';
-                els.originalSvgBg.classList.remove('bg-slate-200'); els.originalSvgBg.classList.add('bg-slate-900');
-                els.itemTransformPanel.classList.add('opacity-50', 'pointer-events-none'); els.activeItemName.textContent = "Nenhum"; return; 
-            }
-            
-            els.originalSvgBg.classList.remove('bg-slate-900'); els.originalSvgBg.classList.add('bg-slate-200');
-            els.originalSvgViewer.innerHTML = inst.content;
-            const svg = els.originalSvgViewer.querySelector('svg');
-            if(svg) { svg.style.maxWidth = '100%'; svg.style.maxHeight = '100%'; svg.style.width = 'auto'; svg.style.height = 'auto'; }
-
-            els.itemTransformPanel.classList.remove('opacity-50', 'pointer-events-none'); els.activeItemName.textContent = inst.name;
-            
-            if(inst.isText) { els.textEditGroup.classList.remove('hidden'); els.editTextInput.value = inst.textContent; els.editTextFont.value = inst.fontUrl; } 
-            else { els.textEditGroup.classList.add('hidden'); }
-
-            els.itemX.value = inst.x; els.itemY.value = inst.y; els.itemXVal.textContent = inst.x + 'px'; els.itemYVal.textContent = inst.y + 'px';
-            els.itemScaleX.value = inst.scaleX; els.itemScaleY.value = inst.scaleY;
-            els.itemScale.value = inst.scaleX; els.itemScaleVal.textContent = inst.scaleX.toFixed(1) + 'x';
-            els.itemRot.value = inst.rot; els.itemRotVal.textContent = `${inst.rot}°`;
-            
-            els.itemFlipX.dataset.active = inst.flipX; els.itemFlipX.className = `flex-1 py-1.5 rounded text-xs flex justify-center gap-1 transition-colors ${inst.flipX ? 'bg-indigo-600 text-white' : 'bg-slate-700 hover:bg-slate-600 text-gray-300'}`;
-            els.itemFlipY.dataset.active = inst.flipY; els.itemFlipY.className = `flex-1 py-1.5 rounded text-xs flex justify-center gap-1 transition-colors ${inst.flipY ? 'bg-indigo-600 text-white' : 'bg-slate-700 hover:bg-slate-600 text-gray-300'}`;
-        }
-
-        function triggerUpdate() { if (rawLayers.length > 0) updateGeometryAndMap(); }
-        function triggerCodeUpdate() { if (scaledLayers.length > 0) { generateCode(); updateStats(); } }
-
-        const applyLocalTrans = () => {
-            const inst = projectItems.find(i => i.id === activeItemId); if(!inst) return;
-            inst.x = parseFloat(els.itemX.value); inst.y = parseFloat(els.itemY.value);
-            els.itemXVal.textContent = inst.x + 'px'; els.itemYVal.textContent = inst.y + 'px';
-            inst.scaleX = parseFloat(els.itemScaleX.value); inst.scaleY = parseFloat(els.itemScaleY.value);
-            inst.rot = parseFloat(els.itemRot.value); els.itemRotVal.textContent = `${inst.rot}°`;
-            triggerUpdate();
-        };
-
-        els.itemScale.addEventListener('input', (e) => {
-            const val = parseFloat(e.target.value);
-            els.itemScaleVal.textContent = val.toFixed(1) + 'x';
-            els.itemScaleX.value = val; els.itemScaleY.value = val;
-            applyLocalTrans();
-        });
-
-        els.itemX.addEventListener('input', applyLocalTrans); els.itemY.addEventListener('input', applyLocalTrans);
-        els.itemScaleX.addEventListener('input', applyLocalTrans); els.itemScaleY.addEventListener('input', applyLocalTrans);
-        els.itemRot.addEventListener('input', applyLocalTrans);
-        els.itemFlipX.onclick = () => { const inst = projectItems.find(i => i.id === activeItemId); if(inst) { inst.flipX = !inst.flipX; loadItemTransforms(); triggerUpdate(); }};
-        els.itemFlipY.onclick = () => { const inst = projectItems.find(i => i.id === activeItemId); if(inst) { inst.flipY = !inst.flipY; loadItemTransforms(); triggerUpdate(); }};
-
-        const applyGlobalTrans = () => {
-            els.globalXVal.textContent = els.globalX.value + 'px'; els.globalYVal.textContent = els.globalY.value + 'px';
-            els.globalScaleX.value = els.globalScale.value; els.globalScaleY.value = els.globalScale.value;
-            els.globalScaleVal.textContent = parseFloat(els.globalScale.value).toFixed(1) + 'x'; els.globalRotVal.textContent = els.globalRot.value + '°';
-            triggerUpdate();
-        };
-        const applyGlobalTransDirect = () => {
-            els.globalXVal.textContent = els.globalX.value + 'px'; els.globalYVal.textContent = els.globalY.value + 'px';
-            els.globalRotVal.textContent = els.globalRot.value + '°'; triggerUpdate();
-        };
-
-        els.globalScale.addEventListener('input', applyGlobalTrans);
-        els.globalX.addEventListener('input', applyGlobalTransDirect); els.globalY.addEventListener('input', applyGlobalTransDirect);
-        els.globalScaleX.addEventListener('input', applyGlobalTransDirect); els.globalScaleY.addEventListener('input', applyGlobalTransDirect);
-        els.globalRot.addEventListener('input', applyGlobalTransDirect);
-
-        els.globalFlipXBtn.onclick = () => { globalFlipX = !globalFlipX; els.globalFlipXBtn.className = `flex-1 py-1.5 rounded text-xs flex justify-center gap-1 transition-colors ${globalFlipX ? 'bg-emerald-600 text-white' : 'bg-slate-700 hover:bg-slate-600 text-gray-300'}`; triggerUpdate(); };
-        els.globalFlipYBtn.onclick = () => { globalFlipY = !globalFlipY; els.globalFlipYBtn.className = `flex-1 py-1.5 rounded text-xs flex justify-center gap-1 transition-colors ${globalFlipY ? 'bg-emerald-600 text-white' : 'bg-slate-700 hover:bg-slate-600 text-gray-300'}`; triggerUpdate(); };
-
-        els.resetGlobalGeoBtn.onclick = () => {
-            els.globalScale.value = 1; els.globalScaleX.value = 1; els.globalScaleY.value = 1;
-            els.globalX.value = 0; els.globalY.value = 0; els.globalRot.value = 0;
-            globalFlipX = false; globalFlipY = false;
-            els.globalFlipXBtn.className = `flex-1 py-1.5 bg-slate-700 hover:bg-slate-600 rounded text-xs text-gray-300 flex justify-center gap-1`;
-            els.globalFlipYBtn.className = `flex-1 py-1.5 bg-slate-700 hover:bg-slate-600 rounded text-xs text-gray-300 flex justify-center gap-1`;
-            applyGlobalTrans();
-        };
-
-        const handleGlobalUpdate = () => { els.percentValue.textContent = `${els.drawPercent.value}%`; els.marginValue.textContent = `${els.drawMargin.value}px`; triggerUpdate(); };
-        els.drawPercent.addEventListener('input', handleGlobalUpdate); els.drawMargin.addEventListener('input', handleGlobalUpdate);
-        els.screenW.addEventListener('change', triggerUpdate); els.screenH.addEventListener('change', triggerUpdate);
-        els.stepPrecision.addEventListener('input', (e) => { els.precisionValue.textContent = `${e.target.value}px`; });
-        els.stepPrecision.addEventListener('change', triggerUpdate);
-        els.continuousLine.addEventListener('change', triggerUpdate);
-
-        els.drawSpeed.addEventListener('input', (e) => { els.speedValue.textContent = `${parseFloat(e.target.value).toFixed(1)}x`; triggerCodeUpdate(); });
-        els.drawPause.addEventListener('input', (e) => { els.pauseValue.textContent = `${e.target.value}ms`; triggerCodeUpdate(); });
-        els.turboMode.addEventListener('change', triggerCodeUpdate);
-        els.warmupMode.addEventListener('change', triggerCodeUpdate);
-
-        // LÓGICA DE CÁLCULO DE TEMPO ALVO
-        els.calcTimeBtn.onclick = () => {
-            if (!scaledLayers || scaledLayers.length === 0) return;
-            const targetMin = parseFloat(els.targetTimeMin.value);
-            if (isNaN(targetMin) || targetMin <= 0) return;
-
-            const targetMs = targetMin * 60 * 1000;
-            const turbo = els.turboMode.checked;
-            const warmup = els.warmupMode.checked;
-            let currentPause = parseInt(els.drawPause.value) || 35;
-
-            let baseGestureTime = 0; let fixedTime = 0; let traceCount = 0; let activeLayerCount = 0;
-
-            scaledLayers.forEach(l => {
-                if(!l.visible) return;
-                activeLayerCount++; fixedTime += l.delay * 1000;
-                l.screenTraces.forEach(tr => {
-                    traceCount++; baseGestureTime += turbo ? (tr.length * 6) : (tr.length * 10);
-                    fixedTime += turbo ? 5 : currentPause;
-                });
-            });
-
-            if (warmup && activeLayerCount > 0 && scaledLayers[0].screenTraces.length > 0) {
-                const tr = scaledLayers[0].screenTraces[0];
-                const tAq = Math.max(3, Math.min(15, Math.floor(tr.length * 0.25)));
-                fixedTime += Math.max(300, tAq * 15) + 200;
-            }
-
-            if (baseGestureTime === 0) return;
-
-            let availableTimeForGestures = targetMs - fixedTime;
-
-            if (availableTimeForGestures <= targetMs * 0.1 && !turbo) {
-                let neededFixedTimeForPauses = targetMs * 0.5 - (fixedTime - (traceCount * currentPause));
-                let newPause = Math.floor(neededFixedTimeForPauses / traceCount);
-                if (newPause < 0) newPause = 0; 
-                
-                els.drawPause.value = newPause; els.pauseValue.textContent = newPause + 'ms';
-                currentPause = newPause; fixedTime = 0;
-                scaledLayers.forEach(l => {
-                    if(!l.visible) return;
-                    fixedTime += l.delay * 1000; fixedTime += l.screenTraces.length * currentPause;
-                });
-                if (warmup && activeLayerCount > 0 && scaledLayers[0].screenTraces.length > 0) {
-                    const tr = scaledLayers[0].screenTraces[0]; const tAq = Math.max(3, Math.min(15, Math.floor(tr.length * 0.25)));
-                    fixedTime += Math.max(300, tAq * 15) + 200;
-                }
-                availableTimeForGestures = targetMs - fixedTime;
-            }
-
-            if (availableTimeForGestures <= 0) availableTimeForGestures = 1;
-            let requiredSpeed = baseGestureTime / availableTimeForGestures;
-            if (requiredSpeed < 0.1) requiredSpeed = 0.1; if (requiredSpeed > 50.0) requiredSpeed = 50.0;
-
-            els.drawSpeed.value = requiredSpeed.toFixed(1); els.speedValue.textContent = requiredSpeed.toFixed(1) + 'x';
-            const speedWrap = els.drawSpeed.parentElement;
-            speedWrap.classList.add('bg-orange-500/20', 'rounded', 'p-1', 'transition-all');
-            setTimeout(() => speedWrap.classList.remove('bg-orange-500/20', 'rounded', 'p-1'), 1000);
-            triggerCodeUpdate();
-        };
-
-        els.resetGeoBtn.onclick = () => {
-            els.itemScaleX.value = 1.0; els.itemScaleY.value = 1.0; els.itemScale.value = 1.0; els.itemScaleVal.textContent = "1.0x";
-            els.itemRot.value = 0; els.itemRotVal.textContent = "0°"; els.itemX.value = 0; els.itemY.value = 0;
-            els.itemXVal.textContent = "0px"; els.itemYVal.textContent = "0px";
-            const inst = projectItems.find(i => i.id === activeItemId);
-            if(inst) { inst.flipX = false; inst.flipY = false; inst.x = 0; inst.y = 0; inst.scaleX = 1; inst.scaleY = 1; inst.rot = 0; }
-            loadItemTransforms(); triggerUpdate();
-        };
-
-        function resetZoom() { viewScale = 1.0; viewOffsetX = 0; viewOffsetY = 0; if(scaledLayers.length) drawStaticPreview(); }
-        document.getElementById('zoomInBtn').onclick = () => { viewScale *= 1.3; drawStaticPreview(); };
-        document.getElementById('zoomOutBtn').onclick = () => { viewScale /= 1.3; drawStaticPreview(); };
-        document.getElementById('zoomResetBtn').onclick = resetZoom;
-        els.canvas.addEventListener('wheel', (e) => { e.preventDefault(); viewScale *= (e.deltaY < 0) ? 1.1 : 0.9; drawStaticPreview(); }, { passive: false });
-        const getPos = (e) => (e.touches && e.touches.length > 0) ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : { x: e.clientX, y: e.clientY };
-        els.canvas.addEventListener('mousedown', startPan); els.canvas.addEventListener('touchstart', startPan, { passive: false });
-        function startPan(e) { if(!scaledLayers.length || isAnimating) return; isDraggingCanvas = true; const p = getPos(e); dragStartX = p.x - viewOffsetX; dragStartY = p.y - viewOffsetY; els.canvas.classList.replace('cursor-grab', 'cursor-grabbing'); }
-        els.canvas.addEventListener('mousemove', movePan); els.canvas.addEventListener('touchmove', movePan, { passive: false });
-        function movePan(e) { if (!isDraggingCanvas) return; e.preventDefault(); const p = getPos(e); viewOffsetX = p.x - dragStartX; viewOffsetY = p.y - dragStartY; drawStaticPreview(); }
-        const endPan = () => { isDraggingCanvas = false; els.canvas.classList.replace('cursor-grabbing', 'cursor-grab'); };
-        els.canvas.addEventListener('mouseup', endPan); els.canvas.addEventListener('mouseleave', endPan); els.canvas.addEventListener('touchend', endPan);
-        window.addEventListener('resize', () => { if(scaledLayers.length && !isAnimating) drawStaticPreview(); });
-
-        function updateStats() {
-            if (!scaledLayers || scaledLayers.length === 0) { els.statsDisplay.innerHTML = "Aguardando composição..."; return; }
-            let totalPts = 0; let estimatedTimeMs = 0; let traceCount = 0;
-            const mult = 1 / (parseFloat(els.drawSpeed.value) || 2.0);
-            const pause = parseInt(els.drawPause.value) || 35;
-            const turbo = els.turboMode.checked; const warmup = els.warmupMode.checked;
-            let activeLayerCount = 0;
-
-            scaledLayers.forEach(l => {
-                if(!l.visible) return;
-                activeLayerCount++; estimatedTimeMs += l.delay * 1000;
-                l.screenTraces.forEach(tr => {
-                    traceCount++; totalPts += tr.length;
-                    let dur = turbo ? Math.floor((tr.length * 6) * mult) : Math.floor((tr.length * 10) * mult);
-                    if (dur < 5) dur = 5; 
-                    estimatedTimeMs += dur + (turbo ? 5 : pause);
-                });
-            });
-
-            if (warmup && activeLayerCount > 0 && scaledLayers[0].screenTraces.length > 0) {
-                const tr = scaledLayers[0].screenTraces[0]; const tAq = Math.max(3, Math.min(15, Math.floor(tr.length * 0.25)));
-                let dur = Math.max(300, tAq * 15); estimatedTimeMs += dur + 200;
-            }
-
-            let timeStr = "";
-            if (estimatedTimeMs < 60000) timeStr = (estimatedTimeMs/1000).toFixed(1) + "s";
-            else { let m = Math.floor(estimatedTimeMs / 60000); let s = Math.floor((estimatedTimeMs % 60000) / 1000); timeStr = `${m}m ${s}s`; }
-
-            els.statsDisplay.innerHTML = `Camadas: <b class="text-white">${activeLayerCount}/${rawLayers.length}</b> | Traços: <b class="text-white">${traceCount}</b> | Pontos Mapeados: <b class="text-white">${totalPts}</b> | Tempo: <b class="text-amber-400">~${timeStr}</b>`;
-        }
 
         function renderLayersUI() {
             els.layersList.innerHTML = '';
@@ -1274,12 +730,12 @@
                 
                 const divNome = document.createElement('div'); divNome.className = 'col-span-5 flex items-center';
                 const inpNome = document.createElement('input'); inpNome.type = 'text'; inpNome.className = 'w-full bg-transparent border-none outline-none px-1 text-gray-200 text-[10px]'; inpNome.value = layer.nome;
-                inpNome.onchange = (e) => { layer.nome = e.target.value; generateCode(); }; 
+                inpNome.onchange = (e) => { layer.nome = e.target.value; generateCodeAsync(currentGeoToken); }; 
                 divNome.appendChild(inpNome);
 
                 const divDelay = document.createElement('div'); divDelay.className = 'col-span-3 flex justify-center items-center';
                 const inpDelay = document.createElement('input'); inpDelay.type = 'number'; inpDelay.min = 0; inpDelay.step = 0.5; inpDelay.className = 'w-8 bg-slate-900 border border-slate-600 rounded p-0.5 text-center outline-none text-white text-[10px]'; inpDelay.value = layer.delay;
-                inpDelay.onchange = (e) => { layer.delay = parseFloat(e.target.value) || 0; generateCode(); updateStats(); };
+                inpDelay.onchange = (e) => { layer.delay = parseFloat(e.target.value) || 0; generateCodeAsync(currentGeoToken); updateStats(); };
                 divDelay.appendChild(inpDelay);
 
                 const divOrder = document.createElement('div'); divOrder.className = 'col-span-2 flex justify-center gap-1';
@@ -1303,39 +759,338 @@
             rawLayers = [newLayer, ...unsel]; renderLayersUI(); triggerUpdate();
         };
 
-        function updateGeometryAndMap() {
-            if(projectItems.length === 0) { scaledLayers = []; globalScaledTraces = []; drawStaticPreview(); generateCode(); updateStats(); return; }
+        // ==========================================
+        // MOTOR DE EXTRACÇÃO TOTALMENTE ASSÍNCRONO 
+        // ==========================================
+        async function extractBasePaths(itemId) {
+            const item = projectItems.find(i => i.id === itemId); if(!item) return;
+            
+            if (!els.progressOverlay.classList.contains('hidden')) {
+                els.progressTitle.textContent = item.isText ? "A processar..." : `A ler ${item.name}...`; els.statusMsg.textContent = "A preparar o motor de renderização rápido..."; els.progressBar.style.width = "5%"; els.progText.textContent = "5%";
+            }
+            await yieldUI(true);
+
+            try {
+                paper.project.clear();
+                const parser = new DOMParser(); const doc = parser.parseFromString(item.content, "image/svg+xml"); const svgEl = doc.querySelector('svg');
+                if (!svgEl.hasAttribute("viewBox")) { let w = parseFloat(svgEl.getAttribute("width")) || 1000; let h = parseFloat(svgEl.getAttribute("height")) || 1000; svgEl.setAttribute("viewBox", `0 0 ${w} ${h}`); }
+                
+                let imported = paper.project.importSVG(svgEl.outerHTML, { expandShapes: true, insert: true });
+                if (!imported) throw new Error("Falha ao ler o ficheiro SVG.");
+
+                let basePaths = []; let localMinX = Infinity, localMinY = Infinity, localMaxX = -Infinity, localMaxY = -Infinity;
+                let bounds = paper.project.activeLayer.bounds; if (bounds.width === 0 || bounds.height === 0) throw new Error("SVG Vazio");
+                let maxDiag = Math.sqrt(bounds.width * bounds.width + bounds.height * bounds.height); let shortName = getBaseName(item.name).substring(0, 10);
+                let hatchIndices = []; let outlineIndices = []; let detailIndices = [];
+
+                if (els.fillMode.checked) {
+                    if (!els.progressOverlay.classList.contains('hidden')) { els.statusMsg.textContent = "A calcular preenchimentos complexos..."; }
+                    await yieldUI(true);
+
+                    let filledItems = paper.project.getItems({
+                        class: paper.PathItem,
+                        match: function(i) {
+                            try { if (i.clipMask) return false; if (!i.fillColor) return false; if (i.fillColor.alpha === 0) return false; if (i.bounds.width === 0 || i.bounds.height === 0) return false; return true; } catch(e) { return false; }
+                        }
+                    });
+
+                    let angles = [45]; let shading = parseInt(els.fillShading.value) || 1; let density = parseInt(els.fillDensity.value) || 5;
+                    if (shading >= 2) angles.push(-45); if (shading >= 3) angles.push(0);
+                    let wAmp = Math.max(bounds.width, bounds.height) * 0.001; let wobble = () => (Math.random() - 0.5) * wAmp;
+
+                    for (let i = 0; i < filledItems.length; i++) {
+                        let pItem = filledItems[i]; let iBounds = pItem.bounds;
+                        
+                        // YIELD DE SEGURANÇA NA TRANSIÇÃO DE FORMAS GRANDES
+                        if (i % 2 === 0) await yieldUI(true);
+
+                        angles.forEach(angle => {
+                            let diag = Math.sqrt(iBounds.width*iBounds.width + iBounds.height*iBounds.height); let center = iBounds.center;
+                            let dir = new paper.Point({ length: 1, angle: angle }); let norm = new paper.Point({ length: 1, angle: angle + 90 });
+                            let startT = -diag / 2; let endT = diag / 2; let t = startT;
+                            let raycastPass = 0;
+                            
+                            while(t <= endT) {
+                                raycastPass++;
+                                let rayCenter = center.add(norm.multiply(t)); let p1 = rayCenter.subtract(dir.multiply(diag)); let p2 = rayCenter.add(dir.multiply(diag));
+                                let line = new paper.Path.Line(p1, p2); let inters = pItem.getIntersections(line);
+                                
+                                if (inters.length > 0) {
+                                    inters.sort((a, b) => a.point.getDistance(p1) - b.point.getDistance(p1));
+                                    let unique = [inters[0]];
+                                    for(let k=1; k<inters.length; k++) { if (inters[k].point.getDistance(unique[unique.length-1].point) > 0.1) unique.push(inters[k]); }
+                                    for (let k=0; k<unique.length-1; k++) {
+                                        let mid = unique[k].point.add(unique[k+1].point).divide(2);
+                                        if (pItem.contains(mid)) {
+                                            let sx1 = unique[k].point.x + wobble(); let sy1 = unique[k].point.y + wobble(); let sx2 = unique[k+1].point.x + wobble(); let sy2 = unique[k+1].point.y + wobble();
+                                            hatchIndices.push(basePaths.length); basePaths.push([{x: sx1, y: sy1}, {x: sx2, y: sy2}]);
+                                            if(sx1 < localMinX) localMinX = sx1; if(sx1 > localMaxX) localMaxX = sx1; if(sy1 < localMinY) localMinY = sy1; if(sy1 > localMaxY) localMaxY = sy1; if(sx2 < localMinX) localMinX = sx2; if(sx2 > localMaxX) localMaxX = sx2; if(sy2 < localMinY) localMinY = sy2; if(sy2 > localMaxY) localMaxY = sy2;
+                                        }
+                                    }
+                                }
+                                line.remove(); t += density + (Math.random() - 0.5) * (density * 0.3);
+                            }
+                        });
+                    }
+                }
+
+                if (!els.progressOverlay.classList.contains('hidden')) { els.statusMsg.textContent = "A planificar contornos com multi-threading ilusório..."; }
+                await yieldUI(true);
+
+                let allPaths = paper.project.getItems({ class: paper.Path, match: function(i) { if (i.clipMask) return false; if (i.length === 0) return false; return true; } });
+                if (allPaths.length === 0 && basePaths.length === 0) throw new Error("Sem contornos visíveis.");
+
+                let outlineThreshold = 0;
+                if (allPaths.length > 0) {
+                    let lengths = allPaths.map(p => p.length).sort((a,b) => b - a);
+                    let tIdx = Math.floor(lengths.length * 0.15); outlineThreshold = lengths[tIdx] || 0;
+                    if (outlineThreshold < maxDiag * 0.1) outlineThreshold = maxDiag * 0.1;
+                }
+
+                let stepPrecision = parseInt(els.stepPrecision.value) || 3;
+
+                for (let i = 0; i < allPaths.length; i++) {
+                    let path = allPaths[i];
+                    
+                    // RESPIRAÇÃO FREQUENTE PARA NÃO TRAVAR O BROWSER EM SVGs MILIONÁRIOS
+                    if (i % 15 === 0) {
+                        let pct = 10 + Math.floor((i / allPaths.length) * 85);
+                        if (!els.progressOverlay.classList.contains('hidden')) { els.progressBar.style.width = `${pct}%`; els.progText.textContent = `${pct}%`; }
+                        await yieldUI(true); 
+                    }
+
+                    path.flatten(stepPrecision);
+                    let currentLine = [];
+                    for (let j = 0; j < path.segments.length; j++) {
+                        let pt = path.segments[j].point; currentLine.push({x: pt.x, y: pt.y});
+                        if(pt.x < localMinX) localMinX = pt.x; if(pt.x > localMaxX) localMaxX = pt.x; if(pt.y < localMinY) localMinY = pt.y; if(pt.y > localMaxY) localMaxY = pt.y;
+                    }
+
+                    if (currentLine.length > 1) {
+                        let pathIdx = basePaths.length; basePaths.push(currentLine);
+                        if (path.length >= outlineThreshold) { outlineIndices.push(pathIdx); } else { detailIndices.push(pathIdx); }
+                    }
+                }
+                
+                // MÓDULO 3: BORDA (SILHUETA EXTERNA)
+                if (!els.progressOverlay.classList.contains('hidden')) { els.statusMsg.textContent = "A gerar borda (silhueta)..."; }
+                await yieldUI(true);
+
+                let outlineSilhouetteIndices = [];
+                try {
+                    let silhouette = null;
+                    // Sort paths from largest to smallest to form a strong base quickly
+                    let sortedPaths = [...allPaths].sort((a,b) => b.length - a.length);
+                    
+                    for (let i = 0; i < sortedPaths.length; i++) {
+                        if (i % 20 === 0) {
+                            if (!els.progressOverlay.classList.contains('hidden')) { els.progText.textContent = `Borda ${Math.floor((i/sortedPaths.length)*100)}%`; }
+                            await yieldUI(true);
+                        }
+                        let clone = sortedPaths[i].clone({insert: false});
+                        clone.closed = true;
+                        
+                        if (!silhouette) {
+                            silhouette = clone;
+                        } else {
+                            try {
+                                let merged = silhouette.unite(clone);
+                                silhouette.remove();
+                                clone.remove();
+                                silhouette = merged;
+                            } catch(e) {}
+                        }
+                    }
+                    
+                    if (silhouette) {
+                        let islands = [];
+                        if (silhouette instanceof paper.CompoundPath) {
+                            for(let i=0; i < silhouette.children.length; i++) {
+                                let c1 = silhouette.children[i];
+                                let isHole = false;
+                                for(let j=0; j < silhouette.children.length; j++) {
+                                    if (i===j) continue;
+                                    let c2 = silhouette.children[j];
+                                    if (c2.bounds.contains(c1.bounds)) {
+                                        isHole = true; break;
+                                    }
+                                }
+                                if (!isHole) islands.push(c1);
+                            }
+                        } else if (silhouette instanceof paper.Path) {
+                            islands.push(silhouette);
+                        }
+                        
+                        for (let i = 0; i < islands.length; i++) {
+                            let bp = islands[i];
+                            bp.flatten(stepPrecision);
+                            let currentLine = [];
+                            for (let j = 0; j < bp.segments.length; j++) {
+                                let pt = bp.segments[j].point;
+                                currentLine.push({x: pt.x, y: pt.y});
+                            }
+                            if (currentLine.length > 1) {
+                                currentLine.push({x: currentLine[0].x, y: currentLine[0].y}); // Volta contínua (fecha o círculo)
+                                let pathIdx = basePaths.length;
+                                basePaths.push(currentLine);
+                                outlineSilhouetteIndices.push(pathIdx);
+                            }
+                        }
+                    }
+                } catch(e) { console.error("Erro na borda:", e); }
+
+                item.basePaths = basePaths; item.cx = (localMinX + localMaxX) / 2; item.cy = (localMinY + localMaxY) / 2;
+                let tW = localMaxX - localMinX; let tH = localMaxY - localMinY; if(tW <= 0) tW = 1; if(tH <= 0) tH = 1; item.normScale = 1000 / Math.max(tW, tH);
+
+                if (hatchIndices.length > 0) { rawLayers.push({ id: Date.now() + Math.random(), itemId: item.id, pathIndices: hatchIndices, nome: `[${shortName}] Hachuras`, delay: 0, selected: false, visible: true }); }
+                if (outlineIndices.length > 0) { rawLayers.push({ id: Date.now() + Math.random(), itemId: item.id, pathIndices: outlineIndices, nome: `[${shortName}] Bordas Contorno`, delay: 0, selected: false, visible: true }); }
+                if (detailIndices.length > 0) { rawLayers.push({ id: Date.now() + Math.random(), itemId: item.id, pathIndices: detailIndices, nome: `[${shortName}] Detalhes`, delay: 0, selected: false, visible: true }); }
+                // NOVA CAMADA DE BORDA
+                if (outlineSilhouetteIndices.length > 0) { rawLayers.push({ id: Date.now() + Math.random(), itemId: item.id, pathIndices: outlineSilhouetteIndices, nome: `[${shortName}] Borda (Final)`, delay: 0, selected: false, visible: true }); }
+
+                if (!els.progressOverlay.classList.contains('hidden')) { els.progressBar.style.width = `100%`; els.progText.textContent = `100%`; }
+
+            } catch(e) { console.error(e); } 
+        }
+
+        function loadItemTransforms() {
+            const inst = projectItems.find(i => i.id === activeItemId);
+            if(!inst) { els.originalSvgViewer.innerHTML = '<span class="text-[10px] text-gray-600">Nenhum SVG selecionado</span>'; els.originalSvgBg.classList.remove('bg-slate-200'); els.originalSvgBg.classList.add('bg-slate-900'); els.itemTransformPanel.classList.add('opacity-50', 'pointer-events-none'); els.activeItemName.textContent = "Nenhum"; return; }
+            els.originalSvgBg.classList.remove('bg-slate-900'); els.originalSvgBg.classList.add('bg-slate-200'); els.originalSvgViewer.innerHTML = inst.content;
+            const svg = els.originalSvgViewer.querySelector('svg'); if(svg) { svg.style.maxWidth = '100%'; svg.style.maxHeight = '100%'; svg.style.width = 'auto'; svg.style.height = 'auto'; }
+            els.itemTransformPanel.classList.remove('opacity-50', 'pointer-events-none'); els.activeItemName.textContent = inst.name;
+            if(inst.isText) { els.textEditGroup.classList.remove('hidden'); els.editTextInput.value = inst.textContent; els.editTextFont.value = inst.fontUrl; } else { els.textEditGroup.classList.add('hidden'); }
+            els.itemX.value = inst.x; els.itemY.value = inst.y; els.itemXVal.textContent = inst.x + 'px'; els.itemYVal.textContent = inst.y + 'px'; els.itemScaleX.value = inst.scaleX; els.itemScaleY.value = inst.scaleY; els.itemScale.value = inst.scaleX; els.itemScaleVal.textContent = inst.scaleX.toFixed(1) + 'x'; els.itemRot.value = inst.rot; els.itemRotVal.textContent = `${inst.rot}°`;
+            els.itemFlipX.dataset.active = inst.flipX; els.itemFlipX.className = `flex-1 py-1.5 rounded text-xs flex justify-center gap-1 transition-colors ${inst.flipX ? 'bg-indigo-600 text-white' : 'bg-slate-700 hover:bg-slate-600 text-gray-300'}`; els.itemFlipY.dataset.active = inst.flipY; els.itemFlipY.className = `flex-1 py-1.5 rounded text-xs flex justify-center gap-1 transition-colors ${inst.flipY ? 'bg-indigo-600 text-white' : 'bg-slate-700 hover:bg-slate-600 text-gray-300'}`;
+        }
+
+        // DEBOUNCE CENTRAL PARA GATILHOS DA UI
+        function triggerUpdate() {
+            if (rawLayers.length === 0) return;
+            clearTimeout(geoUpdateTimer);
+            geoUpdateTimer = setTimeout(() => { updateGeometryAndMapAsync(); }, 15);
+        }
+        function triggerCodeUpdate() {
+            if (scaledLayers.length === 0) return;
+            clearTimeout(codeUpdateTimer);
+            codeUpdateTimer = setTimeout(() => { generateCodeAsync(currentGeoToken); updateStats(); }, 15);
+        }
+
+        const applyLocalTrans = () => {
+            const inst = projectItems.find(i => i.id === activeItemId); if(!inst) return;
+            inst.x = parseFloat(els.itemX.value); inst.y = parseFloat(els.itemY.value); els.itemXVal.textContent = inst.x + 'px'; els.itemYVal.textContent = inst.y + 'px';
+            inst.scaleX = parseFloat(els.itemScaleX.value); inst.scaleY = parseFloat(els.itemScaleY.value); inst.rot = parseFloat(els.itemRot.value); els.itemRotVal.textContent = `${inst.rot}°`;
+            triggerUpdate();
+        };
+
+        els.itemScale.addEventListener('input', (e) => { const val = parseFloat(e.target.value); els.itemScaleVal.textContent = val.toFixed(1) + 'x'; els.itemScaleX.value = val; els.itemScaleY.value = val; applyLocalTrans(); });
+        els.itemX.addEventListener('input', applyLocalTrans); els.itemY.addEventListener('input', applyLocalTrans); els.itemScaleX.addEventListener('input', applyLocalTrans); els.itemScaleY.addEventListener('input', applyLocalTrans); els.itemRot.addEventListener('input', applyLocalTrans); els.itemFlipX.onclick = () => { const inst = projectItems.find(i => i.id === activeItemId); if(inst) { inst.flipX = !inst.flipX; loadItemTransforms(); triggerUpdate(); }}; els.itemFlipY.onclick = () => { const inst = projectItems.find(i => i.id === activeItemId); if(inst) { inst.flipY = !inst.flipY; loadItemTransforms(); triggerUpdate(); }};
+
+        const applyGlobalTrans = () => { els.globalXVal.textContent = els.globalX.value + 'px'; els.globalYVal.textContent = els.globalY.value + 'px'; els.globalScaleX.value = els.globalScale.value; els.globalScaleY.value = els.globalScale.value; els.globalScaleVal.textContent = parseFloat(els.globalScale.value).toFixed(1) + 'x'; els.globalRotVal.textContent = els.globalRot.value + '°'; triggerUpdate(); };
+        const applyGlobalTransDirect = () => { els.globalXVal.textContent = els.globalX.value + 'px'; els.globalYVal.textContent = els.globalY.value + 'px'; els.globalRotVal.textContent = els.globalRot.value + '°'; triggerUpdate(); };
+        els.globalScale.addEventListener('input', applyGlobalTrans); els.globalX.addEventListener('input', applyGlobalTransDirect); els.globalY.addEventListener('input', applyGlobalTransDirect); els.globalScaleX.addEventListener('input', applyGlobalTransDirect); els.globalScaleY.addEventListener('input', applyGlobalTransDirect); els.globalRot.addEventListener('input', applyGlobalTransDirect); els.globalFlipXBtn.onclick = () => { globalFlipX = !globalFlipX; els.globalFlipXBtn.className = `flex-1 py-1.5 rounded text-xs flex justify-center gap-1 transition-colors ${globalFlipX ? 'bg-emerald-600 text-white' : 'bg-slate-700 hover:bg-slate-600 text-gray-300'}`; triggerUpdate(); }; els.globalFlipYBtn.onclick = () => { globalFlipY = !globalFlipY; els.globalFlipYBtn.className = `flex-1 py-1.5 rounded text-xs flex justify-center gap-1 transition-colors ${globalFlipY ? 'bg-emerald-600 text-white' : 'bg-slate-700 hover:bg-slate-600 text-gray-300'}`; triggerUpdate(); };
+
+        els.resetGlobalGeoBtn.onclick = () => { els.globalScale.value = 1; els.globalScaleX.value = 1; els.globalScaleY.value = 1; els.globalX.value = 0; els.globalY.value = 0; els.globalRot.value = 0; globalFlipX = false; globalFlipY = false; els.globalFlipXBtn.className = `flex-1 py-1.5 bg-slate-700 hover:bg-slate-600 rounded text-xs text-gray-300 flex justify-center gap-1`; els.globalFlipYBtn.className = `flex-1 py-1.5 bg-slate-700 hover:bg-slate-600 rounded text-xs text-gray-300 flex justify-center gap-1`; applyGlobalTrans(); };
+        const handleGlobalUpdate = () => { els.percentValue.textContent = `${els.drawPercent.value}%`; els.marginValue.textContent = `${els.drawMargin.value}px`; triggerUpdate(); };
+        els.drawPercent.addEventListener('input', handleGlobalUpdate); els.drawMargin.addEventListener('input', handleGlobalUpdate); els.screenW.addEventListener('change', triggerUpdate); els.screenH.addEventListener('change', triggerUpdate); els.stepPrecision.addEventListener('input', (e) => { els.precisionValue.textContent = `${e.target.value}px`; }); els.stepPrecision.addEventListener('change', triggerUpdate); els.continuousLine.addEventListener('change', triggerUpdate);
+        els.drawSpeed.addEventListener('input', (e) => { els.speedValue.textContent = `${parseFloat(e.target.value).toFixed(1)}x`; triggerCodeUpdate(); }); els.drawPause.addEventListener('input', (e) => { els.pauseValue.textContent = `${e.target.value}ms`; triggerCodeUpdate(); }); els.turboMode.addEventListener('change', triggerCodeUpdate); els.warmupMode.addEventListener('change', triggerCodeUpdate);
+
+        els.calcTimeBtn.onclick = () => {
+            if (!scaledLayers || scaledLayers.length === 0) return;
+            const targetMin = parseFloat(els.targetTimeMin.value); if (isNaN(targetMin) || targetMin <= 0) return;
+            const targetMs = targetMin * 60 * 1000; const turbo = els.turboMode.checked; const warmup = els.warmupMode.checked;
+            let currentPause = parseInt(els.drawPause.value) || 35; let baseGestureTime = 0; let fixedTime = 0; let traceCount = 0; let activeLayerCount = 0;
+
+            scaledLayers.forEach(l => {
+                if(!l.visible) return; activeLayerCount++; fixedTime += l.delay * 1000;
+                l.screenTraces.forEach(tr => { traceCount++; baseGestureTime += turbo ? (tr.length * 6) : (tr.length * 10); fixedTime += turbo ? 5 : currentPause; });
+            });
+            if (warmup && activeLayerCount > 0 && scaledLayers[0].screenTraces.length > 0) { const tr = scaledLayers[0].screenTraces[0]; const tAq = Math.max(3, Math.min(15, Math.floor(tr.length * 0.25))); fixedTime += Math.max(300, tAq * 15) + 200; }
+            if (baseGestureTime === 0) return; let availableTimeForGestures = targetMs - fixedTime;
+            
+            if (availableTimeForGestures <= targetMs * 0.1 && !turbo) {
+                let neededFixedTimeForPauses = targetMs * 0.5 - (fixedTime - (traceCount * currentPause)); let newPause = Math.floor(neededFixedTimeForPauses / traceCount); if (newPause < 0) newPause = 0; 
+                els.drawPause.value = newPause; els.pauseValue.textContent = newPause + 'ms'; currentPause = newPause; fixedTime = 0;
+                scaledLayers.forEach(l => { if(!l.visible) return; fixedTime += l.delay * 1000; fixedTime += l.screenTraces.length * currentPause; });
+                if (warmup && activeLayerCount > 0 && scaledLayers[0].screenTraces.length > 0) { const tr = scaledLayers[0].screenTraces[0]; const tAq = Math.max(3, Math.min(15, Math.floor(tr.length * 0.25))); fixedTime += Math.max(300, tAq * 15) + 200; }
+                availableTimeForGestures = targetMs - fixedTime;
+            }
+
+            if (availableTimeForGestures <= 0) availableTimeForGestures = 1;
+            let requiredSpeed = baseGestureTime / availableTimeForGestures;
+            if (requiredSpeed < 0.1) requiredSpeed = 0.1; if (requiredSpeed > 50.0) requiredSpeed = 50.0;
+            els.drawSpeed.value = requiredSpeed.toFixed(1); els.speedValue.textContent = requiredSpeed.toFixed(1) + 'x';
+            const speedWrap = els.drawSpeed.parentElement; speedWrap.classList.add('bg-orange-500/20', 'rounded', 'p-1', 'transition-all'); setTimeout(() => speedWrap.classList.remove('bg-orange-500/20', 'rounded', 'p-1'), 1000);
+            triggerCodeUpdate();
+        };
+
+        els.resetGeoBtn.onclick = () => { els.itemScaleX.value = 1.0; els.itemScaleY.value = 1.0; els.itemScale.value = 1.0; els.itemScaleVal.textContent = "1.0x"; els.itemRot.value = 0; els.itemRotVal.textContent = "0°"; els.itemX.value = 0; els.itemY.value = 0; els.itemXVal.textContent = "0px"; els.itemYVal.textContent = "0px"; const inst = projectItems.find(i => i.id === activeItemId); if(inst) { inst.flipX = false; inst.flipY = false; inst.x = 0; inst.y = 0; inst.scaleX = 1; inst.scaleY = 1; inst.rot = 0; } loadItemTransforms(); triggerUpdate(); };
+        function resetZoom() { viewScale = 1.0; viewOffsetX = 0; viewOffsetY = 0; if(scaledLayers.length) drawStaticPreview(); } document.getElementById('zoomInBtn').onclick = () => { viewScale *= 1.3; drawStaticPreview(); }; document.getElementById('zoomOutBtn').onclick = () => { viewScale /= 1.3; drawStaticPreview(); }; document.getElementById('zoomResetBtn').onclick = resetZoom; els.canvas.addEventListener('wheel', (e) => { e.preventDefault(); viewScale *= (e.deltaY < 0) ? 1.1 : 0.9; drawStaticPreview(); }, { passive: false }); const getPos = (e) => (e.touches && e.touches.length > 0) ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : { x: e.clientX, y: e.clientY }; els.canvas.addEventListener('mousedown', startPan); els.canvas.addEventListener('touchstart', startPan, { passive: false }); function startPan(e) { if(!scaledLayers.length || isAnimating) return; isDraggingCanvas = true; const p = getPos(e); dragStartX = p.x - viewOffsetX; dragStartY = p.y - viewOffsetY; els.canvas.classList.replace('cursor-grab', 'cursor-grabbing'); } els.canvas.addEventListener('mousemove', movePan); els.canvas.addEventListener('touchmove', movePan, { passive: false }); function movePan(e) { if (!isDraggingCanvas) return; e.preventDefault(); const p = getPos(e); viewOffsetX = p.x - dragStartX; viewOffsetY = p.y - dragStartY; drawStaticPreview(); } const endPan = () => { isDraggingCanvas = false; els.canvas.classList.replace('cursor-grabbing', 'cursor-grab'); }; els.canvas.addEventListener('mouseup', endPan); els.canvas.addEventListener('mouseleave', endPan); els.canvas.addEventListener('touchend', endPan); window.addEventListener('resize', () => { if(scaledLayers.length && !isAnimating) drawStaticPreview(); });
+
+        function updateStats() {
+            if (!scaledLayers || scaledLayers.length === 0) { els.statsDisplay.innerHTML = "Aguardar ficheiros..."; return; }
+            let totalPts = 0; let estimatedTimeMs = 0; let traceCount = 0;
+            const mult = 1 / (parseFloat(els.drawSpeed.value) || 2.0); const pause = parseInt(els.drawPause.value) || 35; const turbo = els.turboMode.checked; const warmup = els.warmupMode.checked; let activeLayerCount = 0;
+
+            scaledLayers.forEach(l => {
+                if(!l.visible) return; activeLayerCount++; estimatedTimeMs += l.delay * 1000;
+                l.screenTraces.forEach(tr => { traceCount++; totalPts += tr.length; let dur = turbo ? Math.floor((tr.length * 6) * mult) : Math.floor((tr.length * 10) * mult); if (dur < 5) dur = 5; estimatedTimeMs += dur + (turbo ? 5 : pause); });
+            });
+            if (warmup && activeLayerCount > 0 && scaledLayers[0].screenTraces.length > 0) { const tr = scaledLayers[0].screenTraces[0]; const tAq = Math.max(3, Math.min(15, Math.floor(tr.length * 0.25))); let dur = Math.max(300, tAq * 15); estimatedTimeMs += dur + 200; }
+
+            let timeStr = ""; if (estimatedTimeMs < 60000) timeStr = (estimatedTimeMs/1000).toFixed(1) + "s"; else { let m = Math.floor(estimatedTimeMs / 60000); let s = Math.floor((estimatedTimeMs % 60000) / 1000); timeStr = `${m}m ${s}s`; }
+            els.statsDisplay.innerHTML = `Camadas: <b class="text-white">${activeLayerCount}/${rawLayers.length}</b> | Traços: <b class="text-white">${traceCount}</b> | Pontos Mapeados: <b class="text-white">${totalPts}</b> | Tempo: <b class="text-amber-400">~${timeStr}</b>`;
+        }
+
+        // ==========================================
+        // CÁLCULO DE GEOMETRIA ASSÍNCRONO (NÃO TRAVA O BROWSER)
+        // ==========================================
+        async function updateGeometryAndMapAsync() {
+            if(projectItems.length === 0) { scaledLayers = []; globalScaledTraces = []; drawStaticPreview(); generateCodeAsync(currentGeoToken); updateStats(); return; }
             stopAnimation(false);
+
+            const token = ++currentGeoToken;
+            isUpdatingGeo = true;
+            els.statsDisplay.innerHTML = '<i data-lucide="loader" class="w-3.5 h-3.5 animate-spin inline-block mr-1 text-amber-400"></i> A recalcular vetores de ecrã...';
+            lucide.createIcons();
 
             const screenW = parseInt(els.screenW.value) || 1100; const screenH = parseInt(els.screenH.value) || 2442;
             const percent = parseInt(els.drawPercent.value) || 70; const margin = parseInt(els.drawMargin.value) || 20;
-
             const availW = (screenW * (percent/100)) - (margin * 2); const availH = (screenH * (percent/100)) - (margin * 2);
-            const finalScale = Math.min(availW / 1000, availH / 1000) || 1;
-            const screenCX = screenW / 2; const screenCY = screenH / 2;
+            const finalScale = Math.min(availW / 1000, availH / 1000) || 1; const screenCX = screenW / 2; const screenCY = screenH / 2;
 
             const gPosX = parseFloat(els.globalX.value) || 0; const gPosY = parseFloat(els.globalY.value) || 0;
             const gScaleX = parseFloat(els.globalScaleX.value) || 1; const gScaleY = parseFloat(els.globalScaleY.value) || 1;
             const gRotRad = (parseFloat(els.globalRot.value) || 0) * Math.PI / 180;
             const gCos = Math.cos(gRotRad); const gSin = Math.sin(gRotRad);
 
-            scaledLayers = []; globalScaledTraces = [];
+            let newScaledLayers = []; let newGlobalScaledTraces = [];
             const userStep = parseInt(els.stepPrecision.value) || 3;
             const isCont = els.continuousLine.checked;
+            let processPtsCounter = 0;
 
-            rawLayers.forEach(layer => {
-                const item = projectItems.find(i => i.id === layer.itemId); if(!item) return;
+            for (let i = 0; i < rawLayers.length; i++) {
+                if (token !== currentGeoToken) return; // Se houver novo input, abortar o antigo!
+                const layer = rawLayers[i];
+                const item = projectItems.find(it => it.id === layer.itemId); if(!item) continue;
 
                 const cx = item.cx; const cy = item.cy;
                 const rad = item.rot * Math.PI / 180; const cos = Math.cos(rad); const sin = Math.sin(rad);
 
                 let tracesScreen = []; let currentContinuous = [];
 
-                layer.pathIndices.forEach(pIdx => {
-                    const tr = item.basePaths[pIdx]; if(!tr) return;
+                for (let j = 0; j < layer.pathIndices.length; j++) {
+                    if (token !== currentGeoToken) return;
+                    const pIdx = layer.pathIndices[j];
+                    const tr = item.basePaths[pIdx]; if(!tr) continue;
 
                     let cleanPath = []; let lastPt = null;
-                    tr.forEach(p => {
+                    for (let k = 0; k < tr.length; k++) {
+                        processPtsCounter++;
+                        if (processPtsCounter % 2000 === 0) await yieldUI(); // Yield vital para as barras deslizantes funcionarem
+                        if (token !== currentGeoToken) return;
+
+                        let p = tr[k];
                         let px = (p.x - cx) * item.normScale; let py = (p.y - cy) * item.normScale;
                         if(item.flipX) px = -px; if(item.flipY) py = -py;
                         px *= item.scaleX; py *= item.scaleY;
@@ -1344,15 +1099,14 @@
                         if(globalFlipX) lx = -lx; if(globalFlipY) ly = -ly;
                         lx *= gScaleX; ly *= gScaleY;
                         let grx = lx * gCos - ly * gSin; let gry = lx * gSin + ly * gCos;
-                        let sx = Math.floor(screenCX + grx * finalScale + gPosX);
-                        let sy = Math.floor(screenCY + gry * finalScale + gPosY);
+                        let sx = Math.floor(screenCX + grx * finalScale + gPosX); let sy = Math.floor(screenCY + gry * finalScale + gPosY);
                         
                         if(!lastPt) { cleanPath.push({x: sx, y: sy}); lastPt = {x: sx, y: sy}; }
                         else {
                             let dx = sx - lastPt.x; let dy = sy - lastPt.y;
                             if((dx*dx + dy*dy) >= (userStep*userStep)) { cleanPath.push({x: sx, y: sy}); lastPt = {x: sx, y: sy}; }
                         }
-                    });
+                    }
                     
                     if(tr.length > 1) {
                         let p = tr[tr.length-1];
@@ -1379,19 +1133,25 @@
                             if (currentContinuous.length > 0) {
                                 let lastP = currentContinuous[currentContinuous.length - 1]; let firstP = cleanPath[0];
                                 let gapSq = (lastP.x - firstP.x) ** 2 + (lastP.y - firstP.y) ** 2;
-                                if (gapSq > 600) { tracesScreen.push(currentContinuous); if(layer.visible) globalScaledTraces.push(currentContinuous); currentContinuous = [...cleanPath]; } 
+                                if (gapSq > 600) { tracesScreen.push(currentContinuous); if(layer.visible) newGlobalScaledTraces.push(currentContinuous); currentContinuous = [...cleanPath]; } 
                                 else { currentContinuous.push(...cleanPath); }
                             } else { currentContinuous.push(...cleanPath); }
-                        } else { tracesScreen.push(cleanPath); if(layer.visible) globalScaledTraces.push(cleanPath); }
+                        } else { tracesScreen.push(cleanPath); if(layer.visible) newGlobalScaledTraces.push(cleanPath); }
                     }
-                });
+                }
 
-                if(isCont && currentContinuous.length > 1) { tracesScreen.push(currentContinuous); if(layer.visible) globalScaledTraces.push(currentContinuous); }
+                if(isCont && currentContinuous.length > 1) { tracesScreen.push(currentContinuous); if(layer.visible) newGlobalScaledTraces.push(currentContinuous); }
+                newScaledLayers.push({ nome: layer.nome, delay: layer.delay, visible: layer.visible, selected: layer.selected, screenTraces: tracesScreen });
+            }
 
-                scaledLayers.push({ nome: layer.nome, delay: layer.delay, visible: layer.visible, selected: layer.selected, screenTraces: tracesScreen });
-            });
-
-            drawStaticPreview(); generateCode(); updateStats();
+            if (token === currentGeoToken) {
+                scaledLayers = newScaledLayers;
+                globalScaledTraces = newGlobalScaledTraces;
+                drawStaticPreview(); 
+                await generateCodeAsync(token); 
+                updateStats();
+                isUpdatingGeo = false;
+            }
         }
 
         function getLayerColor(index, total) { return total <= 1 ? `hsl(280, 80%, 60%)` : `hsl(280, 80%, ${80 - ((index / (total - 1)) * 50)}%)`; }
@@ -1493,7 +1253,7 @@
             
             if (isRecordingGif) {
                 if (isComplete && gifEncoder) {
-                    els.exportGifBtn.innerHTML = '<i data-lucide="loader" class="w-3.5 h-3.5 animate-spin"></i> Processando...'; lucide.createIcons();
+                    els.exportGifBtn.innerHTML = '<i data-lucide="loader" class="w-3.5 h-3.5 animate-spin"></i> A processar...'; lucide.createIcons();
                     gifEncoder.addFrame(els.canvas, {copy: true, delay: 2000}); gifEncoder.render();
                 } else {
                     isRecordingGif = false; isProcessing = false; releaseWakeLock(); gifEncoder = null;
@@ -1503,8 +1263,13 @@
             drawStaticPreview(); 
         }
 
-        function generateCode() {
+        // ==========================================
+        // GERAÇÃO DE CÓDIGO ASSÍNCRONA PARA NÃO TRAVAR EM MATRIZES GIGANTES
+        // ==========================================
+        async function generateCodeAsync(token) {
             if (!scaledLayers.length) { els.outputCode.value = "// Sem dados."; return; }
+            if (token !== currentGeoToken) return;
+
             const sw = parseInt(els.screenW.value) || 1100; const sh = parseInt(els.screenH.value) || 2442;
             const mult = 1 / (parseFloat(els.drawSpeed.value) || 2.0);
             const pause = parseInt(els.drawPause.value) || 35;
@@ -1512,7 +1277,7 @@
             const visL = scaledLayers.filter(l => l.visible);
 
             let c = []; 
-            c.push(`// --- AUTO.JS VECTOR STUDIO ---`); c.push(`// Engine de Múltiplos Arquivos | Modo: ${turbo ? 'Turbo' : 'Precisão'}`); c.push(`// Continuidade de Traço Ativa: Sem quebras em segmentos!\n`);
+            c.push(`// --- AUTO.JS VECTOR STUDIO ---`); c.push(`// Engine de Múltiplos Ficheiros | Modo: ${turbo ? 'Turbo' : 'Precisão'}`); c.push(`// Continuidade de Traço Ativa: Sem quebras em segmentos!\n`);
             
             if(!visL.length) { els.outputCode.value = "// Nenhuma camada visível selecionada."; return; }
 
@@ -1538,23 +1303,33 @@
                 c.push(`  { nome: "Pré-Traço Inicial (Anti-Bug)", isWarmup: true, del: 0, trs: [\n    [\n      ${warmupStr}\n    ]\n  ] },`); 
             }
             
-            visL.forEach((l, idx) => {
+            for (let idx = 0; idx < visL.length; idx++) {
+                if (token !== currentGeoToken) return;
+                const l = visL[idx];
                 c.push(`  { nome: "${l.nome}", del: ${l.delay * 1000}, trs: [`);
-                const trStrs = l.screenTraces.map(tr => {
+                
+                let trStrs = [];
+                for (let trIdx = 0; trIdx < l.screenTraces.length; trIdx++) {
+                    if (trIdx % 100 === 0) await yieldUI(); // Respiração para arrays gigantes
+                    if (token !== currentGeoToken) return;
+                    
+                    let tr = l.screenTraces[trIdx];
                     let pts = tr.map(p => `[${p.x},${p.y}]`); let chunks = [];
                     for(let i=0; i < pts.length; i+=10) { chunks.push(pts.slice(i, i+10).join(', ')); }
-                    return `    [\n      ${chunks.join(',\n      ')}\n    ]`;
-                });
+                    trStrs.push(`    [\n      ${chunks.join(',\n      ')}\n    ]`);
+                }
+                
                 c.push(trStrs.join(',\n')); c.push(`  ] }${idx < visL.length - 1 ? ',' : ''}`);
-            });
+            }
             c.push(`];\n`);
 
             c.push(`// --- EXECUÇÃO PRINCIPAL ---`); c.push(`for (var k = 0; k < cam.length; k++) {`); c.push(`    var cmd = cam[k];`);
             c.push(`    if (cmd.isWarmup) {`); c.push(`        toast("Executando Pré-Traço...");`); c.push(`        for (var t = 0; t < cmd.trs.length; t++) { desenharWarmup(cmd.trs[t]); }`);
             c.push(`        continue;`); c.push(`    }`);
-            c.push(`    if (cmd.del > 0) { toast("Espere " + (cmd.del/1000) + "s: " + cmd.nome); sleep(cmd.del); }`); c.push(`    else { toast("A desenhar: " + cmd.nome); }`);
+            c.push(`    if (cmd.del > 0) { toast("Aguarde " + (cmd.del/1000) + "s: " + cmd.nome); sleep(cmd.del); }`); c.push(`    else { toast("A desenhar: " + cmd.nome); }`);
             c.push(`    for (var t = 0; t < cmd.trs.length; t++) { desenharTraco(cmd.trs[t]); sleep(${pause}); }`); c.push(`}`); c.push(`toast("Composição Finalizada!");`);
-            els.outputCode.value = c.join('\n');
+            
+            if (token === currentGeoToken) els.outputCode.value = c.join('\n');
         }
 
         document.getElementById('copyBtn').onclick = () => { els.outputCode.select(); document.execCommand('copy'); };
