@@ -1,4 +1,4 @@
-BETA<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-PT">
 <head>
     <meta charset="UTF-8">
@@ -398,7 +398,7 @@ BETA<!DOCTYPE html>
                     </div>
                     <div>
                         <label class="flex justify-between mb-1 text-sky-400">
-                            <span class="flex items-center gap-1">Qualidade Leitura <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-sky-400"></i><span class="tooltip-text">Nível de detalhes das curvas (em pixels entre pontos). Valores menores (ex: 1 ou 2) deixam curvas precisas, mas scripts pesados; valores maiores sacrificam exatidão para ganho de fluidez.</span></span></span>
+                            <span class="flex items-center gap-1">Qualidade Leitura <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-sky-400"></i><span class="tooltip-text">Nível de detalhes das curvas. Modificar isto no novo motor afeta levemente a leitura da geometria vetorial. Valores menores deixam mais preciso.</span></span></span>
                             <span id="precisionValue">3px</span>
                         </label>
                         <input type="range" id="stepPrecision" min="1" max="20" value="3" class="w-full range-sm accent-sky-500">
@@ -516,7 +516,7 @@ BETA<!DOCTYPE html>
         // HELPER: Sanitização Inteligente de Nomes
         // ----------------------------------------------------
         function getBaseName(filename) {
-            return filename.replace(/\.[^/.]+$/, ""); // Remove extensão
+            return filename.replace(/\.[^/.]+$/, ""); 
         }
         function sanitizeFileName(name) {
             return getBaseName(name).replace(/[^a-z0-9]/gi, '_').toLowerCase();
@@ -553,46 +553,30 @@ BETA<!DOCTYPE html>
         let globalFlipX = false;
         let globalFlipY = false;
 
-        // Configurações avançadas ocultas do .uny
-        let advancedSettings = {
-            experimental: {},
-            hiddenFlags: {}
-        };
+        let advancedSettings = { experimental: {}, hiddenFlags: {} };
 
         const els = {
             addSvgBtn: document.getElementById('addSvgBtn'), fileInput: document.getElementById('fileInput'),
             projectItemsList: document.getElementById('projectItemsList'), emptyProjectMsg: document.getElementById('emptyProjectMsg'),
-            
             newTextInput: document.getElementById('newTextInput'), newTextFont: document.getElementById('newTextFont'), addTextBtn: document.getElementById('addTextBtn'),
             textEditGroup: document.getElementById('textEditGroup'), editTextInput: document.getElementById('editTextInput'), editTextFont: document.getElementById('editTextFont'),
-
             originalSvgViewer: document.getElementById('originalSvgViewer'), originalSvgBg: document.getElementById('originalSvgBg'),
-
             itemTransformPanel: document.getElementById('itemTransformPanel'), activeItemName: document.getElementById('activeItemName'),
-            itemX: document.getElementById('itemX'), itemY: document.getElementById('itemY'),
-            itemXVal: document.getElementById('itemXVal'), itemYVal: document.getElementById('itemYVal'),
+            itemX: document.getElementById('itemX'), itemY: document.getElementById('itemY'), itemXVal: document.getElementById('itemXVal'), itemYVal: document.getElementById('itemYVal'),
             itemScale: document.getElementById('itemScale'), itemScaleVal: document.getElementById('itemScaleVal'),
             itemScaleX: document.getElementById('itemScaleX'), itemScaleY: document.getElementById('itemScaleY'),
             itemRot: document.getElementById('itemRot'), itemRotVal: document.getElementById('itemRotVal'),
             itemFlipX: document.getElementById('itemFlipX'), itemFlipY: document.getElementById('itemFlipY'),
-            
             screenW: document.getElementById('screenW'), screenH: document.getElementById('screenH'),
             drawPercent: document.getElementById('drawPercent'), percentValue: document.getElementById('percentValue'),
             drawMargin: document.getElementById('drawMargin'), marginValue: document.getElementById('marginValue'),
-            
-            // Novos controles de velocidade
             drawSpeed: document.getElementById('drawSpeed'), speedValue: document.getElementById('speedValue'),
             targetTimeMin: document.getElementById('targetTimeMin'), calcTimeBtn: document.getElementById('calcTimeBtn'),
-            
             drawPause: document.getElementById('drawPause'), pauseValue: document.getElementById('pauseValue'),
             stepPrecision: document.getElementById('stepPrecision'), precisionValue: document.getElementById('precisionValue'),
             turboMode: document.getElementById('turboMode'), continuousLine: document.getElementById('continuousLine'), warmupMode: document.getElementById('warmupMode'),
             wakeLockMode: document.getElementById('wakeLockMode'), 
-            
-            fillMode: document.getElementById('fillMode'),
-            fillDensity: document.getElementById('fillDensity'),
-            fillShading: document.getElementById('fillShading'),
-
+            fillMode: document.getElementById('fillMode'), fillDensity: document.getElementById('fillDensity'), fillShading: document.getElementById('fillShading'),
             globalX: document.getElementById('globalX'), globalY: document.getElementById('globalY'),
             globalXVal: document.getElementById('globalXVal'), globalYVal: document.getElementById('globalYVal'),
             globalScale: document.getElementById('globalScale'), globalScaleVal: document.getElementById('globalScaleVal'),
@@ -600,28 +584,18 @@ BETA<!DOCTYPE html>
             globalRot: document.getElementById('globalRot'), globalRotVal: document.getElementById('globalRotVal'),
             globalFlipXBtn: document.getElementById('globalFlipXBtn'), globalFlipYBtn: document.getElementById('globalFlipYBtn'),
             resetGlobalGeoBtn: document.getElementById('resetGlobalGeoBtn'),
-            
             selectAllBtn: document.getElementById('selectAllBtn'), deselectAllBtn: document.getElementById('deselectAllBtn'),
             showAllBtn: document.getElementById('showAllBtn'), hideAllBtn: document.getElementById('hideAllBtn'),
             reverseOrderBtn: document.getElementById('reverseOrderBtn'),
-            
             layersList: document.getElementById('layersList'), mergeBtn: document.getElementById('mergeBtn'),
             canvasWrapper: document.getElementById('canvasWrapper'), canvas: document.getElementById('previewCanvas'),
             playBtn: document.getElementById('playBtn'), stopBtn: document.getElementById('stopBtn'), exportGifBtn: document.getElementById('exportGifBtn'),
             outputCode: document.getElementById('outputCode'), statsDisplay: document.getElementById('statsDisplay'),
-            
-            progressOverlay: document.getElementById('progressOverlay'),
-            progressTitle: document.getElementById('progressTitle'),
-            progressBar: document.getElementById('progressBar'), 
-            progText: document.getElementById('progressText'),
-            statusMsg: document.getElementById('statusMsg'), 
-            
-            jsFileName: document.getElementById('jsFileName'),
-            resetGeoBtn: document.getElementById('resetGeoBtn'),
-            
-            importUnyBtn: document.getElementById('importUnyBtn'),
-            exportUnyBtn: document.getElementById('exportUnyBtn'),
-            unyFileInput: document.getElementById('unyFileInput'),
+            progressOverlay: document.getElementById('progressOverlay'), progressTitle: document.getElementById('progressTitle'),
+            progressBar: document.getElementById('progressBar'), progText: document.getElementById('progressText'),
+            statusMsg: document.getElementById('statusMsg'), jsFileName: document.getElementById('jsFileName'),
+            resetGeoBtn: document.getElementById('resetGeoBtn'), importUnyBtn: document.getElementById('importUnyBtn'),
+            exportUnyBtn: document.getElementById('exportUnyBtn'), unyFileInput: document.getElementById('unyFileInput'),
             welcomeMessageDisplay: document.getElementById('welcomeMessageDisplay')
         };
         const ctx = els.canvas.getContext('2d');
@@ -635,50 +609,28 @@ BETA<!DOCTYPE html>
         els.wakeLockMode.addEventListener('change', async () => { if (els.wakeLockMode.checked && isProcessing) await requestWakeLock(); else if (!els.wakeLockMode.checked) releaseWakeLock(); });
 
         function drawBackgroundAndGrid(context, w, h, vScale, vOffsetX, vOffsetY, sw, sh, bScale) {
-            context.fillStyle = "#0f172a"; 
-            context.fillRect(0, 0, w, h);
-            context.save();
-            context.translate(vOffsetX, vOffsetY);
-            context.translate(w/2, h/2);
-            context.scale(vScale, vScale);
-            context.translate(-w/2, -h/2);
-
-            const cx = (w - sw * bScale) / 2;
-            const cy = (h - sh * bScale) / 2;
-            const rectW = sw * bScale;
-            const rectH = sh * bScale;
-
-            context.fillStyle = "#020617";
-            context.fillRect(cx, cy, rectW, rectH);
-            context.save();
-            context.beginPath();
-            context.rect(cx, cy, rectW, rectH);
-            context.clip();
-
-            context.strokeStyle = "rgba(255,255,255,0.04)";
-            context.lineWidth = 1;
-            context.beginPath();
+            context.fillStyle = "#0f172a"; context.fillRect(0, 0, w, h);
+            context.save(); context.translate(vOffsetX, vOffsetY); context.translate(w/2, h/2); context.scale(vScale, vScale); context.translate(-w/2, -h/2);
+            const cx = (w - sw * bScale) / 2; const cy = (h - sh * bScale) / 2;
+            const rectW = sw * bScale; const rectH = sh * bScale;
+            context.fillStyle = "#020617"; context.fillRect(cx, cy, rectW, rectH);
+            context.save(); context.beginPath(); context.rect(cx, cy, rectW, rectH); context.clip();
+            context.strokeStyle = "rgba(255,255,255,0.04)"; context.lineWidth = 1; context.beginPath();
             for (let x = 0; x <= rectW; x += 20) { context.moveTo(cx + x, cy); context.lineTo(cx + x, cy + rectH); }
             for (let y = 0; y <= rectH; y += 20) { context.moveTo(cx, cy + y); context.lineTo(cx + rectW, cy + y); }
-            context.stroke();
-            context.restore();
-
-            context.strokeStyle = "rgba(255,255,255,0.15)";
-            context.lineWidth = 1;
-            context.strokeRect(cx, cy, rectW, rectH);
+            context.stroke(); context.restore();
+            context.strokeStyle = "rgba(255,255,255,0.15)"; context.lineWidth = 1; context.strokeRect(cx, cy, rectW, rectH);
             context.restore();
         }
 
         els.addSvgBtn.onclick = () => els.fileInput.click();
         els.fileInput.onchange = async (e) => {
             if(!e.target.files.length) return;
-            isProcessing = true;
-            await requestWakeLock();
+            isProcessing = true; await requestWakeLock();
             els.progressOverlay.classList.remove('hidden');
 
             for(let file of e.target.files) {
                 if(!file.name.toLowerCase().endsWith('.svg')) continue;
-                
                 const isFirst = projectItems.length === 0;
                 if (isFirst) els.jsFileName.value = sanitizeFileName(file.name) + '_script';
 
@@ -695,86 +647,58 @@ BETA<!DOCTYPE html>
             }
             e.target.value = ''; 
             
-            isProcessing = false;
-            releaseWakeLock();
-            els.progressOverlay.classList.add('hidden');
+            isProcessing = false; releaseWakeLock(); els.progressOverlay.classList.add('hidden');
             renderProjectItems(); renderLayersUI(); updateGeometryAndMap();
         };
 
         function textToSvgString(text, fontUrl) {
             return new Promise((resolve, reject) => {
                 if(!text.trim()) return reject("Texto vazio.");
-                
                 const makeSvg = (font) => {
                     const glyphPaths = font.getPaths(text, 0, 0, 100);
                     let finalPaperItem = null;
-                    
                     glyphPaths.forEach(gp => {
-                        const d = gp.toPathData(2);
-                        if (!d || d === "") return;
+                        const d = gp.toPathData(2); if (!d || d === "") return;
                         try {
                             const pPath = new paper.CompoundPath(d);
                             if (!finalPaperItem) { finalPaperItem = pPath; } else {
                                 const united = finalPaperItem.unite(pPath);
-                                finalPaperItem.remove(); pPath.remove();
-                                finalPaperItem = united;
+                                finalPaperItem.remove(); pPath.remove(); finalPaperItem = united;
                             }
                         } catch(e) {}
                     });
-
                     if (!finalPaperItem) return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"></svg>`;
-
-                    const bounds = finalPaperItem.bounds;
-                    const padding = 10;
+                    const bounds = finalPaperItem.bounds; const padding = 10;
                     const vx = bounds.x - padding; const vy = bounds.y - padding;
                     const vw = bounds.width + padding * 2; const vh = bounds.height + padding * 2;
-                    
                     const svgInner = finalPaperItem.exportSVG({ asString: true });
                     finalPaperItem.remove(); paper.project.clear();
-
                     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vx} ${vy} ${vw} ${vh}">${svgInner}</svg>`;
                 };
-
                 opentype.load(fontUrl, function(err, font) {
-                    if (err) {
-                        opentype.load('https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/fonts/Roboto/Roboto-Regular.ttf', function(err2, fallbackFont) {
-                            if (err2) return reject(err2); resolve(makeSvg(fallbackFont));
-                        });
+                    if (err) { opentype.load('https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/fonts/Roboto/Roboto-Regular.ttf', function(err2, fallbackFont) {
+                            if (err2) return reject(err2); resolve(makeSvg(fallbackFont)); });
                     } else { resolve(makeSvg(font)); }
                 });
             });
         }
 
         els.addTextBtn.onclick = async () => {
-            const text = els.newTextInput.value.trim();
-            const font = els.newTextFont.value;
+            const text = els.newTextInput.value.trim(); const font = els.newTextFont.value;
             if(!text) return;
-
             isProcessing = true; await requestWakeLock();
-            els.progressOverlay.classList.remove('hidden');
-            els.progressTitle.textContent = "Desenhando texto...";
+            els.progressOverlay.classList.remove('hidden'); els.progressTitle.textContent = "Desenhando texto...";
             els.statusMsg.textContent = "A fundir letras..."; els.progressBar.style.width = "20%";
 
             try {
-                const isFirst = projectItems.length === 0;
-                if (isFirst) els.jsFileName.value = sanitizeFileName(text) + '_script';
-
+                const isFirst = projectItems.length === 0; if (isFirst) els.jsFileName.value = sanitizeFileName(text) + '_script';
                 const svgString = await textToSvgString(text, font);
                 const id = 'item_' + Date.now() + Math.floor(Math.random()*1000);
-                
-                projectItems.push({
-                    id, name: `Texto: ${text.substring(0,8)}`, content: svgString,
-                    x: 0, y: 0, scaleX: 1, scaleY: 1, rot: 0, flipX: false, flipY: false,
-                    basePaths: [], cx: 0, cy: 0, isText: true, textContent: text, fontUrl: font, normScale: 1
-                });
+                projectItems.push({ id, name: `Texto: ${text.substring(0,8)}`, content: svgString, x: 0, y: 0, scaleX: 1, scaleY: 1, rot: 0, flipX: false, flipY: false, basePaths: [], cx: 0, cy: 0, isText: true, textContent: text, fontUrl: font, normScale: 1 });
                 activeItemId = id; els.newTextInput.value = ''; 
                 await extractBasePaths(id);
-            } catch(e) {
-                els.statusMsg.textContent = "Erro na Fonte!"; await new Promise(r => setTimeout(r, 2000));
-            } finally {
-                isProcessing = false; releaseWakeLock(); els.progressOverlay.classList.add('hidden');
-                renderProjectItems(); renderLayersUI(); updateGeometryAndMap();
-            }
+            } catch(e) { els.statusMsg.textContent = "Erro na Fonte!"; await new Promise(r => setTimeout(r, 2000)); } 
+            finally { isProcessing = false; releaseWakeLock(); els.progressOverlay.classList.add('hidden'); renderProjectItems(); renderLayersUI(); updateGeometryAndMap(); }
         };
 
         const handleTextEdit = async () => {
@@ -782,46 +706,32 @@ BETA<!DOCTYPE html>
             if(!inst || !inst.isText) return;
             const newText = els.editTextInput.value.trim(); const newFont = els.editTextFont.value;
             if(!newText || (newText === inst.textContent && newFont === inst.fontUrl)) return;
-
             isProcessing = true; await requestWakeLock();
             els.progressOverlay.classList.remove('hidden'); els.progressTitle.textContent = "A atualizar texto...";
             els.statusMsg.textContent = "A re-fundir curvas..."; els.progressBar.style.width = "40%";
-
             try {
                 inst.textContent = newText; inst.fontUrl = newFont; inst.name = `Texto: ${newText.substring(0,8)}`;
                 inst.content = await textToSvgString(newText, newFont);
                 rawLayers = rawLayers.filter(l => l.itemId !== inst.id);
                 await extractBasePaths(inst.id);
-            } catch(e) {
-                els.statusMsg.textContent = "Erro ao atualizar texto!"; await new Promise(r => setTimeout(r, 2000));
-            } finally {
-                isProcessing = false; releaseWakeLock(); els.progressOverlay.classList.add('hidden');
-                renderProjectItems(); renderLayersUI(); updateGeometryAndMap();
-            }
+            } catch(e) { els.statusMsg.textContent = "Erro ao atualizar texto!"; await new Promise(r => setTimeout(r, 2000)); } 
+            finally { isProcessing = false; releaseWakeLock(); els.progressOverlay.classList.add('hidden'); renderProjectItems(); renderLayersUI(); updateGeometryAndMap(); }
         };
-        els.editTextInput.addEventListener('change', handleTextEdit);
-        els.editTextFont.addEventListener('change', handleTextEdit);
+        els.editTextInput.addEventListener('change', handleTextEdit); els.editTextFont.addEventListener('change', handleTextEdit);
 
         function renderProjectItems() {
-            els.projectItemsList.innerHTML = '';
-            els.emptyProjectMsg.style.display = projectItems.length ? 'none' : 'block';
-            
+            els.projectItemsList.innerHTML = ''; els.emptyProjectMsg.style.display = projectItems.length ? 'none' : 'block';
             projectItems.forEach(item => {
-                const div = document.createElement('div');
-                const isActive = activeItemId === item.id;
+                const div = document.createElement('div'); const isActive = activeItemId === item.id;
                 div.className = `p-2 rounded text-xs cursor-pointer flex justify-between items-center transition ${isActive ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-gray-300 hover:bg-slate-700'}`;
-                
                 const nameSpan = document.createElement('span'); 
                 nameSpan.innerHTML = item.isText ? `<i data-lucide="type" class="w-3 h-3 inline mr-1"></i>${item.name}` : `<i data-lucide="image" class="w-3 h-3 inline mr-1"></i>${item.name}`;
                 nameSpan.className = 'truncate max-w-[150px] flex items-center';
-                
                 const delBtn = document.createElement('button'); delBtn.innerHTML = '<i data-lucide="trash-2" class="w-3 h-3"></i>';
                 delBtn.className = `p-1 rounded ${isActive ? 'hover:bg-indigo-500' : 'hover:bg-rose-500 hover:text-white'}`;
                 delBtn.onclick = (e) => { e.stopPropagation(); deleteItem(item.id); };
-
                 div.onclick = () => { activeItemId = item.id; renderProjectItems(); };
-                div.appendChild(nameSpan); div.appendChild(delBtn);
-                els.projectItemsList.appendChild(div);
+                div.appendChild(nameSpan); div.appendChild(delBtn); els.projectItemsList.appendChild(div);
             });
             lucide.createIcons(); loadItemTransforms();
         }
@@ -836,16 +746,13 @@ BETA<!DOCTYPE html>
         els.exportUnyBtn.onclick = () => {
             let prjName = projectItems.length > 0 ? getBaseName(projectItems[0].name) : "Auto.js Vector Studio";
             let safeName = sanitizeFileName(prjName) || 'projeto';
-
             const profile = {
-                projectName: prjName,
-                elements: { projectItems, rawLayers },
+                projectName: prjName, elements: { projectItems, rawLayers },
                 settings: {
                     globalX: parseFloat(els.globalX.value), globalY: parseFloat(els.globalY.value),
                     globalScale: parseFloat(els.globalScale.value), globalScaleX: parseFloat(els.globalScaleX.value),
                     globalScaleY: parseFloat(els.globalScaleY.value), globalRot: parseFloat(els.globalRot.value),
-                    globalFlipX: globalFlipX, globalFlipY: globalFlipY,
-                    screenW: parseInt(els.screenW.value), screenH: parseInt(els.screenH.value),
+                    globalFlipX: globalFlipX, globalFlipY: globalFlipY, screenW: parseInt(els.screenW.value), screenH: parseInt(els.screenH.value),
                     drawPercent: parseInt(els.drawPercent.value), drawMargin: parseInt(els.drawMargin.value),
                     drawSpeed: parseFloat(els.drawSpeed.value), drawPause: parseInt(els.drawPause.value),
                     stepPrecision: parseInt(els.stepPrecision.value), wakeLockMode: els.wakeLockMode.checked,
@@ -855,10 +762,8 @@ BETA<!DOCTYPE html>
                 },
                 advanced: advancedSettings, welcomeMessage: els.welcomeMessageDisplay.dataset.customMessage || ""
             };
-            
-            const blob = new Blob([JSON.stringify(profile, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob); const a = document.createElement('a');
-            a.href = url; a.download = `${safeName}_perfil.uny`; a.click(); URL.revokeObjectURL(url);
+            const blob = new Blob([JSON.stringify(profile, null, 2)], { type: 'application/json' }); const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url; a.download = `${safeName}_perfil.uny`; a.click(); URL.revokeObjectURL(url);
         };
 
         els.importUnyBtn.onclick = () => els.unyFileInput.click();
@@ -869,24 +774,18 @@ BETA<!DOCTYPE html>
                 const text = await file.text(); const data = JSON.parse(text);
                 if(!data.elements || !data.settings) throw new Error("Arquivo .uny inválido ou corrompido.");
                 
-                projectItems = data.elements.projectItems || [];
-                rawLayers = data.elements.rawLayers || [];
+                projectItems = data.elements.projectItems || []; rawLayers = data.elements.rawLayers || [];
                 activeItemId = projectItems.length > 0 ? projectItems[0].id : null;
-                
-                // Nome inteligente baseado no projeto salvo
                 els.jsFileName.value = data.projectName ? sanitizeFileName(data.projectName) + "_script" : "composicao_vetorial";
-
                 const s = data.settings;
                 els.globalX.value = s.globalX || 0; els.globalY.value = s.globalY || 0;
                 els.globalScale.value = s.globalScale || 1; els.globalScaleX.value = s.globalScaleX || 1;
                 els.globalScaleY.value = s.globalScaleY || 1; els.globalRot.value = s.globalRot || 0;
                 globalFlipX = !!s.globalFlipX; globalFlipY = !!s.globalFlipY;
-                
                 els.screenW.value = s.screenW || 1100; els.screenH.value = s.screenH || 2442;
                 els.drawPercent.value = s.drawPercent || 70; els.drawMargin.value = s.drawMargin || 20;
                 els.drawSpeed.value = s.drawSpeed || 2.0; els.drawPause.value = s.drawPause || 35;
                 els.stepPrecision.value = s.stepPrecision || 3;
-                
                 els.wakeLockMode.checked = !!s.wakeLockMode; els.turboMode.checked = !!s.turboMode;
                 els.continuousLine.checked = !!s.continuousLine; els.warmupMode.checked = s.warmupMode !== undefined ? s.warmupMode : true;
                 els.fillMode.checked = !!s.fillMode; els.fillDensity.value = s.fillDensity || 5; els.fillShading.value = s.fillShading || 1;
@@ -905,9 +804,7 @@ BETA<!DOCTYPE html>
                 els.welcomeMessageDisplay.textContent = msg; els.welcomeMessageDisplay.dataset.customMessage = msg !== "Bem Vindo Jociel" ? msg : "";
 
                 renderProjectItems(); renderLayersUI(); updateGeometryAndMap();
-            } catch(err) {
-                console.error(err); alert("Falha ao importar o arquivo .uny");
-            } finally { e.target.value = ''; }
+            } catch(err) { console.error(err); alert("Falha ao importar o arquivo .uny"); } finally { e.target.value = ''; }
         };
 
         async function reprocessFills() {
@@ -922,9 +819,7 @@ BETA<!DOCTYPE html>
             isProcessing = false; releaseWakeLock(); els.progressOverlay.classList.add('hidden');
             renderLayersUI(); updateGeometryAndMap();
         }
-        els.fillMode.addEventListener('change', reprocessFills);
-        els.fillDensity.addEventListener('change', reprocessFills);
-        els.fillShading.addEventListener('change', reprocessFills);
+        els.fillMode.addEventListener('change', reprocessFills); els.fillDensity.addEventListener('change', reprocessFills); els.fillShading.addEventListener('change', reprocessFills);
 
         // Eventos dos Controles de Camada Globais
         els.selectAllBtn.onclick = () => { rawLayers.forEach(l => l.selected = true); renderLayersUI(); drawStaticPreview(); };
@@ -934,7 +829,7 @@ BETA<!DOCTYPE html>
         els.reverseOrderBtn.onclick = () => { rawLayers.reverse(); renderLayersUI(); triggerUpdate(); };
 
         // ==========================================
-        // EXTRACÇÃO UNIFICADA (PaperJS) -> Raycasting à prova de balas
+        // NOVO MOTOR DE EXTRACÇÃO (Super Rápido + Menos Camadas)
         // ==========================================
         async function extractBasePaths(itemId) {
             const item = projectItems.find(i => i.id === itemId);
@@ -942,15 +837,15 @@ BETA<!DOCTYPE html>
             
             if (!els.progressOverlay.classList.contains('hidden')) {
                 els.progressTitle.textContent = item.isText ? "Processando..." : `A ler ${item.name}...`;
-                els.statusMsg.textContent = "A extrair dados matemáticos do vector...";
-                els.progressBar.style.width = "10%"; els.progText.textContent = "10%";
+                els.statusMsg.textContent = "A extrair dados do vetor (Novo Motor)...";
+                els.progressBar.style.width = "5%"; els.progText.textContent = "5%";
             }
-            await new Promise(r => setTimeout(r, 50));
+            await new Promise(r => requestAnimationFrame(r));
 
             try {
                 paper.project.clear();
                 
-                // PREPARA O SVG (garantindo que o PaperJS o interpreta exatamente no mesmo formato do Ecrã)
+                // PREPARA O SVG
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(item.content, "image/svg+xml");
                 const svgEl = doc.querySelector('svg');
@@ -964,22 +859,24 @@ BETA<!DOCTYPE html>
                 let imported = paper.project.importSVG(svgEl.outerHTML, { expandShapes: true, insert: true });
                 if (!imported) throw new Error("Falha ao ler o ficheiro SVG.");
 
-                let baseStep = 2; 
                 let basePaths = [];
                 let localMinX = Infinity, localMinY = Infinity, localMaxX = -Infinity, localMaxY = -Infinity;
                 
                 let bounds = paper.project.activeLayer.bounds;
                 if (bounds.width === 0 || bounds.height === 0) throw new Error("SVG Vazio");
-
-                // Contadores hierárquicos e nome curto do ficheiro
-                let cCount = 1;
-                let pCount = 1;
+                
+                let maxDiag = Math.sqrt(bounds.width * bounds.width + bounds.height * bounds.height);
                 let shortName = getBaseName(item.name).substring(0, 10);
 
-                // MÓDULO 1: PREENCHIMENTOS (RAYCASTING SEGURO - Aceita Branco e Lida Com Buracos Perfeitamente)
+                // Variáveis para agrupar as camadas de forma simples
+                let hatchIndices = [];
+                let outlineIndices = [];
+                let detailIndices = [];
+
+                // MÓDULO 1: PREENCHIMENTOS (Mantido e otimizado para ir para uma única camada)
                 if (els.fillMode.checked) {
                     if (!els.progressOverlay.classList.contains('hidden')) { els.statusMsg.textContent = "A calcular preenchimentos..."; }
-                    await new Promise(r => setTimeout(r, 20));
+                    await new Promise(r => requestAnimationFrame(r));
 
                     let filledItems = paper.project.getItems({
                         class: paper.PathItem,
@@ -989,7 +886,7 @@ BETA<!DOCTYPE html>
                                 if (!i.fillColor) return false;
                                 if (i.fillColor.alpha === 0) return false;
                                 if (i.bounds.width === 0 || i.bounds.height === 0) return false;
-                                return true; // Chapéu Branco é aceite aqui!
+                                return true;
                             } catch(e) { return false; }
                         }
                     });
@@ -1004,7 +901,8 @@ BETA<!DOCTYPE html>
                     let wAmp = Math.max(bounds.width, bounds.height) * 0.001;
                     let wobble = () => (Math.random() - 0.5) * wAmp;
 
-                    filledItems.forEach(pItem => {
+                    for (let i = 0; i < filledItems.length; i++) {
+                        let pItem = filledItems[i];
                         let iBounds = pItem.bounds;
                         
                         angles.forEach(angle => {
@@ -1015,7 +913,6 @@ BETA<!DOCTYPE html>
 
                             let startT = -diag / 2; let endT = diag / 2;
                             let t = startT;
-                            let hatchPathsForThisShape = [];
                             
                             while(t <= endT) {
                                 let rayCenter = center.add(norm.multiply(t));
@@ -1029,21 +926,18 @@ BETA<!DOCTYPE html>
                                     inters.sort((a, b) => a.point.getDistance(p1) - b.point.getDistance(p1));
                                     
                                     let unique = [inters[0]];
-                                    for(let i=1; i<inters.length; i++) {
-                                        if (inters[i].point.getDistance(unique[unique.length-1].point) > 0.1) {
-                                            unique.push(inters[i]);
-                                        }
+                                    for(let k=1; k<inters.length; k++) {
+                                        if (inters[k].point.getDistance(unique[unique.length-1].point) > 0.1) unique.push(inters[k]);
                                     }
                                     
-                                    for (let i=0; i<unique.length-1; i++) {
-                                        let mid = unique[i].point.add(unique[i+1].point).divide(2);
+                                    for (let k=0; k<unique.length-1; k++) {
+                                        let mid = unique[k].point.add(unique[k+1].point).divide(2);
                                         if (pItem.contains(mid)) {
-                                            let sx1 = unique[i].point.x + wobble();
-                                            let sy1 = unique[i].point.y + wobble();
-                                            let sx2 = unique[i+1].point.x + wobble();
-                                            let sy2 = unique[i+1].point.y + wobble();
+                                            let sx1 = unique[k].point.x + wobble(); let sy1 = unique[k].point.y + wobble();
+                                            let sx2 = unique[k+1].point.x + wobble(); let sy2 = unique[k+1].point.y + wobble();
                                             
-                                            hatchPathsForThisShape.push([{x: sx1, y: sy1}, {x: sx2, y: sy2}]);
+                                            hatchIndices.push(basePaths.length);
+                                            basePaths.push([{x: sx1, y: sy1}, {x: sx2, y: sy2}]);
                                             
                                             if(sx1 < localMinX) localMinX = sx1; if(sx1 > localMaxX) localMaxX = sx1;
                                             if(sy1 < localMinY) localMinY = sy1; if(sy1 > localMaxY) localMaxY = sy1;
@@ -1052,28 +946,19 @@ BETA<!DOCTYPE html>
                                         }
                                     }
                                 }
-                                line.remove(); // Evita memory leaks no PaperJS
+                                line.remove(); 
                                 t += density + (Math.random() - 0.5) * (density * 0.3);
                             }
-                            
-                            if (hatchPathsForThisShape.length > 0) {
-                                let pathIndices = [];
-                                hatchPathsForThisShape.forEach(line => {
-                                    pathIndices.push(basePaths.length); basePaths.push(line);
-                                });
-                                rawLayers.push({
-                                    id: Date.now() + Math.random(), itemId: item.id, pathIndices: pathIndices,
-                                    nome: `[${shortName}] P-${pCount++} (${angle}°)`,
-                                    delay: 0, selected: false, visible: true
-                                });
-                            }
                         });
-                    });
+                        
+                        // Respiro da UI para preenchimentos complexos
+                        if (i % 10 === 0) await new Promise(r => requestAnimationFrame(r));
+                    }
                 }
 
-                // MÓDULO 2: EXTRAÇÃO DE CONTORNOS E PERÍMETROS (Extração 100% via PaperJS)
-                if (!els.progressOverlay.classList.contains('hidden')) { els.statusMsg.textContent = "A extrair os contornos e formas..."; }
-                await new Promise(r => setTimeout(r, 20));
+                // MÓDULO 2: EXTRAÇÃO RÁPIDA COM FLATTEN E CLASSIFICAÇÃO
+                if (!els.progressOverlay.classList.contains('hidden')) { els.statusMsg.textContent = "A mapear contornos com o novo motor..."; }
+                await new Promise(r => requestAnimationFrame(r));
 
                 let allPaths = paper.project.getItems({ 
                     class: paper.Path,
@@ -1084,67 +969,51 @@ BETA<!DOCTYPE html>
                     }
                 });
                 
-                let totalLength = 0;
-                allPaths.forEach(p => { totalLength += p.length; });
-                
-                if (totalLength === 0 && basePaths.length === 0) throw new Error("Sem contornos visíveis e sem preenchimentos gerados.");
+                if (allPaths.length === 0 && basePaths.length === 0) throw new Error("Sem contornos visíveis.");
 
-                let currentLengthProcessed = 0; let pointCounter = 0;
-                let lastYield = performance.now();
-                
-                if (totalLength > 0) {
-                    for (let i = 0; i < allPaths.length; i++) {
-                        let path = allPaths[i];
-                        let length = path.length;
+                // Descobrir limite para decidir o que é contorno principal e o que é detalhe
+                let outlineThreshold = 0;
+                if (allPaths.length > 0) {
+                    let lengths = allPaths.map(p => p.length).sort((a,b) => b - a);
+                    // O top 15% das linhas mais compridas serão consideradas "Contornos" (Bordas)
+                    let tIdx = Math.floor(lengths.length * 0.15);
+                    outlineThreshold = lengths[tIdx] || 0;
+                    if (outlineThreshold < maxDiag * 0.1) outlineThreshold = maxDiag * 0.1; // Mínimo lógico
+                }
+
+                let stepPrecision = parseInt(els.stepPrecision.value) || 3;
+
+                for (let i = 0; i < allPaths.length; i++) {
+                    let path = allPaths[i];
+                    
+                    // Respiro da UI (Atualiza a barra sem travar o PC)
+                    if (i % 20 === 0 && !els.progressOverlay.classList.contains('hidden')) {
+                        let pct = 10 + Math.floor((i / allPaths.length) * 85);
+                        els.progressBar.style.width = `${pct}%`; els.progText.textContent = `${pct}%`;
+                        await new Promise(r => requestAnimationFrame(r)); 
+                    }
+
+                    // O SEGREDO DO NOVO MOTOR: achatar as curvas usando o código C++/WASM interno do paper.js em vez de iterar com JS
+                    path.flatten(stepPrecision);
+
+                    let currentLine = [];
+                    for (let j = 0; j < path.segments.length; j++) {
+                        let pt = path.segments[j].point;
+                        currentLine.push({x: pt.x, y: pt.y});
                         
-                        let currentLine = [];
-                        let lastPt = null;
+                        if(pt.x < localMinX) localMinX = pt.x; if(pt.x > localMaxX) localMaxX = pt.x;
+                        if(pt.y < localMinY) localMinY = pt.y; if(pt.y > localMaxY) localMaxY = pt.y;
+                    }
 
-                        const processPt = (l) => {
-                            let pt = path.getPointAt(l);
-                            if (!pt) return;
-                            
-                            if (lastPt) {
-                                let dx = pt.x - lastPt.x; let dy = pt.y - lastPt.y;
-                                if ((dx*dx + dy*dy) > 150) { 
-                                    if (currentLine.length > 1) {
-                                        const pathIdx = basePaths.length; basePaths.push(currentLine);
-                                        rawLayers.push({
-                                            id: Date.now() + Math.random(), itemId: item.id, pathIndices: [pathIdx],
-                                            nome: `[${shortName}] C-${cCount++}`,
-                                            delay: 0, selected: false, visible: true
-                                        });
-                                    }
-                                    currentLine = [];
-                                }
-                            }
+                    if (currentLine.length > 1) {
+                        let pathIdx = basePaths.length;
+                        basePaths.push(currentLine);
 
-                            currentLine.push({x: pt.x, y: pt.y});
-                            if(pt.x < localMinX) localMinX = pt.x; if(pt.x > localMaxX) localMaxX = pt.x;
-                            if(pt.y < localMinY) localMinY = pt.y; if(pt.y > localMaxY) localMaxY = pt.y;
-                            lastPt = pt;
-                        };
-
-                        for (let l = 0; l <= length; l += baseStep) {
-                            processPt(l);
-                            currentLengthProcessed += baseStep; pointCounter++;
-                            if (pointCounter % 150 === 0 && performance.now() - lastYield > 15) {
-                                let pct = Math.min(95, Math.floor((currentLengthProcessed / totalLength) * 100));
-                                if (!els.progressOverlay.classList.contains('hidden')) {
-                                    els.progressBar.style.width = `${pct}%`; els.progText.textContent = `${pct}%`;
-                                }
-                                await new Promise(r => setTimeout(r, 0)); lastYield = performance.now();
-                            }
-                        }
-                        if (length % baseStep !== 0) processPt(length);
-
-                        if (currentLine.length > 1) {
-                            const pathIdx = basePaths.length; basePaths.push(currentLine);
-                            rawLayers.push({
-                                id: Date.now() + Math.random(), itemId: item.id, pathIndices: [pathIdx],
-                                nome: `[${shortName}] C-${cCount++}`,
-                                delay: 0, selected: false, visible: true
-                            });
+                        // Lógica de agrupar em camadas simples
+                        if (path.length >= outlineThreshold) {
+                            outlineIndices.push(pathIdx);
+                        } else {
+                            detailIndices.push(pathIdx);
                         }
                     }
                 }
@@ -1156,6 +1025,21 @@ BETA<!DOCTYPE html>
                 let tW = localMaxX - localMinX; let tH = localMaxY - localMinY;
                 if(tW <= 0) tW = 1; if(tH <= 0) tH = 1;
                 item.normScale = 1000 / Math.max(tW, tH);
+
+                // CRIAR AS 3 CAMADAS MASTER EM VEZ DE CENTENAS
+                if (hatchIndices.length > 0) {
+                    rawLayers.push({ id: Date.now() + Math.random(), itemId: item.id, pathIndices: hatchIndices, nome: `[${shortName}] Hachuras`, delay: 0, selected: false, visible: true });
+                }
+                if (outlineIndices.length > 0) {
+                    rawLayers.push({ id: Date.now() + Math.random(), itemId: item.id, pathIndices: outlineIndices, nome: `[${shortName}] Bordas Contorno`, delay: 0, selected: false, visible: true });
+                }
+                if (detailIndices.length > 0) {
+                    rawLayers.push({ id: Date.now() + Math.random(), itemId: item.id, pathIndices: detailIndices, nome: `[${shortName}] Detalhes`, delay: 0, selected: false, visible: true });
+                }
+
+                if (!els.progressOverlay.classList.contains('hidden')) {
+                    els.progressBar.style.width = `100%`; els.progText.textContent = `100%`;
+                }
 
             } catch(e) { console.error(e); } 
         }
@@ -1179,14 +1063,10 @@ BETA<!DOCTYPE html>
 
             els.itemTransformPanel.classList.remove('opacity-50', 'pointer-events-none'); els.activeItemName.textContent = inst.name;
             
-            if(inst.isText) {
-                els.textEditGroup.classList.remove('hidden'); els.editTextInput.value = inst.textContent; els.editTextFont.value = inst.fontUrl;
-            } else {
-                els.textEditGroup.classList.add('hidden');
-            }
+            if(inst.isText) { els.textEditGroup.classList.remove('hidden'); els.editTextInput.value = inst.textContent; els.editTextFont.value = inst.fontUrl; } 
+            else { els.textEditGroup.classList.add('hidden'); }
 
-            els.itemX.value = inst.x; els.itemY.value = inst.y;
-            els.itemXVal.textContent = inst.x + 'px'; els.itemYVal.textContent = inst.y + 'px';
+            els.itemX.value = inst.x; els.itemY.value = inst.y; els.itemXVal.textContent = inst.x + 'px'; els.itemYVal.textContent = inst.y + 'px';
             els.itemScaleX.value = inst.scaleX; els.itemScaleY.value = inst.scaleY;
             els.itemScale.value = inst.scaleX; els.itemScaleVal.textContent = inst.scaleX.toFixed(1) + 'x';
             els.itemRot.value = inst.rot; els.itemRotVal.textContent = `${inst.rot}°`;
@@ -1221,26 +1101,19 @@ BETA<!DOCTYPE html>
         els.itemFlipY.onclick = () => { const inst = projectItems.find(i => i.id === activeItemId); if(inst) { inst.flipY = !inst.flipY; loadItemTransforms(); triggerUpdate(); }};
 
         const applyGlobalTrans = () => {
-            els.globalXVal.textContent = els.globalX.value + 'px';
-            els.globalYVal.textContent = els.globalY.value + 'px';
-            els.globalScaleX.value = els.globalScale.value;
-            els.globalScaleY.value = els.globalScale.value;
-            els.globalScaleVal.textContent = parseFloat(els.globalScale.value).toFixed(1) + 'x';
-            els.globalRotVal.textContent = els.globalRot.value + '°';
+            els.globalXVal.textContent = els.globalX.value + 'px'; els.globalYVal.textContent = els.globalY.value + 'px';
+            els.globalScaleX.value = els.globalScale.value; els.globalScaleY.value = els.globalScale.value;
+            els.globalScaleVal.textContent = parseFloat(els.globalScale.value).toFixed(1) + 'x'; els.globalRotVal.textContent = els.globalRot.value + '°';
             triggerUpdate();
         };
         const applyGlobalTransDirect = () => {
-            els.globalXVal.textContent = els.globalX.value + 'px';
-            els.globalYVal.textContent = els.globalY.value + 'px';
-            els.globalRotVal.textContent = els.globalRot.value + '°';
-            triggerUpdate();
+            els.globalXVal.textContent = els.globalX.value + 'px'; els.globalYVal.textContent = els.globalY.value + 'px';
+            els.globalRotVal.textContent = els.globalRot.value + '°'; triggerUpdate();
         };
 
         els.globalScale.addEventListener('input', applyGlobalTrans);
-        els.globalX.addEventListener('input', applyGlobalTransDirect);
-        els.globalY.addEventListener('input', applyGlobalTransDirect);
-        els.globalScaleX.addEventListener('input', applyGlobalTransDirect);
-        els.globalScaleY.addEventListener('input', applyGlobalTransDirect);
+        els.globalX.addEventListener('input', applyGlobalTransDirect); els.globalY.addEventListener('input', applyGlobalTransDirect);
+        els.globalScaleX.addEventListener('input', applyGlobalTransDirect); els.globalScaleY.addEventListener('input', applyGlobalTransDirect);
         els.globalRot.addEventListener('input', applyGlobalTransDirect);
 
         els.globalFlipXBtn.onclick = () => { globalFlipX = !globalFlipX; els.globalFlipXBtn.className = `flex-1 py-1.5 rounded text-xs flex justify-center gap-1 transition-colors ${globalFlipX ? 'bg-emerald-600 text-white' : 'bg-slate-700 hover:bg-slate-600 text-gray-300'}`; triggerUpdate(); };
@@ -1278,19 +1151,13 @@ BETA<!DOCTYPE html>
             const warmup = els.warmupMode.checked;
             let currentPause = parseInt(els.drawPause.value) || 35;
 
-            // Determinar total de gestos na base e o total de tempo já comprometido (pausas fixas)
-            let baseGestureTime = 0;
-            let fixedTime = 0;
-            let traceCount = 0;
-            let activeLayerCount = 0;
+            let baseGestureTime = 0; let fixedTime = 0; let traceCount = 0; let activeLayerCount = 0;
 
             scaledLayers.forEach(l => {
                 if(!l.visible) return;
-                activeLayerCount++;
-                fixedTime += l.delay * 1000;
+                activeLayerCount++; fixedTime += l.delay * 1000;
                 l.screenTraces.forEach(tr => {
-                    traceCount++;
-                    baseGestureTime += turbo ? (tr.length * 6) : (tr.length * 10);
+                    traceCount++; baseGestureTime += turbo ? (tr.length * 6) : (tr.length * 10);
                     fixedTime += turbo ? 5 : currentPause;
                 });
             });
@@ -1305,48 +1172,32 @@ BETA<!DOCTYPE html>
 
             let availableTimeForGestures = targetMs - fixedTime;
 
-            // Se for pedido um tempo muito curto onde só as pausas demorariam mais que o tempo alvo, ajustamos a pausa
             if (availableTimeForGestures <= targetMs * 0.1 && !turbo) {
                 let neededFixedTimeForPauses = targetMs * 0.5 - (fixedTime - (traceCount * currentPause));
                 let newPause = Math.floor(neededFixedTimeForPauses / traceCount);
                 if (newPause < 0) newPause = 0; 
                 
-                // Aplicar nova pausa UI
-                els.drawPause.value = newPause;
-                els.pauseValue.textContent = newPause + 'ms';
-                currentPause = newPause;
-
-                // Recalcular
-                fixedTime = 0;
+                els.drawPause.value = newPause; els.pauseValue.textContent = newPause + 'ms';
+                currentPause = newPause; fixedTime = 0;
                 scaledLayers.forEach(l => {
                     if(!l.visible) return;
-                    fixedTime += l.delay * 1000;
-                    fixedTime += l.screenTraces.length * currentPause;
+                    fixedTime += l.delay * 1000; fixedTime += l.screenTraces.length * currentPause;
                 });
                 if (warmup && activeLayerCount > 0 && scaledLayers[0].screenTraces.length > 0) {
-                    const tr = scaledLayers[0].screenTraces[0];
-                    const tAq = Math.max(3, Math.min(15, Math.floor(tr.length * 0.25)));
+                    const tr = scaledLayers[0].screenTraces[0]; const tAq = Math.max(3, Math.min(15, Math.floor(tr.length * 0.25)));
                     fixedTime += Math.max(300, tAq * 15) + 200;
                 }
                 availableTimeForGestures = targetMs - fixedTime;
             }
 
             if (availableTimeForGestures <= 0) availableTimeForGestures = 1;
-
             let requiredSpeed = baseGestureTime / availableTimeForGestures;
+            if (requiredSpeed < 0.1) requiredSpeed = 0.1; if (requiredSpeed > 50.0) requiredSpeed = 50.0;
 
-            if (requiredSpeed < 0.1) requiredSpeed = 0.1;
-            if (requiredSpeed > 50.0) requiredSpeed = 50.0;
-
-            // Aplicar nova velocidade UI
-            els.drawSpeed.value = requiredSpeed.toFixed(1);
-            els.speedValue.textContent = requiredSpeed.toFixed(1) + 'x';
-
-            // Piscar para dar feedback ao utilizador
+            els.drawSpeed.value = requiredSpeed.toFixed(1); els.speedValue.textContent = requiredSpeed.toFixed(1) + 'x';
             const speedWrap = els.drawSpeed.parentElement;
             speedWrap.classList.add('bg-orange-500/20', 'rounded', 'p-1', 'transition-all');
             setTimeout(() => speedWrap.classList.remove('bg-orange-500/20', 'rounded', 'p-1'), 1000);
-
             triggerCodeUpdate();
         };
 
@@ -1354,7 +1205,6 @@ BETA<!DOCTYPE html>
             els.itemScaleX.value = 1.0; els.itemScaleY.value = 1.0; els.itemScale.value = 1.0; els.itemScaleVal.textContent = "1.0x";
             els.itemRot.value = 0; els.itemRotVal.textContent = "0°"; els.itemX.value = 0; els.itemY.value = 0;
             els.itemXVal.textContent = "0px"; els.itemYVal.textContent = "0px";
-            
             const inst = projectItems.find(i => i.id === activeItemId);
             if(inst) { inst.flipX = false; inst.flipY = false; inst.x = 0; inst.y = 0; inst.scaleX = 1; inst.scaleY = 1; inst.rot = 0; }
             loadItemTransforms(); triggerUpdate();
@@ -1375,16 +1225,11 @@ BETA<!DOCTYPE html>
         window.addEventListener('resize', () => { if(scaledLayers.length && !isAnimating) drawStaticPreview(); });
 
         function updateStats() {
-            if (!scaledLayers || scaledLayers.length === 0) {
-                els.statsDisplay.innerHTML = "Aguardando composição...";
-                return;
-            }
-            
+            if (!scaledLayers || scaledLayers.length === 0) { els.statsDisplay.innerHTML = "Aguardando composição..."; return; }
             let totalPts = 0; let estimatedTimeMs = 0; let traceCount = 0;
             const mult = 1 / (parseFloat(els.drawSpeed.value) || 2.0);
             const pause = parseInt(els.drawPause.value) || 35;
-            const turbo = els.turboMode.checked;
-            const warmup = els.warmupMode.checked;
+            const turbo = els.turboMode.checked; const warmup = els.warmupMode.checked;
             let activeLayerCount = 0;
 
             scaledLayers.forEach(l => {
@@ -1392,30 +1237,22 @@ BETA<!DOCTYPE html>
                 activeLayerCount++; estimatedTimeMs += l.delay * 1000;
                 l.screenTraces.forEach(tr => {
                     traceCount++; totalPts += tr.length;
-                    
-                    // FÓRMULA SEM LIMITAÇÕES (permite que a velocidade seja insanamente rápida)
                     let dur = turbo ? Math.floor((tr.length * 6) * mult) : Math.floor((tr.length * 10) * mult);
-                    if (dur < 5) dur = 5; // Proteção apenas contra 0ms que causaria crash no Auto.js
-                    
+                    if (dur < 5) dur = 5; 
                     estimatedTimeMs += dur + (turbo ? 5 : pause);
                 });
             });
 
             if (warmup && activeLayerCount > 0 && scaledLayers[0].screenTraces.length > 0) {
-                const tr = scaledLayers[0].screenTraces[0];
-                const tAq = Math.max(3, Math.min(15, Math.floor(tr.length * 0.25)));
-                let dur = Math.max(300, tAq * 15);
-                estimatedTimeMs += dur + 200;
+                const tr = scaledLayers[0].screenTraces[0]; const tAq = Math.max(3, Math.min(15, Math.floor(tr.length * 0.25)));
+                let dur = Math.max(300, tAq * 15); estimatedTimeMs += dur + 200;
             }
 
             let timeStr = "";
             if (estimatedTimeMs < 60000) timeStr = (estimatedTimeMs/1000).toFixed(1) + "s";
-            else {
-                let m = Math.floor(estimatedTimeMs / 60000); let s = Math.floor((estimatedTimeMs % 60000) / 1000);
-                timeStr = `${m}m ${s}s`;
-            }
+            else { let m = Math.floor(estimatedTimeMs / 60000); let s = Math.floor((estimatedTimeMs % 60000) / 1000); timeStr = `${m}m ${s}s`; }
 
-            els.statsDisplay.innerHTML = `Camadas: <b class="text-white">${activeLayerCount}/${rawLayers.length}</b> | Traços Finais: <b class="text-white">${traceCount}</b> | Pontos Mapeados: <b class="text-white">${totalPts}</b> | Tempo: <b class="text-amber-400">~${timeStr}</b>`;
+            els.statsDisplay.innerHTML = `Camadas: <b class="text-white">${activeLayerCount}/${rawLayers.length}</b> | Traços: <b class="text-white">${traceCount}</b> | Pontos Mapeados: <b class="text-white">${totalPts}</b> | Tempo: <b class="text-amber-400">~${timeStr}</b>`;
         }
 
         function renderLayersUI() {
@@ -1424,8 +1261,7 @@ BETA<!DOCTYPE html>
             rawLayers.forEach((layer, index) => {
                 const el = document.createElement('div');
                 let baseClass = `flex items-center grid grid-cols-12 gap-1 p-1 rounded border transition-colors ${layer.selected ? 'bg-indigo-500/20 border-indigo-500/50' : 'bg-slate-800 border-slate-700 hover:bg-slate-700'}`;
-                if (!layer.visible) baseClass += ` opacity-40`;
-                el.className = baseClass;
+                if (!layer.visible) baseClass += ` opacity-40`; el.className = baseClass;
                 
                 const divSel = document.createElement('div'); divSel.className = 'col-span-1 flex justify-center';
                 const chk = document.createElement('input'); chk.type = 'checkbox'; chk.className = 'w-3 h-3 accent-indigo-500 cursor-pointer'; chk.checked = layer.selected;
@@ -1454,8 +1290,7 @@ BETA<!DOCTYPE html>
                 el.appendChild(divSel); el.appendChild(divVis); el.appendChild(divNome); el.appendChild(divDelay); el.appendChild(divOrder);
                 els.layersList.appendChild(el);
             });
-            lucide.createIcons();
-            els.mergeBtn.disabled = rawLayers.filter(l => l.selected).length < 2;
+            lucide.createIcons(); els.mergeBtn.disabled = rawLayers.filter(l => l.selected).length < 2;
         }
 
         function moveLayer(index, dir) { const t = rawLayers[index]; rawLayers[index] = rawLayers[index+dir]; rawLayers[index+dir] = t; renderLayersUI(); triggerUpdate(); }
@@ -1472,60 +1307,43 @@ BETA<!DOCTYPE html>
             if(projectItems.length === 0) { scaledLayers = []; globalScaledTraces = []; drawStaticPreview(); generateCode(); updateStats(); return; }
             stopAnimation(false);
 
-            const screenW = parseInt(els.screenW.value) || 1100;
-            const screenH = parseInt(els.screenH.value) || 2442;
-            const percent = parseInt(els.drawPercent.value) || 70;
-            const margin = parseInt(els.drawMargin.value) || 20;
+            const screenW = parseInt(els.screenW.value) || 1100; const screenH = parseInt(els.screenH.value) || 2442;
+            const percent = parseInt(els.drawPercent.value) || 70; const margin = parseInt(els.drawMargin.value) || 20;
 
-            const availW = (screenW * (percent/100)) - (margin * 2);
-            const availH = (screenH * (percent/100)) - (margin * 2);
+            const availW = (screenW * (percent/100)) - (margin * 2); const availH = (screenH * (percent/100)) - (margin * 2);
             const finalScale = Math.min(availW / 1000, availH / 1000) || 1;
+            const screenCX = screenW / 2; const screenCY = screenH / 2;
 
-            const screenCX = screenW / 2;
-            const screenCY = screenH / 2;
-
-            const gPosX = parseFloat(els.globalX.value) || 0;
-            const gPosY = parseFloat(els.globalY.value) || 0;
-            const gScaleX = parseFloat(els.globalScaleX.value) || 1;
-            const gScaleY = parseFloat(els.globalScaleY.value) || 1;
+            const gPosX = parseFloat(els.globalX.value) || 0; const gPosY = parseFloat(els.globalY.value) || 0;
+            const gScaleX = parseFloat(els.globalScaleX.value) || 1; const gScaleY = parseFloat(els.globalScaleY.value) || 1;
             const gRotRad = (parseFloat(els.globalRot.value) || 0) * Math.PI / 180;
             const gCos = Math.cos(gRotRad); const gSin = Math.sin(gRotRad);
 
-            scaledLayers = [];
-            globalScaledTraces = [];
+            scaledLayers = []; globalScaledTraces = [];
             const userStep = parseInt(els.stepPrecision.value) || 3;
             const isCont = els.continuousLine.checked;
 
             rawLayers.forEach(layer => {
-                const item = projectItems.find(i => i.id === layer.itemId);
-                if(!item) return;
+                const item = projectItems.find(i => i.id === layer.itemId); if(!item) return;
 
                 const cx = item.cx; const cy = item.cy;
                 const rad = item.rot * Math.PI / 180; const cos = Math.cos(rad); const sin = Math.sin(rad);
 
-                let tracesScreen = [];
-                let currentContinuous = [];
+                let tracesScreen = []; let currentContinuous = [];
 
                 layer.pathIndices.forEach(pIdx => {
-                    const tr = item.basePaths[pIdx];
-                    if(!tr) return;
+                    const tr = item.basePaths[pIdx]; if(!tr) return;
 
                     let cleanPath = []; let lastPt = null;
                     tr.forEach(p => {
-                        let px = (p.x - cx) * item.normScale; 
-                        let py = (p.y - cy) * item.normScale;
+                        let px = (p.x - cx) * item.normScale; let py = (p.y - cy) * item.normScale;
                         if(item.flipX) px = -px; if(item.flipY) py = -py;
                         px *= item.scaleX; py *= item.scaleY;
                         let rx = px * cos - py * sin; let ry = px * sin + py * cos;
-                        
-                        let lx = rx + item.x;
-                        let ly = ry + item.y;
-
+                        let lx = rx + item.x; let ly = ry + item.y;
                         if(globalFlipX) lx = -lx; if(globalFlipY) ly = -ly;
                         lx *= gScaleX; ly *= gScaleY;
-                        let grx = lx * gCos - ly * gSin;
-                        let gry = lx * gSin + ly * gCos;
-
+                        let grx = lx * gCos - ly * gSin; let gry = lx * gSin + ly * gCos;
                         let sx = Math.floor(screenCX + grx * finalScale + gPosX);
                         let sy = Math.floor(screenCY + gry * finalScale + gPosY);
                         
@@ -1546,54 +1364,31 @@ BETA<!DOCTYPE html>
                         if(globalFlipX) lx = -lx; if(globalFlipY) ly = -ly;
                         lx *= gScaleX; ly *= gScaleY;
                         let grx = lx * gCos - ly * gSin; let gry = lx * gSin + ly * gCos;
-                        let sx = Math.floor(screenCX + grx * finalScale + gPosX);
-                        let sy = Math.floor(screenCY + gry * finalScale + gPosY);
+                        let sx = Math.floor(screenCX + grx * finalScale + gPosX); let sy = Math.floor(screenCY + gry * finalScale + gPosY);
                         cleanPath.push({x: sx, y: sy});
                     }
 
                     if (cleanPath.length > 2) {
-                        let firstPoint = cleanPath[0];
-                        let lastPoint = cleanPath[cleanPath.length - 1];
+                        let firstPoint = cleanPath[0]; let lastPoint = cleanPath[cleanPath.length - 1];
                         let gap = (firstPoint.x - lastPoint.x) ** 2 + (firstPoint.y - lastPoint.y) ** 2;
-                        if (gap > 0 && gap <= 400) { 
-                            cleanPath.push({x: firstPoint.x, y: firstPoint.y});
-                        }
+                        if (gap > 0 && gap <= 400) { cleanPath.push({x: firstPoint.x, y: firstPoint.y}); }
                     }
 
                     if (cleanPath.length > 1) {
                         if (isCont) {
                             if (currentContinuous.length > 0) {
-                                let lastP = currentContinuous[currentContinuous.length - 1];
-                                let firstP = cleanPath[0];
+                                let lastP = currentContinuous[currentContinuous.length - 1]; let firstP = cleanPath[0];
                                 let gapSq = (lastP.x - firstP.x) ** 2 + (lastP.y - firstP.y) ** 2;
-                                
-                                if (gapSq > 600) { 
-                                    tracesScreen.push(currentContinuous);
-                                    if(layer.visible) globalScaledTraces.push(currentContinuous);
-                                    currentContinuous = [...cleanPath]; 
-                                } else {
-                                    currentContinuous.push(...cleanPath);
-                                }
-                            } else {
-                                currentContinuous.push(...cleanPath);
-                            }
-                        } 
-                        else { 
-                            tracesScreen.push(cleanPath); 
-                            if(layer.visible) globalScaledTraces.push(cleanPath); 
-                        }
+                                if (gapSq > 600) { tracesScreen.push(currentContinuous); if(layer.visible) globalScaledTraces.push(currentContinuous); currentContinuous = [...cleanPath]; } 
+                                else { currentContinuous.push(...cleanPath); }
+                            } else { currentContinuous.push(...cleanPath); }
+                        } else { tracesScreen.push(cleanPath); if(layer.visible) globalScaledTraces.push(cleanPath); }
                     }
                 });
 
-                if(isCont && currentContinuous.length > 1) {
-                    tracesScreen.push(currentContinuous);
-                    if(layer.visible) globalScaledTraces.push(currentContinuous);
-                }
+                if(isCont && currentContinuous.length > 1) { tracesScreen.push(currentContinuous); if(layer.visible) globalScaledTraces.push(currentContinuous); }
 
-                scaledLayers.push({
-                    nome: layer.nome, delay: layer.delay, visible: layer.visible, selected: layer.selected,
-                    screenTraces: tracesScreen
-                });
+                scaledLayers.push({ nome: layer.nome, delay: layer.delay, visible: layer.visible, selected: layer.selected, screenTraces: tracesScreen });
             });
 
             drawStaticPreview(); generateCode(); updateStats();
@@ -1603,8 +1398,7 @@ BETA<!DOCTYPE html>
 
         function drawStaticPreview() {
             if (!scaledLayers.length) return;
-            const noPreviewMsg = document.getElementById('noPreviewMsg');
-            if(noPreviewMsg) noPreviewMsg.style.display = 'none';
+            const noPreviewMsg = document.getElementById('noPreviewMsg'); if(noPreviewMsg) noPreviewMsg.style.display = 'none';
             els.canvas.width = els.canvasWrapper.clientWidth; els.canvas.height = els.canvasWrapper.clientHeight;
             const sw = parseInt(els.screenW.value)||1100; const sh = parseInt(els.screenH.value)||2442;
             const bScale = Math.min((els.canvas.width-40)/sw, (els.canvas.height-40)/sh);
@@ -1617,8 +1411,7 @@ BETA<!DOCTYPE html>
             const anySel = scaledLayers.some(l => l.selected);
 
             scaledLayers.forEach((layer, idx) => {
-                if (!layer.visible) return; 
-                ctx.beginPath(); 
+                if (!layer.visible) return; ctx.beginPath(); 
                 if (anySel) { ctx.strokeStyle = getLayerColor(idx, scaledLayers.length); ctx.lineWidth = layer.selected ? Math.max(1, 2/viewScale) : Math.max(0.5, 1/viewScale); ctx.globalAlpha = layer.selected ? 1 : 0.1; } 
                 else { ctx.strokeStyle = getLayerColor(idx, scaledLayers.length); ctx.lineWidth = Math.max(0.5, 1.5/viewScale); ctx.globalAlpha = 1; }
 
@@ -1631,77 +1424,37 @@ BETA<!DOCTYPE html>
         els.exportGifBtn.onclick = startGifRecording;
 
         async function startGifRecording() {
-            if (!globalScaledTraces.length) return;
-            
-            stopAnimation(false);
-            
-            isRecordingGif = true;
-            isProcessing = true;
-            await requestWakeLock();
-
-            els.exportGifBtn.disabled = true;
-            els.exportGifBtn.innerHTML = '<i data-lucide="video" class="w-3.5 h-3.5 animate-pulse"></i> A gravar...';
-            lucide.createIcons();
+            if (!globalScaledTraces.length) return; stopAnimation(false);
+            isRecordingGif = true; isProcessing = true; await requestWakeLock();
+            els.exportGifBtn.disabled = true; els.exportGifBtn.innerHTML = '<i data-lucide="video" class="w-3.5 h-3.5 animate-pulse"></i> A gravar...'; lucide.createIcons();
             
             try {
                 const workerBlob = new Blob([`importScripts('https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js');`], {type: 'application/javascript'});
                 const workerUrl = URL.createObjectURL(workerBlob);
-                
-                gifEncoder = new GIF({
-                    workers: 2,
-                    quality: 10,
-                    workerScript: workerUrl,
-                    width: els.canvas.width,
-                    height: els.canvas.height,
-                    background: '#020617'
-                });
+                gifEncoder = new GIF({ workers: 2, quality: 10, workerScript: workerUrl, width: els.canvas.width, height: els.canvas.height, background: '#020617' });
                 
                 gifEncoder.on('finished', function(blob) {
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = (els.jsFileName.value.trim() || 'animacao') + '.gif';
-                    a.click();
-                    URL.revokeObjectURL(url);
-                    
-                    isRecordingGif = false;
-                    isProcessing = false;
-                    releaseWakeLock();
-                    gifEncoder = null;
-                    els.exportGifBtn.innerHTML = '<i data-lucide="video" class="w-3.5 h-3.5"></i> Exportar';
-                    els.exportGifBtn.disabled = false;
-                    lucide.createIcons();
+                    const url = URL.createObjectURL(blob); const a = document.createElement('a');
+                    a.href = url; a.download = (els.jsFileName.value.trim() || 'animacao') + '.gif'; a.click(); URL.revokeObjectURL(url);
+                    isRecordingGif = false; isProcessing = false; releaseWakeLock(); gifEncoder = null;
+                    els.exportGifBtn.innerHTML = '<i data-lucide="video" class="w-3.5 h-3.5"></i> Exportar'; els.exportGifBtn.disabled = false; lucide.createIcons();
                 });
-                
                 startAnimation(true);
-            } catch(e) {
-                console.error("Erro ao iniciar GIF", e);
-                isRecordingGif = false;
-                isProcessing = false;
-                releaseWakeLock();
-                els.exportGifBtn.innerHTML = '<i data-lucide="video" class="w-3.5 h-3.5"></i> Exportar';
-                els.exportGifBtn.disabled = false;
-                lucide.createIcons();
-            }
+            } catch(e) { console.error("Erro ao iniciar GIF", e); isRecordingGif = false; isProcessing = false; releaseWakeLock(); els.exportGifBtn.innerHTML = '<i data-lucide="video" class="w-3.5 h-3.5"></i> Exportar'; els.exportGifBtn.disabled = false; lucide.createIcons(); }
         }
 
         els.playBtn.onclick = () => { stopAnimation(false); startAnimation(false); };
 
         async function startAnimation(keepRecordingState = false) {
             if (!globalScaledTraces.length) return;
-            
-            isAnimating = true;
-            els.playBtn.classList.add('hidden'); els.stopBtn.classList.remove('hidden'); els.canvas.style.pointerEvents = 'none';
+            isAnimating = true; els.playBtn.classList.add('hidden'); els.stopBtn.classList.remove('hidden'); els.canvas.style.pointerEvents = 'none';
 
             els.canvas.width = els.canvasWrapper.clientWidth; els.canvas.height = els.canvasWrapper.clientHeight;
             const sw = parseInt(els.screenW.value)||1100; const sh = parseInt(els.screenH.value)||2442;
             const bScale = Math.min((els.canvas.width - 40) / sw, (els.canvas.height - 40) / sh);
             const sOffsetX = (els.canvas.width - (sw * bScale)) / 2; const sOffsetY = (els.canvas.height - (sh * bScale)) / 2;
 
-            const clearCanvas = () => {
-                drawBackgroundAndGrid(ctx, els.canvas.width, els.canvas.height, viewScale, viewOffsetX, viewOffsetY, sw, sh, bScale);
-            };
-
+            const clearCanvas = () => { drawBackgroundAndGrid(ctx, els.canvas.width, els.canvas.height, viewScale, viewOffsetX, viewOffsetY, sw, sh, bScale); };
             clearCanvas();
             
             let cL=0, cT=0, cP=0, cBuf=[], fPaths=[], isDelay=false, delEnd=0;
@@ -1709,13 +1462,7 @@ BETA<!DOCTYPE html>
 
             const loop = (t) => {
                 if(!isAnimating) return;
-                
-                if (isRecordingGif) {
-                    if (!lastGifFrameTime || t - lastGifFrameTime >= 40) { 
-                        gifEncoder.addFrame(els.canvas, {copy: true, delay: 40});
-                        lastGifFrameTime = t;
-                    }
-                }
+                if (isRecordingGif) { if (!lastGifFrameTime || t - lastGifFrameTime >= 40) { gifEncoder.addFrame(els.canvas, {copy: true, delay: 40}); lastGifFrameTime = t; } }
 
                 if(isDelay) { if(t < delEnd) { animReqId = requestAnimationFrame(loop); return; } isDelay = false; }
                 let pts = Math.max(1, Math.floor((parseFloat(els.drawSpeed.value)||2)*2));
@@ -1741,29 +1488,18 @@ BETA<!DOCTYPE html>
         }
 
         function stopAnimation(isComplete = false) { 
-            isAnimating=false; 
-            if(animReqId) cancelAnimationFrame(animReqId); 
-            els.playBtn.classList.remove('hidden'); 
-            els.stopBtn.classList.add('hidden'); 
-            els.canvas.style.pointerEvents='auto'; 
+            isAnimating=false; if(animReqId) cancelAnimationFrame(animReqId); 
+            els.playBtn.classList.remove('hidden'); els.stopBtn.classList.add('hidden'); els.canvas.style.pointerEvents='auto'; 
             
             if (isRecordingGif) {
                 if (isComplete && gifEncoder) {
-                    els.exportGifBtn.innerHTML = '<i data-lucide="loader" class="w-3.5 h-3.5 animate-spin"></i> Processando...';
-                    lucide.createIcons();
-                    gifEncoder.addFrame(els.canvas, {copy: true, delay: 2000}); 
-                    gifEncoder.render();
+                    els.exportGifBtn.innerHTML = '<i data-lucide="loader" class="w-3.5 h-3.5 animate-spin"></i> Processando...'; lucide.createIcons();
+                    gifEncoder.addFrame(els.canvas, {copy: true, delay: 2000}); gifEncoder.render();
                 } else {
-                    isRecordingGif = false;
-                    isProcessing = false;
-                    releaseWakeLock();
-                    gifEncoder = null;
-                    els.exportGifBtn.innerHTML = '<i data-lucide="video" class="w-3.5 h-3.5"></i> Exportar';
-                    els.exportGifBtn.disabled = false;
-                    lucide.createIcons();
+                    isRecordingGif = false; isProcessing = false; releaseWakeLock(); gifEncoder = null;
+                    els.exportGifBtn.innerHTML = '<i data-lucide="video" class="w-3.5 h-3.5"></i> Exportar'; els.exportGifBtn.disabled = false; lucide.createIcons();
                 }
             }
-
             drawStaticPreview(); 
         }
 
@@ -1772,83 +1508,52 @@ BETA<!DOCTYPE html>
             const sw = parseInt(els.screenW.value) || 1100; const sh = parseInt(els.screenH.value) || 2442;
             const mult = 1 / (parseFloat(els.drawSpeed.value) || 2.0);
             const pause = parseInt(els.drawPause.value) || 35;
-            const turbo = els.turboMode.checked;
-            const warmup = els.warmupMode.checked;
+            const turbo = els.turboMode.checked; const warmup = els.warmupMode.checked;
             const visL = scaledLayers.filter(l => l.visible);
 
             let c = []; 
-            c.push(`// --- AUTO.JS VECTOR STUDIO ---`);
-            c.push(`// Engine de Múltiplos Arquivos | Modo: ${turbo ? 'Turbo' : 'Precisão'}`);
-            c.push(`// Continuidade de Traço Ativa: Sem quebras em segmentos!\n`);
+            c.push(`// --- AUTO.JS VECTOR STUDIO ---`); c.push(`// Engine de Múltiplos Arquivos | Modo: ${turbo ? 'Turbo' : 'Precisão'}`); c.push(`// Continuidade de Traço Ativa: Sem quebras em segmentos!\n`);
             
             if(!visL.length) { els.outputCode.value = "// Nenhuma camada visível selecionada."; return; }
 
-            c.push(`setScreenMetrics(${sw}, ${sh});\n`);
-            c.push(`var MULTIPLICADOR = ${mult.toFixed(3)};\n`);
+            c.push(`setScreenMetrics(${sw}, ${sh});\n`); c.push(`var MULTIPLICADOR = ${mult.toFixed(3)};\n`);
             
-            c.push(`function desenharWarmup(pts) {`);
-            c.push(`    if(pts.length < 2) return;`);
-            c.push(`    var dur = Math.max(300, pts.length * 15);`);
-            c.push(`    gesture.apply(null, [dur].concat(pts));`);
-            c.push(`    sleep(200);`);
-            c.push(`}\n`);
+            c.push(`function desenharWarmup(pts) {`); c.push(`    if(pts.length < 2) return;`); c.push(`    var dur = Math.max(300, pts.length * 15);`);
+            c.push(`    gesture.apply(null, [dur].concat(pts));`); c.push(`    sleep(200);`); c.push(`}\n`);
 
-            c.push(`function desenharTraco(pts) {`);
-            c.push(`    if(pts.length < 2) return;`);
+            c.push(`function desenharTraco(pts) {`); c.push(`    if(pts.length < 2) return;`);
             if(turbo) {
-                // Nova fórmula para Turbo permitindo velocidades altas livremente
-                c.push(`    var dur = Math.floor((pts.length * 6) * MULTIPLICADOR);`);
-                c.push(`    if(dur < 5) dur = 5; // Tempo mínimo para n crachar`);
-                c.push(`    if(dur > 60000) dur = 60000;`);
-                c.push(`    gesture.apply(null, [dur].concat(pts)); sleep(5);`);
+                c.push(`    var dur = Math.floor((pts.length * 6) * MULTIPLICADOR);`); c.push(`    if(dur < 5) dur = 5;`);
+                c.push(`    if(dur > 60000) dur = 60000;`); c.push(`    gesture.apply(null, [dur].concat(pts)); sleep(5);`);
             } else {
-                // Nova fórmula para Precisão permitindo velocidades altas livremente
-                c.push(`    var dur = Math.floor((pts.length * 10) * MULTIPLICADOR);`);
-                c.push(`    if(dur < 5) dur = 5;`);
-                c.push(`    if(dur > 60000) dur = 60000;`);
-                c.push(`    gesture.apply(null, [dur].concat(pts)); sleep(${pause});`);
+                c.push(`    var dur = Math.floor((pts.length * 10) * MULTIPLICADOR);`); c.push(`    if(dur < 5) dur = 5;`);
+                c.push(`    if(dur > 60000) dur = 60000;`); c.push(`    gesture.apply(null, [dur].concat(pts)); sleep(${pause});`);
             }
             c.push(`}\n`);
 
             c.push(`var cam = [`);
             if (warmup && visL.length > 0 && visL[0].screenTraces.length > 0) {
-                const tr = visL[0].screenTraces[0];
-                const tAq = Math.max(3, Math.min(15, Math.floor(tr.length * 0.25)));
+                const tr = visL[0].screenTraces[0]; const tAq = Math.max(3, Math.min(15, Math.floor(tr.length * 0.25)));
                 const warmupStr = tr.slice(0, tAq).map(p=>`[${p.x},${p.y}]`).join(', ');
                 c.push(`  { nome: "Pré-Traço Inicial (Anti-Bug)", isWarmup: true, del: 0, trs: [\n    [\n      ${warmupStr}\n    ]\n  ] },`); 
             }
             
             visL.forEach((l, idx) => {
                 c.push(`  { nome: "${l.nome}", del: ${l.delay * 1000}, trs: [`);
-                
                 const trStrs = l.screenTraces.map(tr => {
-                    let pts = tr.map(p => `[${p.x},${p.y}]`);
-                    let chunks = [];
-                    for(let i=0; i < pts.length; i+=10) {
-                        chunks.push(pts.slice(i, i+10).join(', '));
-                    }
+                    let pts = tr.map(p => `[${p.x},${p.y}]`); let chunks = [];
+                    for(let i=0; i < pts.length; i+=10) { chunks.push(pts.slice(i, i+10).join(', ')); }
                     return `    [\n      ${chunks.join(',\n      ')}\n    ]`;
                 });
-                
-                c.push(trStrs.join(',\n'));
-                c.push(`  ] }${idx < visL.length - 1 ? ',' : ''}`);
+                c.push(trStrs.join(',\n')); c.push(`  ] }${idx < visL.length - 1 ? ',' : ''}`);
             });
             c.push(`];\n`);
 
-            c.push(`// --- EXECUÇÃO PRINCIPAL ---`);
-            c.push(`for (var k = 0; k < cam.length; k++) {`);
-            c.push(`    var cmd = cam[k];`);
-            c.push(`    if (cmd.isWarmup) {`);
-            c.push(`        toast("Executando Pré-Traço...");`);
-            c.push(`        for (var t = 0; t < cmd.trs.length; t++) { desenharWarmup(cmd.trs[t]); }`);
-            c.push(`        continue;`);
-            c.push(`    }`);
-            c.push(`    if (cmd.del > 0) { toast("Espere " + (cmd.del/1000) + "s: " + cmd.nome); sleep(cmd.del); }`);
-            c.push(`    else { toast("A desenhar: " + cmd.nome); }`);
-            c.push(`    for (var t = 0; t < cmd.trs.length; t++) { desenharTraco(cmd.trs[t]); sleep(${pause}); }`);
-            c.push(`}`);
-            c.push(`toast("Composição Finalizada!");`);
-
+            c.push(`// --- EXECUÇÃO PRINCIPAL ---`); c.push(`for (var k = 0; k < cam.length; k++) {`); c.push(`    var cmd = cam[k];`);
+            c.push(`    if (cmd.isWarmup) {`); c.push(`        toast("Executando Pré-Traço...");`); c.push(`        for (var t = 0; t < cmd.trs.length; t++) { desenharWarmup(cmd.trs[t]); }`);
+            c.push(`        continue;`); c.push(`    }`);
+            c.push(`    if (cmd.del > 0) { toast("Espere " + (cmd.del/1000) + "s: " + cmd.nome); sleep(cmd.del); }`); c.push(`    else { toast("A desenhar: " + cmd.nome); }`);
+            c.push(`    for (var t = 0; t < cmd.trs.length; t++) { desenharTraco(cmd.trs[t]); sleep(${pause}); }`); c.push(`}`); c.push(`toast("Composição Finalizada!");`);
             els.outputCode.value = c.join('\n');
         }
 
