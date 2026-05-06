@@ -1,5 +1,4 @@
-beta
-<!DOCTYPE html>
+BETA<!DOCTYPE html>
 <html lang="pt-PT">
 <head>
     <meta charset="UTF-8">
@@ -153,28 +152,29 @@ beta
                         <div id="emptyProjectMsg" class="text-[10px] text-gray-500 text-center py-2 border border-dashed border-gray-600 rounded">Nenhum elemento no projeto.</div>
                     </div>
 
-                    <button id="addSvgBtn" class="w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded flex items-center justify-center gap-2 transition-colors shadow">
-                        <i data-lucide="upload-cloud" class="w-4 h-4"></i> Importar SVG Vetorial
-                    </button>
-                    <input type="file" id="fileInput" multiple accept=".svg" class="hidden">
-
-                    <!-- Módulo de Preenchimento SVG Original -->
+                    <!-- Módulo de Preenchimento -->
                     <div class="pt-2 border-t border-slate-700 space-y-2">
                         <h3 class="text-xs font-bold text-pink-400 flex items-center gap-1">
                             <i data-lucide="paint-bucket" class="w-3.5 h-3.5"></i> Hachura / Preenchimento
-                            <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-pink-400"></i><span class="tooltip-text">Preenche áreas sólidas do SVG com linhas geradas aleatoriamente. Não afeta traços ocos!</span></span>
+                            <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-pink-400"></i><span class="tooltip-text">Quando ativado, preenche áreas sólidas com linhas geradas aleatoriamente no momento da importação. Não afeta traços ocos! Formas brancas agora são devidamente mapeadas.</span></span>
                         </h3>
                         <label class="flex items-center justify-between cursor-pointer p-1.5 px-3 bg-pink-500/10 rounded-lg border border-pink-500/20">
-                            <span class="text-[11px] font-medium text-pink-300">Modo Preenchimento (SVG)</span>
-                            <input type="checkbox" id="fillMode" checked class="w-3.5 h-3.5 accent-pink-500 rounded cursor-pointer">
+                            <span class="text-[11px] font-medium text-pink-300">Modo Preenchimento</span>
+                            <input type="checkbox" id="fillMode" class="w-3.5 h-3.5 accent-pink-500 rounded cursor-pointer">
                         </label>
                         <div class="grid grid-cols-2 gap-2 text-[10px] text-gray-400">
                             <div>
-                                <label class="block mb-1">Espessura</label>
+                                <label class="block mb-1 flex items-center justify-between">
+                                    Espessura
+                                    <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-pink-400"></i><span class="tooltip-text">Distância entre as linhas geradas (2 a 20). Menor = mais juntas, o que exige mais tempo de desenho.</span></span>
+                                </label>
                                 <input type="number" id="fillDensity" value="5" min="2" max="20" class="w-full bg-slate-800 border border-slate-600 rounded p-1 outline-none text-white text-center">
                             </div>
                             <div>
-                                <label class="block mb-1">Sombrear</label>
+                                <label class="block mb-1 flex items-center justify-between">
+                                    Sombrear
+                                    <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-pink-400"></i><span class="tooltip-text">Níveis de cruzamento de linhas. Nível 1: traço diagonal. Nível 2: X cruzado. Nível 3: texturas intensas.</span></span>
+                                </label>
                                 <select id="fillShading" class="w-full bg-slate-800 border border-slate-600 rounded p-1 outline-none text-white">
                                     <option value="1">Nível 1 (Simples)</option>
                                     <option value="2">Nível 2 (Cruzado)</option>
@@ -184,39 +184,13 @@ beta
                         </div>
                     </div>
 
-                    <!-- Módulo Screentone (NOVO/ATUALIZADO) -->
-                    <div class="pt-2 border-t border-slate-700 space-y-2">
-                        <h3 class="text-xs font-bold text-amber-400 flex items-center gap-1">
-                            <i data-lucide="image" class="w-3.5 h-3.5"></i> Screentone Shader
-                            <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-amber-400"></i><span class="tooltip-text">Converte imagens ou SVGs coloridos numa matriz de padrões monocromáticos (Hachura/Pontilhismo) lendo a luminosidade.</span></span>
-                        </h3>
-                        <div class="grid grid-cols-2 gap-2 text-[10px] text-gray-400">
-                            <div>
-                                <label class="block mb-1">Padrão</label>
-                                <select id="screentoneStyle" class="w-full bg-slate-800 border border-slate-600 rounded p-1 outline-none text-white">
-                                    <option value="crosshatch">Cross-hatch</option>
-                                    <option value="hatch">Hachura</option>
-                                    <option value="dots">Pontilhismo</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block mb-1">Densidade Grid</label>
-                                <input type="number" id="screentoneRes" value="6" min="2" max="20" class="w-full bg-slate-800 border border-slate-600 rounded p-1 outline-none text-white text-center">
-                            </div>
-                        </div>
-                        <div class="flex gap-2">
-                            <button id="importImageBtn" class="flex-1 py-1.5 bg-amber-600 hover:bg-amber-500 text-white text-[10px] font-bold rounded flex items-center justify-center gap-1 transition-colors shadow">
-                                <i data-lucide="file-image" class="w-3 h-3"></i> Img -> Scr.
-                            </button>
-                            <button id="applyScreentoneToSvgBtn" class="flex-1 py-1.5 bg-purple-600 hover:bg-purple-500 text-white text-[10px] font-bold rounded flex items-center justify-center gap-1 transition-colors shadow">
-                                <i data-lucide="wand-2" class="w-3 h-3"></i> SVG -> Scr.
-                            </button>
-                        </div>
-                        <input type="file" id="imageInput" accept="image/jpeg, image/png, image/webp" class="hidden">
-                    </div>
+                    <button id="addSvgBtn" class="w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded flex items-center justify-center gap-2 transition-colors shadow">
+                        <i data-lucide="upload-cloud" class="w-4 h-4"></i> Importar SVG
+                    </button>
+                    <input type="file" id="fileInput" multiple accept=".svg" class="hidden">
 
                     <!-- Perfil .uny -->
-                    <div class="flex gap-2 pt-2 border-t border-slate-700">
+                    <div class="flex gap-2">
                         <button id="importUnyBtn" class="flex-1 py-1.5 bg-slate-700 hover:bg-slate-600 text-white text-[10px] font-bold rounded flex items-center justify-center gap-1 transition-colors">
                             <i data-lucide="download" class="w-3 h-3"></i> Importar (.uny)
                         </button>
@@ -227,7 +201,7 @@ beta
                     <input type="file" id="unyFileInput" accept=".uny" class="hidden">
                     
                     <!-- Novo Módulo de Texto -->
-                    <div class="pt-2 border-t border-slate-700 space-y-2">
+                    <div class="pt-3 border-t border-slate-700 space-y-2">
                         <h3 class="text-xs font-bold text-gray-300 flex items-center gap-1">
                             <i data-lucide="type" class="w-3.5 h-3.5 text-emerald-400"></i> Adicionar Texto Vetorial
                         </h3>
@@ -246,7 +220,7 @@ beta
                     </div>
 
                     <!-- Visualizador Original (Referência) -->
-                    <div class="pt-2 border-t border-slate-700 space-y-2">
+                    <div class="pt-3 border-t border-slate-700 space-y-2">
                         <h3 class="text-xs font-bold text-gray-300 flex items-center gap-1">
                             <i data-lucide="image" class="w-3.5 h-3.5 text-indigo-400"></i> Visualizador Original
                         </h3>
@@ -401,14 +375,26 @@ beta
                             <span class="flex items-center gap-1">Velocidade <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-purple-400"></i><span class="tooltip-text">Multiplicador da agilidade do robô no Auto.js, controlando o quão rápido o dedo artificial desliza para realizar o traço.</span></span></span>
                             <span id="speedValue">2.0x</span>
                         </label>
-                        <input type="range" id="drawSpeed" min="0.1" max="5.0" step="0.1" value="2.0" class="w-full range-sm accent-purple-500">
+                        <input type="range" id="drawSpeed" min="0.1" max="50.0" step="0.1" value="2.0" class="w-full range-sm accent-purple-500">
                     </div>
-                    <div>
+                    
+                    <!-- CALCULADORA DE TEMPO -->
+                    <div class="pt-2 border-t border-slate-700 mt-1">
+                        <label class="flex justify-between mb-1 text-orange-400 font-bold">
+                            <span class="flex items-center gap-1"><i data-lucide="clock" class="w-3.5 h-3.5"></i> Finalizar em (minutos) <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-orange-400"></i><span class="tooltip-text">Ajusta automaticamente a velocidade (e as pausas) para o robô terminar o desenho neste tempo exato.</span></span></span>
+                        </label>
+                        <div class="flex gap-2">
+                            <input type="number" id="targetTimeMin" placeholder="Ex: 2 ou 0.5" min="0.1" step="0.1" class="w-full bg-slate-800 border border-slate-600 rounded p-1.5 outline-none text-white text-xs font-mono">
+                            <button id="calcTimeBtn" class="px-4 py-1.5 bg-orange-600 hover:bg-orange-500 rounded text-xs font-bold text-white shadow transition-colors flex items-center gap-1"><i data-lucide="calculator" class="w-3.5 h-3.5"></i> Calcular</button>
+                        </div>
+                    </div>
+                    
+                    <div class="pt-2 border-t border-slate-700">
                         <label class="flex justify-between mb-1 text-pink-400">
                             <span class="flex items-center gap-1">Pausa Levantar <span class="tooltip"><i data-lucide="search" class="w-3 h-3 text-pink-400"></i><span class="tooltip-text">Em milissegundos, dita o tempo que o Auto.js espera cada vez que acaba um traço (levanta o dedo) antes de começar a baixar para o próximo.</span></span></span>
                             <span id="pauseValue">35ms</span>
                         </label>
-                        <input type="range" id="drawPause" min="10" max="500" step="5" value="35" class="w-full range-sm accent-pink-500">
+                        <input type="range" id="drawPause" min="0" max="500" step="5" value="35" class="w-full range-sm accent-pink-500">
                     </div>
                     <div>
                         <label class="flex justify-between mb-1 text-sky-400">
@@ -593,7 +579,11 @@ beta
             screenW: document.getElementById('screenW'), screenH: document.getElementById('screenH'),
             drawPercent: document.getElementById('drawPercent'), percentValue: document.getElementById('percentValue'),
             drawMargin: document.getElementById('drawMargin'), marginValue: document.getElementById('marginValue'),
+            
+            // Novos controles de velocidade
             drawSpeed: document.getElementById('drawSpeed'), speedValue: document.getElementById('speedValue'),
+            targetTimeMin: document.getElementById('targetTimeMin'), calcTimeBtn: document.getElementById('calcTimeBtn'),
+            
             drawPause: document.getElementById('drawPause'), pauseValue: document.getElementById('pauseValue'),
             stepPrecision: document.getElementById('stepPrecision'), precisionValue: document.getElementById('precisionValue'),
             turboMode: document.getElementById('turboMode'), continuousLine: document.getElementById('continuousLine'), warmupMode: document.getElementById('warmupMode'),
@@ -602,12 +592,6 @@ beta
             fillMode: document.getElementById('fillMode'),
             fillDensity: document.getElementById('fillDensity'),
             fillShading: document.getElementById('fillShading'),
-            
-            importImageBtn: document.getElementById('importImageBtn'),
-            imageInput: document.getElementById('imageInput'),
-            applyScreentoneToSvgBtn: document.getElementById('applyScreentoneToSvgBtn'),
-            screentoneStyle: document.getElementById('screentoneStyle'),
-            screentoneRes: document.getElementById('screentoneRes'),
 
             globalX: document.getElementById('globalX'), globalY: document.getElementById('globalY'),
             globalXVal: document.getElementById('globalXVal'), globalYVal: document.getElementById('globalYVal'),
@@ -685,204 +669,6 @@ beta
             context.restore();
         }
 
-        // ==========================================
-        // 🎨 SISTEMA SCREENTONE (Motor Global: Imagem/SVG -> SVG Screentone)
-        // ==========================================
-        async function applyScreentone(svgOrImage, intensitySettings) {
-            return new Promise((resolve, reject) => {
-                const processImage = (img) => {
-                    const step = intensitySettings.density || 6;
-                    const style = intensitySettings.style || 'crosshatch';
-                    const canvas = document.createElement('canvas');
-                    let maxDim = 800; // Otimização interna de leitura matricial
-                    let w = img.width;
-                    let h = img.height;
-                    
-                    if(w === 0 || h === 0) { w = 500; h = 500; }
-                    if (w > maxDim || h > maxDim) {
-                        let ratio = Math.min(maxDim/w, maxDim/h);
-                        w = Math.round(w * ratio);
-                        h = Math.round(h * ratio);
-                    }
-                    
-                    canvas.width = w;
-                    canvas.height = h;
-                    const ctx = canvas.getContext('2d');
-                    
-                    // Fundo branco rigoroso garante que SVGs ocos/transparentes não fiquem pretos
-                    ctx.fillStyle = '#FFFFFF';
-                    ctx.fillRect(0, 0, w, h);
-                    ctx.drawImage(img, 0, 0, w, h);
-                    
-                    const imgData = ctx.getImageData(0, 0, w, h).data;
-
-                    const getLuminance = (x, y) => {
-                        if (x < 0 || x >= w || y < 0 || y >= h) return 255;
-                        const i = (y * w + x) * 4;
-                        // Tratamento de Canal Alpha
-                        const a = imgData[i+3] / 255;
-                        const r = imgData[i] * a + 255 * (1-a);
-                        const g = imgData[i+1] * a + 255 * (1-a);
-                        const b = imgData[i+2] * a + 255 * (1-a);
-                        
-                        // Luminância Perceptiva (W3C standard)
-                        return (0.299 * r + 0.587 * g + 0.114 * b);
-                    };
-
-                    let svgContent = '';
-                    let pathData = '';
-
-                    // Grid Regional - Otimização de Performance
-                    for (let y = 0; y < h; y += step) {
-                        for (let x = 0; x < w; x += step) {
-                            let sumL = 0; let count = 0;
-                            // Sampling por sub-pixels da região
-                            for(let dy=0; dy<step; dy+=2){
-                                for(let dx=0; dx<step; dx+=2){
-                                    sumL += getLuminance(x+dx, y+dy);
-                                    count++;
-                                }
-                            }
-                            let avgL = sumL / count;
-                            let rawD = 1.0 - (avgL / 255.0);
-                            
-                            // Boost visual tipo 'Dark Comic' para melhor contraste
-                            let D = Math.max(0, Math.min(1, (rawD - 0.12) * 1.3)); 
-
-                            if (D <= 0) continue; 
-
-                            let cx = x + step/2; let cy = y + step/2; let r = step/2;
-
-                            // Motor Modular de Padrões
-                            if (style === 'crosshatch') {
-                                if (D >= 0.1) pathData += `M ${cx-r} ${cy-r} L ${cx+r} ${cy+r} `; 
-                                if (D >= 0.4) pathData += `M ${cx-r} ${cy+r} L ${cx+r} ${cy-r} `; 
-                                if (D >= 0.7) pathData += `M ${cx-r} ${cy} L ${cx+r} ${cy} `;     
-                                if (D >= 0.9) pathData += `M ${cx} ${cy-r} L ${cx} ${cy+r} `;     
-                            } else if (style === 'hatch') {
-                                pathData += `M ${cx-r} ${cy-r} L ${cx+r} ${cy+r} `; 
-                                if (D >= 0.4) pathData += `M ${cx-r+step/2} ${cy-r-step/2} L ${cx+r+step/2} ${cy+r-step/2} `; 
-                                if (D >= 0.7) pathData += `M ${cx-r-step/2} ${cy-r+step/2} L ${cx+r-step/2} ${cy+r+step/2} `; 
-                            } else if (style === 'dots') {
-                                let radius = r * D * 1.1; 
-                                if(radius > 0.5) {
-                                    // Pontilhismo oco, otimizado para o plotter traçar círculos perfeitos
-                                    svgContent += `<circle cx="${cx}" cy="${cy}" r="${radius}" fill="none" stroke="black" />`;
-                                }
-                            }
-                        }
-                    }
-
-                    if (pathData) {
-                        svgContent += `<path d="${pathData}" stroke="black" fill="none" />`;
-                    }
-
-                    resolve(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}">${svgContent}</svg>`);
-                };
-
-                // Suporta receber diretamente uma string de SVG ou um Object File (Imagem)
-                if (typeof svgOrImage === 'string') {
-                    const img = new Image();
-                    img.onload = () => processImage(img);
-                    img.onerror = (e) => { console.error(e); reject("Erro ao ler SVG para Screentone"); };
-                    
-                    let s = svgOrImage;
-                    // Garante tags essenciais para renderização raw do canvas
-                    if (!s.includes('xmlns=')) s = s.replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" ');
-                    if (!s.includes('width=') && !s.includes('height=') && !s.includes('viewBox=')) {
-                         s = s.replace('<svg ', '<svg width="1000" height="1000" ');
-                    }
-                    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(s);
-                } else {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        const img = new Image();
-                        img.onload = () => processImage(img);
-                        img.src = e.target.result;
-                    };
-                    reader.readAsDataURL(svgOrImage);
-                }
-            });
-        }
-
-        els.importImageBtn.onclick = () => els.imageInput.click();
-        els.imageInput.onchange = async (e) => {
-            if(!e.target.files.length) return;
-            isProcessing = true; await requestWakeLock();
-            els.progressOverlay.classList.remove('hidden');
-            els.progressTitle.textContent = "Convertendo Imagem (Shader)...";
-            els.statusMsg.textContent = "A gerar malha de screentone..."; els.progressBar.style.width = "30%";
-
-            try {
-                const file = e.target.files[0];
-                const isFirst = projectItems.length === 0;
-                if (isFirst) els.jsFileName.value = sanitizeFileName(file.name) + '_script';
-
-                const step = parseInt(els.screentoneRes.value) || 6;
-                const style = els.screentoneStyle.value || 'crosshatch';
-                
-                const svgString = await applyScreentone(file, { density: step, style: style });
-                
-                els.progressBar.style.width = "60%";
-                await new Promise(r => setTimeout(r, 50));
-                
-                const id = 'item_' + Date.now() + Math.floor(Math.random()*1000);
-                projectItems.push({
-                    id, name: `[HQ] ${file.name.substring(0,10)}`, content: svgString,
-                    x: 0, y: 0, scaleX: 1, scaleY: 1, rot: 0, flipX: false, flipY: false,
-                    basePaths: [], cx: 0, cy: 0, isText: false, normScale: 1
-                });
-                activeItemId = id; 
-                
-                await extractBasePaths(id);
-            } catch(err) {
-                console.error(err);
-                els.statusMsg.textContent = "Erro na Conversão!"; await new Promise(r => setTimeout(r, 2000));
-            } finally {
-                isProcessing = false; releaseWakeLock(); els.progressOverlay.classList.add('hidden');
-                renderProjectItems(); renderLayersUI(); updateGeometryAndMap();
-            }
-            e.target.value = '';
-        };
-
-        els.applyScreentoneToSvgBtn.onclick = async () => {
-            const inst = projectItems.find(i => i.id === activeItemId);
-            if (!inst || inst.isText) {
-                alert("Selecione um SVG válido no projeto primeiro para aplicar o Shader.");
-                return;
-            }
-            
-            isProcessing = true; await requestWakeLock();
-            els.progressOverlay.classList.remove('hidden');
-            els.progressTitle.textContent = "Aplicando Screentone ao SVG...";
-            els.statusMsg.textContent = "A ler luminosidade vetorial..."; els.progressBar.style.width = "30%";
-
-            try {
-                const step = parseInt(els.screentoneRes.value) || 6;
-                const style = els.screentoneStyle.value || 'crosshatch';
-                
-                const newSvgStr = await applyScreentone(inst.content, { density: step, style: style });
-                
-                inst.content = newSvgStr;
-                inst.name = `[SCR] ` + getBaseName(inst.name).substring(0, 10);
-                
-                els.progressBar.style.width = "70%";
-                rawLayers = rawLayers.filter(l => l.itemId !== inst.id);
-                await extractBasePaths(inst.id);
-
-            } catch(e) {
-                console.error(e);
-                els.statusMsg.textContent = "Erro ao aplicar shader!"; 
-                await new Promise(r => setTimeout(r, 2000));
-            } finally {
-                isProcessing = false; releaseWakeLock(); els.progressOverlay.classList.add('hidden');
-                renderProjectItems(); renderLayersUI(); updateGeometryAndMap();
-            }
-        };
-
-        // ==========================================
-        // FLUXO NORMAL (SVGs e Textos)
-        // ==========================================
         els.addSvgBtn.onclick = () => els.fileInput.click();
         els.fileInput.onchange = async (e) => {
             if(!e.target.files.length) return;
@@ -1065,9 +851,7 @@ beta
                     stepPrecision: parseInt(els.stepPrecision.value), wakeLockMode: els.wakeLockMode.checked,
                     turboMode: els.turboMode.checked, continuousLine: els.continuousLine.checked,
                     warmupMode: els.warmupMode.checked, fillMode: els.fillMode.checked,
-                    fillDensity: parseInt(els.fillDensity.value), fillShading: parseInt(els.fillShading.value),
-                    // Guarda o estado do painel de Screentone na config
-                    screentoneStyle: els.screentoneStyle.value, screentoneRes: parseInt(els.screentoneRes.value)
+                    fillDensity: parseInt(els.fillDensity.value), fillShading: parseInt(els.fillShading.value)
                 },
                 advanced: advancedSettings, welcomeMessage: els.welcomeMessageDisplay.dataset.customMessage || ""
             };
@@ -1106,9 +890,6 @@ beta
                 els.wakeLockMode.checked = !!s.wakeLockMode; els.turboMode.checked = !!s.turboMode;
                 els.continuousLine.checked = !!s.continuousLine; els.warmupMode.checked = s.warmupMode !== undefined ? s.warmupMode : true;
                 els.fillMode.checked = !!s.fillMode; els.fillDensity.value = s.fillDensity || 5; els.fillShading.value = s.fillShading || 1;
-
-                if (s.screentoneStyle) els.screentoneStyle.value = s.screentoneStyle;
-                if (s.screentoneRes) els.screentoneRes.value = s.screentoneRes;
 
                 els.globalXVal.textContent = els.globalX.value + 'px'; els.globalYVal.textContent = els.globalY.value + 'px';
                 els.globalScaleVal.textContent = parseFloat(els.globalScale.value).toFixed(1) + 'x'; els.globalRotVal.textContent = els.globalRot.value + '°';
@@ -1486,6 +1267,89 @@ beta
         els.turboMode.addEventListener('change', triggerCodeUpdate);
         els.warmupMode.addEventListener('change', triggerCodeUpdate);
 
+        // LÓGICA DE CÁLCULO DE TEMPO ALVO
+        els.calcTimeBtn.onclick = () => {
+            if (!scaledLayers || scaledLayers.length === 0) return;
+            const targetMin = parseFloat(els.targetTimeMin.value);
+            if (isNaN(targetMin) || targetMin <= 0) return;
+
+            const targetMs = targetMin * 60 * 1000;
+            const turbo = els.turboMode.checked;
+            const warmup = els.warmupMode.checked;
+            let currentPause = parseInt(els.drawPause.value) || 35;
+
+            // Determinar total de gestos na base e o total de tempo já comprometido (pausas fixas)
+            let baseGestureTime = 0;
+            let fixedTime = 0;
+            let traceCount = 0;
+            let activeLayerCount = 0;
+
+            scaledLayers.forEach(l => {
+                if(!l.visible) return;
+                activeLayerCount++;
+                fixedTime += l.delay * 1000;
+                l.screenTraces.forEach(tr => {
+                    traceCount++;
+                    baseGestureTime += turbo ? (tr.length * 6) : (tr.length * 10);
+                    fixedTime += turbo ? 5 : currentPause;
+                });
+            });
+
+            if (warmup && activeLayerCount > 0 && scaledLayers[0].screenTraces.length > 0) {
+                const tr = scaledLayers[0].screenTraces[0];
+                const tAq = Math.max(3, Math.min(15, Math.floor(tr.length * 0.25)));
+                fixedTime += Math.max(300, tAq * 15) + 200;
+            }
+
+            if (baseGestureTime === 0) return;
+
+            let availableTimeForGestures = targetMs - fixedTime;
+
+            // Se for pedido um tempo muito curto onde só as pausas demorariam mais que o tempo alvo, ajustamos a pausa
+            if (availableTimeForGestures <= targetMs * 0.1 && !turbo) {
+                let neededFixedTimeForPauses = targetMs * 0.5 - (fixedTime - (traceCount * currentPause));
+                let newPause = Math.floor(neededFixedTimeForPauses / traceCount);
+                if (newPause < 0) newPause = 0; 
+                
+                // Aplicar nova pausa UI
+                els.drawPause.value = newPause;
+                els.pauseValue.textContent = newPause + 'ms';
+                currentPause = newPause;
+
+                // Recalcular
+                fixedTime = 0;
+                scaledLayers.forEach(l => {
+                    if(!l.visible) return;
+                    fixedTime += l.delay * 1000;
+                    fixedTime += l.screenTraces.length * currentPause;
+                });
+                if (warmup && activeLayerCount > 0 && scaledLayers[0].screenTraces.length > 0) {
+                    const tr = scaledLayers[0].screenTraces[0];
+                    const tAq = Math.max(3, Math.min(15, Math.floor(tr.length * 0.25)));
+                    fixedTime += Math.max(300, tAq * 15) + 200;
+                }
+                availableTimeForGestures = targetMs - fixedTime;
+            }
+
+            if (availableTimeForGestures <= 0) availableTimeForGestures = 1;
+
+            let requiredSpeed = baseGestureTime / availableTimeForGestures;
+
+            if (requiredSpeed < 0.1) requiredSpeed = 0.1;
+            if (requiredSpeed > 50.0) requiredSpeed = 50.0;
+
+            // Aplicar nova velocidade UI
+            els.drawSpeed.value = requiredSpeed.toFixed(1);
+            els.speedValue.textContent = requiredSpeed.toFixed(1) + 'x';
+
+            // Piscar para dar feedback ao utilizador
+            const speedWrap = els.drawSpeed.parentElement;
+            speedWrap.classList.add('bg-orange-500/20', 'rounded', 'p-1', 'transition-all');
+            setTimeout(() => speedWrap.classList.remove('bg-orange-500/20', 'rounded', 'p-1'), 1000);
+
+            triggerCodeUpdate();
+        };
+
         els.resetGeoBtn.onclick = () => {
             els.itemScaleX.value = 1.0; els.itemScaleY.value = 1.0; els.itemScale.value = 1.0; els.itemScaleVal.textContent = "1.0x";
             els.itemRot.value = 0; els.itemRotVal.textContent = "0°"; els.itemX.value = 0; els.itemY.value = 0;
@@ -1528,17 +1392,12 @@ beta
                 activeLayerCount++; estimatedTimeMs += l.delay * 1000;
                 l.screenTraces.forEach(tr => {
                     traceCount++; totalPts += tr.length;
-                    if(turbo) {
-                        let dur = Math.floor((tr.length * 6) * mult);
-                        if(dur < Math.max(40, tr.length * 4)) dur = Math.max(40, tr.length * 4);
-                        if(dur > 60000) dur = 60000;
-                        estimatedTimeMs += dur + 5;
-                    } else {
-                        let dur = Math.floor(Math.max(100, tr.length * 10) * mult);
-                        if(dur < Math.max(80, tr.length * 5)) dur = Math.max(80, tr.length * 5);
-                        if(dur > 60000) dur = 60000;
-                        estimatedTimeMs += dur + pause;
-                    }
+                    
+                    // FÓRMULA SEM LIMITAÇÕES (permite que a velocidade seja insanamente rápida)
+                    let dur = turbo ? Math.floor((tr.length * 6) * mult) : Math.floor((tr.length * 10) * mult);
+                    if (dur < 5) dur = 5; // Proteção apenas contra 0ms que causaria crash no Auto.js
+                    
+                    estimatedTimeMs += dur + (turbo ? 5 : pause);
                 });
             });
 
@@ -1937,13 +1796,15 @@ beta
             c.push(`function desenharTraco(pts) {`);
             c.push(`    if(pts.length < 2) return;`);
             if(turbo) {
+                // Nova fórmula para Turbo permitindo velocidades altas livremente
                 c.push(`    var dur = Math.floor((pts.length * 6) * MULTIPLICADOR);`);
-                c.push(`    if(dur < Math.max(40, pts.length * 4)) dur = Math.max(40, pts.length * 4);`);
+                c.push(`    if(dur < 5) dur = 5; // Tempo mínimo para n crachar`);
                 c.push(`    if(dur > 60000) dur = 60000;`);
                 c.push(`    gesture.apply(null, [dur].concat(pts)); sleep(5);`);
             } else {
-                c.push(`    var dur = Math.floor(Math.max(100, pts.length * 10) * MULTIPLICADOR);`);
-                c.push(`    if(dur < Math.max(80, pts.length * 5)) dur = Math.max(80, pts.length * 5);`);
+                // Nova fórmula para Precisão permitindo velocidades altas livremente
+                c.push(`    var dur = Math.floor((pts.length * 10) * MULTIPLICADOR);`);
+                c.push(`    if(dur < 5) dur = 5;`);
                 c.push(`    if(dur > 60000) dur = 60000;`);
                 c.push(`    gesture.apply(null, [dur].concat(pts)); sleep(${pause});`);
             }
