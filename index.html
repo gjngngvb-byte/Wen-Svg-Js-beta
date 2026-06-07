@@ -212,6 +212,7 @@
                                 <option value="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/fonts/Roboto/Roboto-Regular.ttf">Roboto (Moderna)</option>
                                 <option value="https://raw.githubusercontent.com/google/fonts/main/ofl/lobster/Lobster-Regular.ttf">Lobster (Elegante)</option>
                                 <option value="https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Ubuntu/ubuntu-regular-webfont.ttf">Ubuntu (Clássica)</option>
+                                <option value="custom" class="text-emerald-400 font-bold">➕ Adicionar URL Externa...</option>
                             </select>
                             <button id="addTextBtn" class="px-3 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded transition-colors shadow">
                                 Add
@@ -250,6 +251,7 @@
                             <option value="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/fonts/Roboto/Roboto-Regular.ttf">Roboto (Moderna)</option>
                             <option value="https://raw.githubusercontent.com/google/fonts/main/ofl/lobster/Lobster-Regular.ttf">Lobster (Elegante)</option>
                             <option value="https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Ubuntu/ubuntu-regular-webfont.ttf">Ubuntu (Clássica)</option>
+                            <option value="custom" class="text-emerald-400 font-bold">➕ Adicionar URL Externa...</option>
                         </select>
                     </div>
 
@@ -630,6 +632,36 @@
             });
         }
 
+        // ==========================================
+        // LÓGICA DE FONTES EXTERNAS (URL)
+        // ==========================================
+        async function handleCustomFontLogic(selectEl) {
+            if (selectEl.value === 'custom') {
+                const url = prompt("Insira o link direto para o ficheiro da fonte (.ttf, .otf, .woff):\nEx: https://meusite.com/fonte.ttf");
+                if (url && url.trim().match(/^https?:\/\//)) {
+                    const fontName = prompt("Nome da fonte:", "Minha Fonte Externa") || "Fonte Externa";
+                    // Adiciona na primeira lista
+                    const opt1 = new Option(fontName + ' (Externa)', url.trim());
+                    els.newTextFont.insertBefore(opt1, els.newTextFont.querySelector('option[value="custom"]'));
+                    // Adiciona na segunda lista
+                    const opt2 = new Option(fontName + ' (Externa)', url.trim());
+                    els.editTextFont.insertBefore(opt2, els.editTextFont.querySelector('option[value="custom"]'));
+                    // Seleciona a opção recém criada
+                    selectEl.value = url.trim();
+                    return true;
+                } else {
+                    if(url !== null) alert("URL inválida ou não fornecida. O link deve começar com http:// ou https:// e apontar para um ficheiro de fonte.");
+                    selectEl.selectedIndex = 0; // Reseta se falhou
+                    return false;
+                }
+            }
+            return true; // Não era a opção custom
+        }
+
+        els.newTextFont.addEventListener('change', async (e) => {
+            await handleCustomFontLogic(e.target);
+        });
+
         els.addTextBtn.onclick = async () => {
             const text = els.newTextInput.value.trim(); const font = els.newTextFont.value; if(!text) return;
             isProcessing = true; await requestWakeLock(); els.progressOverlay.classList.remove('hidden'); els.progressTitle.textContent = "A desenhar texto..."; els.statusMsg.textContent = "A fundir letras..."; els.progressBar.style.width = "20%";
@@ -644,14 +676,21 @@
 
         const handleTextEdit = async () => {
             const inst = projectItems.find(i => i.id === activeItemId); if(!inst || !inst.isText) return;
-            const newText = els.editTextInput.value.trim(); const newFont = els.editTextFont.value; if(!newText || (newText === inst.textContent && newFont === inst.fontUrl)) return;
+            const newText = els.editTextInput.value.trim(); const newFont = els.editTextFont.value; 
+            if(!newText || (newText === inst.textContent && newFont === inst.fontUrl) || newFont === 'custom') return;
+            
             isProcessing = true; await requestWakeLock(); els.progressOverlay.classList.remove('hidden'); els.progressTitle.textContent = "A atualizar texto..."; els.statusMsg.textContent = "A re-fundir curvas..."; els.progressBar.style.width = "40%";
             try {
                 inst.textContent = newText; inst.fontUrl = newFont; inst.name = `Texto: ${newText.substring(0,8)}`; inst.content = await textToSvgString(newText, newFont); rawLayers = rawLayers.filter(l => l.itemId !== inst.id); await extractBasePaths(inst.id);
             } catch(e) { els.statusMsg.textContent = "Erro ao atualizar texto!"; await new Promise(r => setTimeout(r, 2000)); } 
             finally { isProcessing = false; releaseWakeLock(); els.progressOverlay.classList.add('hidden'); renderProjectItems(); renderLayersUI(); triggerUpdate(); }
         };
-        els.editTextInput.addEventListener('change', handleTextEdit); els.editTextFont.addEventListener('change', handleTextEdit);
+
+        els.editTextInput.addEventListener('change', handleTextEdit); 
+        els.editTextFont.addEventListener('change', async (e) => {
+            const success = await handleCustomFontLogic(e.target);
+            if(success && e.target.value !== 'custom') handleTextEdit();
+        });
 
         function renderProjectItems() {
             els.projectItemsList.innerHTML = ''; els.emptyProjectMsg.style.display = projectItems.length ? 'none' : 'block';
